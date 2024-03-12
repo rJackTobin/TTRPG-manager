@@ -5,8 +5,31 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TTRPG_manager"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow"
+        Height="{Binding Height}"
+        Width="{Binding Width}"
+        d:DesignHeight="1080"
+        d:DesignWidth="1920"
+        ResizeMode="CanMinimize"
+        >
     <Grid>
-
+        <Grid.RowDefinitions>
+            <RowDefinition Height="1*" />
+            <!-- This row takes up 1/30th of the height -->
+            <RowDefinition Height="29*" />
+            <!-- The rest of the space -->
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <!-- Takes up the full width -->
+        </Grid.ColumnDefinitions>
+        <StackPanel Orientation="Horizontal" Grid.Column="0" Grid.Row="0" >
+            <Viewbox>
+                <StackPanel Orientation="Horizontal">
+                    <Button Width="100" Click="SettingsButton_Click">Settings</Button>
+                    <Button Width="100">Edit Mode</Button>
+                </StackPanel>
+            </Viewbox>
+        </StackPanel>
     </Grid>
 </Window>

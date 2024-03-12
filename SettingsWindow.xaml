@@ -1,0 +1,30 @@
+﻿<Window x:Class="TTRPG_manager.SettingsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:TTRPG_manager"
+        mc:Ignorable="d"
+        Title="SettingsWindow" Height="{Binding Height}" Width="{Binding Width}" d:DesignWidth="1000" d:DesignHeight="550">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="14*"/>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="1*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Width="1*"/>
+        </Grid.ColumnDefinitions>
+        <StackPanel Orientation="Vertical" Margin="10,50,50,50" Grid.Column="0">
+            <TextBlock Text="Resolution:" Margin="0,0,0,10"/>
+            <ComboBox x:Name="ResolutionComboBox" SelectedIndex="0">
+                <ComboBoxItem Content="1280x720"/>
+                <ComboBoxItem Content="1920x1080"/>
+                <ComboBoxItem Content="2560x1440"/>
+                <ComboBoxItem Content="3840x2160"/>
+            </ComboBox>
+        </StackPanel>
+        <Button Content="Apply" Grid.Column="1" Grid.Row ="1" Width="200" Click="ApplyButton_Click"/>
+    </Grid>
+</Window>
