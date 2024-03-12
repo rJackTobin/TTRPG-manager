@@ -37,6 +37,7 @@ namespace TTRPG_manager
                 _config.SelectedResolution = selectedResolution;
                 
             }
+            //await ConfigManager.SaveConfigAsync(_config);
         }
 
     }
