@@ -31,14 +31,17 @@ namespace TTRPG_manager
             var parts = _config.Resolution.Split('x');
             this.Width = int.Parse(parts[0]);
             this.Height = int.Parse(parts[1]);
-            try
+            if (_config.BackgroundPath != "")
             {
-                this.background.ImageSource = new BitmapImage(new Uri(_config.BackgroundPath, UriKind.RelativeOrAbsolute));
-            }
-            catch
-            {
-
-            }
+                try
+                {
+                    this.background.ImageSource = new BitmapImage(new Uri(_config.BackgroundPath, UriKind.RelativeOrAbsolute));
+                }
+                catch (Exception ex)
+                {
+                    //do nothing
+                }
+            } 
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

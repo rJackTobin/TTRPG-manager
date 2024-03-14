@@ -24,11 +24,11 @@ namespace TTRPG_manager
             return loaded_config;
         }
 
-        public static async Task SaveConfigAsync(AppConfig config)
+        public static void SaveConfig(AppConfig config)
         {
             var options = new JsonSerializerOptions { WriteIndented = true };
             string json = JsonSerializer.Serialize(config, options);
-            await File.WriteAllTextAsync(ConfigFilePath, json);
+            File.WriteAllText(ConfigFilePath, json);
         }
     }
 }

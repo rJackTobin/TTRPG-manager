@@ -39,7 +39,7 @@ namespace TTRPG_manager
         }
         private async void ApplyButton_Click(object sender, RoutedEventArgs e)
         {
-            await ConfigManager.SaveConfigAsync(updated_config);
+            ConfigManager.SaveConfig(updated_config);
             this.DialogResult = true;
         }
 
