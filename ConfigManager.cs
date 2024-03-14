@@ -12,15 +12,16 @@ namespace TTRPG_manager
     {
         private static readonly string ConfigFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "AppConfig.json");
 
-        public static async Task<AppConfig> LoadConfigAsync()
+        public AppConfig LoadConfig()
         {
+            AppConfig loaded_config = new AppConfig();
             if (File.Exists(ConfigFilePath))
             {
-                string json = await File.ReadAllTextAsync(ConfigFilePath);
-                return JsonSerializer.Deserialize<AppConfig>(json) ?? new AppConfig();
+                string json = File.ReadAllText(ConfigFilePath);
+                return JsonSerializer.Deserialize<AppConfig>(json) ?? loaded_config;
             }
 
-            return new AppConfig();
+            return loaded_config;
         }
 
         public static async Task SaveConfigAsync(AppConfig config)

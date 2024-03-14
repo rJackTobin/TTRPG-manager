@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.IO;
+using Microsoft.Win32;
 
 namespace TTRPG_manager
 {
@@ -20,25 +21,41 @@ namespace TTRPG_manager
     /// </summary>
     public partial class SettingsWindow : Window
     {
-        private AppConfig _config;
-        public string SelectedResolution { get; private set; }
+        private AppConfig updated_config;
+        
         public SettingsWindow(AppConfig config, double height, double width)
         {
             InitializeComponent();
-            _config = config;
+
+            updated_config = config;
+             // Or however you instantiate it
+
+            // Copy values from old_config to new_config if needed
+
+            this.DataContext = updated_config; // Set DataContext for data binding
+
             this.Height = height * 0.5;
             this.Width = width * 0.5;
         }
-        private void ApplyButton_Click(object sender, RoutedEventArgs e)
+        private async void ApplyButton_Click(object sender, RoutedEventArgs e)
         {
-            var selectedResolution = (ResolutionComboBox.SelectedItem as ComboBoxItem)?.Content.ToString();
-            if (!string.IsNullOrEmpty(selectedResolution))
-            {
-                _config.SelectedResolution = selectedResolution;
-                
-            }
-            //await ConfigManager.SaveConfigAsync(_config);
+            await ConfigManager.SaveConfigAsync(updated_config);
+            this.DialogResult = true;
         }
 
+        private async void Browse_Click(object sender, RoutedEventArgs e)
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog
+            {
+                Filter = "Image files (*.jpg;*.jpeg;*.png)|*.jpg;*.jpeg;*.png", // Filters to only include image files
+                Title = "Select an Image"
+            };
+
+            if (openFileDialog.ShowDialog() == true)
+            {
+                updated_config.BackgroundPath = (openFileDialog.FileName);
+                this.FilePath.Text = openFileDialog.FileName;
+            }
+        }
     }
 }

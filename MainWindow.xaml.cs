@@ -14,38 +14,31 @@ namespace TTRPG_manager
 {
     public partial class MainWindow : Window, INotifyPropertyChanged
     {
-        private int _resX = 1280;
-        public int ResX
-        {
-            get => _resX;
-            set
-            {
-                _resX = value;
-                OnPropertyChanged(nameof(ResX));
-            }
-        }
-
-        private int _resY = 720;
-        public int ResY
-        {
-            get => _resY;
-            set
-            {
-                _resY = value;
-                OnPropertyChanged(nameof(ResY));
-            }
-        }
         private AppConfig _config;
-
-
+        
+        ConfigManager manager = new ConfigManager();
         public MainWindow()
         {
             InitializeComponent();
             DataContext = this;
-            Loaded += async (sender, args) => await LoadConfig();
-            // Explicitly set window size after initialization
-            this.Width = ResX;
-            this.Height = ResY;
+            
+            _config = manager.LoadConfig();
+            ApplyConfig();
+        }
+
+        private void ApplyConfig()
+        {
+            var parts = _config.Resolution.Split('x');
+            this.Width = int.Parse(parts[0]);
+            this.Height = int.Parse(parts[1]);
+            try
+            {
+                this.background.ImageSource = new BitmapImage(new Uri(_config.BackgroundPath, UriKind.RelativeOrAbsolute));
+            }
+            catch
+            {
+
+            }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -64,13 +57,9 @@ namespace TTRPG_manager
             var dialogResult = settingsWindow.ShowDialog();
             if (dialogResult == true)
             {
-                // Optionally, reload config or UI elements if settings could affect the main window
+                _config = manager.LoadConfig();
+                ApplyConfig();
             }
-        }
-        private async Task LoadConfig()
-        {
-            _config = await ConfigManager.LoadConfigAsync();
-            
         }
 
     }
