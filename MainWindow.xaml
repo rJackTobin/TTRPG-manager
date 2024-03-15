@@ -28,7 +28,7 @@
             <Viewbox>
                 <StackPanel Orientation="Horizontal">
                     <Button Width="100" Click="SettingsButton_Click">Settings</Button>
-                    <Button Width="100">Edit Mode</Button>
+                    <Button Width="100" Click="EditMode_Click">Edit Mode</Button>
                 </StackPanel>
             </Viewbox>
         </StackPanel>

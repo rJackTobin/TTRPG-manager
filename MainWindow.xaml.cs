@@ -65,5 +65,19 @@ namespace TTRPG_manager
             }
         }
 
+        private void EditMode_Click(object sender, RoutedEventArgs e)
+        {
+            ShowEditDialog();
+        }
+        private void ShowEditDialog()
+        {
+            EditModeWindow editModeWindow = new EditModeWindow(this._config, this.Height, this.Width);
+            var dialogResult = editModeWindow.ShowDialog();
+            if (dialogResult == true)
+            {
+                _config = manager.LoadConfig();
+                ApplyConfig();
+            }
+        }
     }
 }

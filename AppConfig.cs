@@ -17,10 +17,21 @@ namespace TTRPG_manager
     {
         // Prepopulate the dictionary with default values for Resolution and BackgroundPath.
         {"Resolution", "1280x720"},
-        {"BackgroundPath", ""}
+        {"BackgroundPath", ""},
+        {"LibraryPaths", "" }
     };
 
-        // Convenience methods to access specific settings easily
+    public List<Party> Parties { get; set; } = new List<Party>();
+
+    public List<Item> Items { get; set; } = new List<Item> ();
+
+    public List<Skill> Skills { get; set; } = new List<Skill>();
+
+    public List<Character> Characters { get; set; } = new List<Character> ();
+
+    public List<StatusEffect> StatusEffects { get; set; } = new List<StatusEffect>();
+
+    // Convenience methods to access specific settings easily
         [JsonIgnore]
     public string Resolution
     {
@@ -32,6 +43,12 @@ namespace TTRPG_manager
     {
         get => Settings.TryGetValue("BackgroundPath", out var backgroundPath) ? backgroundPath.ToString() : "";
         set => Settings["BackgroundPath"] = value;
+    }
+        [JsonIgnore]
+    public string LibraryPaths
+    { 
+        get => Settings.TryGetValue("LibraryPaths", out var librarypaths) ? librarypaths.ToString() : "";
+        set => Settings["LibraryPaths"] = value;
     }
     }
     

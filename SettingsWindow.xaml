@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:TTRPG_manager"
         mc:Ignorable="d"
         Title="SettingsWindow" Height="{Binding Height}" Width="{Binding Width}" d:DesignWidth="1000" d:DesignHeight="550">
-    <Grid>
+    <Grid Margin="10" >
         <Grid.RowDefinitions>
             <RowDefinition Height="14*"/>
             <RowDefinition Height="1*"/>
@@ -16,20 +16,21 @@
             <ColumnDefinition Width="1*"/>
             <ColumnDefinition Width="1*"/>
         </Grid.ColumnDefinitions>
-        <StackPanel Orientation="Vertical" Margin="10,10,10,10" Grid.Column="0">
-            <TextBlock Text="Resolution:" Margin="0,0,0,10"/>
-            <ComboBox x:Name="ResolutionComboBox"
-            SelectedValue="{Binding Path=Resolution, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-            SelectedValuePath="Content">
+        <StackPanel>
+            <TextBlock Text="Resolution:" Margin="0,0,0,10" Grid.Row ="0"/>
+            <ComboBox x:Name="ResolutionComboBox" 
+                SelectedValue="{Binding Path=Resolution, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+            SelectedValuePath="Content" Margin="0,0,0,10">
                 <ComboBoxItem Content="1280x720"/>
                 <ComboBoxItem Content="1920x1080"/>
                 <ComboBoxItem Content="2560x1440"/>
                 <ComboBoxItem Content="3840x2160"/>
             </ComboBox>
-            <TextBlock Text="Background Image:" Margin="0,10,0,10"/>
-            <TextBlock x:Name="FilePath" Margin="110,-25,0,-10"/>
-            <Button Content="Browse" Click="Browse_Click"/>
+
+            <TextBlock Text="Background Image:" Grid.Row ="2" Margin="0,0,0,10"/>
+        <TextBlock x:Name="FilePath" Margin="110,-25,0,-10" Grid.Row ="2"/>
+            <Button Content="Browse" Click="Browse_Click" Grid.Row ="3" Margin="0,0,0,10"/>
         </StackPanel>
-        <Button Content="OK" Grid.Column="1" Grid.Row ="1" Width="200" Click="ApplyButton_Click"/>
+        <Button Content="OK" Grid.Column="1" Grid.Row ="7" Width="200" Click="ApplyButton_Click"/>
     </Grid>
 </Window>
