@@ -13,6 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.IO;
 using Microsoft.Win32;
+using System.ComponentModel;
 
 namespace TTRPG_manager
 {
@@ -22,13 +23,13 @@ namespace TTRPG_manager
     public partial class SettingsWindow : Window
     {
         private AppConfig updated_config;
-        
+
         public SettingsWindow(AppConfig config, double height, double width)
         {
             InitializeComponent();
 
             updated_config = config;
-             // Or however you instantiate it
+            // Or however you instantiate it
 
             // Copy values from old_config to new_config if needed
 
@@ -37,10 +38,16 @@ namespace TTRPG_manager
             this.Height = height * 0.5;
             this.Width = width * 0.5;
         }
+
         private async void ApplyButton_Click(object sender, RoutedEventArgs e)
         {
             ConfigManager.SaveConfig(updated_config);
             this.DialogResult = true;
+        }
+
+        private async void CancelButton_Click(object sender, RoutedEventArgs e)
+        {
+            this.DialogResult = false;
         }
 
         private async void Browse_Click(object sender, RoutedEventArgs e)

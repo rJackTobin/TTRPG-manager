@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Text.Json.Serialization;
+using System.Collections.ObjectModel;
 
 namespace TTRPG_manager
 {
@@ -21,15 +22,15 @@ namespace TTRPG_manager
         {"LibraryPaths", "" }
     };
 
-    public List<Party> Parties { get; set; } = new List<Party>();
+    public ObservableCollection<Party> Parties { get; set; } = new ObservableCollection<Party>();
 
-    public List<Item> Items { get; set; } = new List<Item> ();
+    public ObservableCollection<Item> Items { get; set; } = new ObservableCollection<Item>();
 
-    public List<Skill> Skills { get; set; } = new List<Skill>();
+    public ObservableCollection<Skill> Skills { get; set; } = new ObservableCollection<Skill>();
 
-    public List<Character> Characters { get; set; } = new List<Character> ();
+    public ObservableCollection<Character> Characters { get; set; } = new ObservableCollection<Character> ();
 
-    public List<StatusEffect> StatusEffects { get; set; } = new List<StatusEffect>();
+    public ObservableCollection<StatusEffect> StatusEffects { get; set; } = new ObservableCollection<StatusEffect>();
 
     // Convenience methods to access specific settings easily
         [JsonIgnore]

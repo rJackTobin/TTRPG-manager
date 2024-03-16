@@ -6,6 +6,9 @@
         xmlns:local="clr-namespace:TTRPG_manager"
         mc:Ignorable="d"
         Title="EditModeWindow" Height="450" Width="800">
+    <Window.Resources>
+        <local:ScaleConverter x:Key="ScaleConverter"/>
+    </Window.Resources>
     <Grid >
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="6*"/>
@@ -20,17 +23,25 @@
         </Grid.RowDefinitions>
 
         <StackPanel Orientation="Horizontal" Grid.Row="0" Margin="10">
-            <TextBox x:Name="partyNameTextBox" Width="200" Margin="0,5,0,5"/>
-            <Button x:Name="createPartyButton" Content="Create/Save Party" Click="CreatePartyButton_Click" Margin="5"/>
+            <TextBox x:Name="partyNameTextBox" Width="200" Margin="0,5,0,5" FontSize="{Binding Path=Width, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource ScaleConverter}, ConverterParameter=0.02}"/>
+            <Button x:Name="createPartyButton" Content="Create/Save Party" Click="CreatePartyButton_Click" Margin="5" FontSize="{Binding Path=Width, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource ScaleConverter}, ConverterParameter=0.02}"/>
+            <Button x:Name="deletePartyButton" Content="Delete Party" Click="DeletePartyButton_Click" Margin="5" FontSize="{Binding Path=Width, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource ScaleConverter}, ConverterParameter=0.02}"/>
+
         </StackPanel>
 
-        <ComboBox x:Name="partyComboBox" Grid.Row="1" Margin="10" DisplayMemberPath="Name"/>
-        <Button x:Name="CreateCharacterButton" Content="Create New Character" Click="CreateCharacterButton_Click" Grid.Row="2" Margin="10"/>
-        <StackPanel Orientation="Horizontal" Grid.Row="3">
-            <ComboBox x:Name="characterComboBox" Margin="10,10,0,10" Width="170" Visibility="Hidden"></ComboBox>
-            <Button x:Name="addCharacterButton" Content="Add" Click="AddCharacterButton_Click" Width="80" Margin="10"/>
-            <Button x:Name="removeCharacterButton" Content="Remove" Click="AddCharacterButton_Click" Width="80" Margin="10"/>
-            <Button x:Name="deleteCharacterButton" Content="Delete" Click="DeleteCharacterButton_Click" Width="80" Margin="10"/>
+        <ComboBox x:Name="partyComboBox" SelectedItem="{Binding SelectedParty, Mode=TwoWay}"
+                  SelectionChanged="PartyComboBox_SelectionChanged"
+                  ItemsSource="{Binding Parties}" DisplayMemberPath="Name" Grid.Row="1" Margin="10" 
+                  FontSize="{Binding Path=Width, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource ScaleConverter}, ConverterParameter=0.02}"/>
+        
+        <Button x:Name="CreateCharacterButton" Content="Create New Character" Click="CreateCharacterButton_Click" Grid.Row="2" Margin="10" FontSize="{Binding Path=Width, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource ScaleConverter}, ConverterParameter=0.02}"/>
+
+        <StackPanel Orientation="Horizontal" Grid.Row="3" HorizontalAlignment="Center">
+            <ComboBox x:Name="characterComboBox" ItemsSource="{Binding CharacterComboBoxItemsSource}" DisplayMemberPath="Name"
+                      Margin="10,10,10,10" MinWidth="200" FontSize="{Binding Path=Width, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource ScaleConverter}, ConverterParameter=0.02}"></ComboBox>
+            <Button x:Name="addCharacterButton" Content="Add" Click="AddCharacterButton_Click" Margin="10" FontSize="{Binding Path=Width, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource ScaleConverter}, ConverterParameter=0.02}"/>
+            <Button x:Name="removeCharacterButton" Content="Remove" Click="AddCharacterButton_Click" Margin="10" FontSize="{Binding Path=Width, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource ScaleConverter}, ConverterParameter=0.02}"/>
+            <Button x:Name="deleteCharacterButton" Content="Delete" Click="DeleteCharacterButton_Click" Margin="10" FontSize="{Binding Path=Width, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource ScaleConverter}, ConverterParameter=0.02}"/>
         </StackPanel>
     </Grid>
 </Window>
