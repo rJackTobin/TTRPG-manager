@@ -6,8 +6,27 @@
         xmlns:local="clr-namespace:TTRPG_manager"
         mc:Ignorable="d"
         Title="CharacterEditWindow" Height="450" Width="800">
-    <Grid>
+    <Window.Resources>
+    <local:ScaleConverter x:Key="ScaleConverter"/>
+    <Style TargetType="TextBlock">
+        <Setter Property="FontSize" Value="{Binding Path=Width, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource ScaleConverter}, ConverterParameter=0.015}"/>
+    </Style>
+    <Style TargetType="Button">
+        <Setter Property="FontSize" Value="{Binding Path=Width, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource ScaleConverter}, ConverterParameter=0.015}"/>
+            <Setter Property="Margin" Value="10,5,10,5"/>
+        </Style>
+    <Style TargetType="ComboBox">
+        <Setter Property="FontSize" Value="{Binding Path=Width, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource ScaleConverter}, ConverterParameter=0.015}"/>
+    </Style>
+    <Style TargetType="TextBox">
+        <Setter Property="FontSize" Value="{Binding Path=Width, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource ScaleConverter}, ConverterParameter=0.015}"/>
+            <Setter Property="Margin" Value="10,5,10,5"/>
+        </Style>
+    </Window.Resources>
+    <Grid Margin="10
+          ">
         <Grid.RowDefinitions>
+            <RowDefinition Height="1*"/>
             <RowDefinition Height="4*"/>
             
             <RowDefinition Height="1*"/>
@@ -19,35 +38,50 @@
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Width="2*"/>
             <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Width="2*"/>
             <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Width="2*"/>
             <ColumnDefinition Width="1*"/>
         </Grid.ColumnDefinitions>
+        <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Text="Create/Edit character attributes" VerticalAlignment="Center"/>
         <!-- Name -->
-        <TextBlock Grid.Row="1" Grid.Column="0" Text="Name:" VerticalAlignment="Center"/>
-        <TextBox Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="3" Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}" Tag="Enter name"/>
+        <TextBlock Grid.Row="2" Grid.Column="0" Text="Name:" VerticalAlignment="Center"/>
+        <TextBox Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="1" Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}" Tag="Enter name"/>
 
         <!-- Description -->
-        <TextBlock Grid.Row="2" Grid.Column="0" Text="Description:" VerticalAlignment="Center"/>
-        <TextBox Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="3" Text="{Binding Description, UpdateSourceTrigger=PropertyChanged}" Tag="Enter description"/>
+        <TextBlock Grid.Row="3" Grid.Column="0" Text="Description:" VerticalAlignment="Center"/>
+        <TextBox Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="3" Text="{Binding Description, UpdateSourceTrigger=PropertyChanged}" Tag="Enter description" AcceptsReturn="True"/>
 
         <!-- Age -->
-        <TextBlock Grid.Row="3" Grid.Column="0" Text="Age:" VerticalAlignment="Center"/>
-        <TextBox Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="1" Text="{Binding Age, UpdateSourceTrigger=PropertyChanged}"  Tag="Enter age"/>
+        <TextBlock Grid.Row="4" Grid.Column="0" Text="Age:" VerticalAlignment="Center"/>
+        <TextBox Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="1" Text="{Binding Age, UpdateSourceTrigger=PropertyChanged}"  Tag="Enter age"/>
 
         <!-- Gender -->
-        <TextBlock Grid.Row="3" Grid.Column="2" Text="Gender:" VerticalAlignment="Center"/>
-        <TextBox Grid.Row="3" Grid.Column="3" Grid.ColumnSpan="1" Text="{Binding Gender, UpdateSourceTrigger=PropertyChanged}"  Tag="Enter gender"/>
+        <TextBlock Grid.Row="2" Grid.Column="2" Text="Gender:" VerticalAlignment="Center"/>
+        <TextBox Grid.Row="2" Grid.Column="3" Grid.ColumnSpan="1" Text="{Binding Gender, UpdateSourceTrigger=PropertyChanged}"  Tag="Enter gender"/>
 
         <!-- Race -->
-        <TextBlock Grid.Row="4" Grid.Column="0" Text="Race:" VerticalAlignment="Center"/>
-        <TextBox Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="3" Text="{Binding Race, UpdateSourceTrigger=PropertyChanged}"  Tag="Enter race"/>
+        <TextBlock Grid.Row="5" Grid.Column="0" Text="Race:" VerticalAlignment="Center"/>
+        <TextBox Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="1" Text="{Binding Race, UpdateSourceTrigger=PropertyChanged}"  Tag="Enter race"/>
 
         <!-- Title -->
-        <TextBlock Grid.Row="5" Grid.Column="0" Text="Title:" VerticalAlignment="Center"/>
-        <TextBox Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="3" Text="{Binding Title, UpdateSourceTrigger=PropertyChanged}"  Tag="Enter title"/>
+        <TextBlock Grid.Row="6" Grid.Column="0" Text="Title:" VerticalAlignment="Center"/>
+        <TextBox Grid.Row="6" Grid.Column="1" Grid.ColumnSpan="1" Text="{Binding Title, UpdateSourceTrigger=PropertyChanged}"  Tag="Enter title"/>
 
+        <!-- MP -->
+        <TextBlock Grid.Row="4" Grid.Column="2" Text="Max MP:" VerticalAlignment="Center"/>
+        <TextBox Grid.Row="4" Grid.Column="3" Grid.ColumnSpan="1" Text="{Binding MaxMP, UpdateSourceTrigger=PropertyChanged}"  Tag="Enter max MP"/>
+        <!-- HP -->
+        <TextBlock Grid.Row="5" Grid.Column="2" Text="Max HP:" VerticalAlignment="Center"/>
+        <TextBox Grid.Row="5" Grid.Column="3" Grid.ColumnSpan="1" Text="{Binding MaxHP, UpdateSourceTrigger=PropertyChanged}"  Tag="Enter max HP"/>
         <!-- Image Path with Browse Button -->
-        
+        <Image x:Name="portrait" Grid.Row="1" Grid.Column="5" Source="{Binding ImagePath, Mode=OneWay}"></Image>
+        <Button Grid.Row="2" Grid.Column="5" Click="OnBrowseButtonClick">Browse</Button>
+
+        <Button Grid.Row="7" Grid.Column="5" Click="SaveCloseButtonClick">Save and Close</Button>
+        <Button Grid.Row="7" Grid.Column="3" Click="CancelButtonClick">Cancel</Button>
+
     </Grid>
 </Window>

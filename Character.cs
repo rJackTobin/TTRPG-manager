@@ -1,14 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace TTRPG_manager
 {
     public class Character
-    {
+    {   
         public string Name { get; set; }
         public string Description { get; set; }
         public int Age { get; set; }
@@ -27,7 +29,7 @@ namespace TTRPG_manager
         public ObservableCollection<StatusEffect> StatusEffects { get; set; }
         public string ImagePath { get; set; }
         public int ActionsPerTurn { get; set; }
-
+        
         public Character()
         {
             Skills = new ObservableCollection<Skill>();
@@ -38,4 +40,5 @@ namespace TTRPG_manager
         }
 
     }
+
 }

@@ -67,8 +67,13 @@ namespace TTRPG_manager
         {
                 Character newChar = new Character();
                 newChar.Name = "Unassigned Character";
-                updated_config.Characters.Add(newChar);
-                ConfigManager.SaveConfig(updated_config);
+                CharacterEditWindow newCharEdit = new CharacterEditWindow(Height, Width, newChar);
+                var dialogResult = newCharEdit.ShowDialog();
+                if (dialogResult == true)
+                {
+                    updated_config.Characters.Add(newChar);
+                    ConfigManager.SaveConfig(updated_config);
+                }
         }
         public void DeleteCharacterButton_Click(object sender, RoutedEventArgs e)
         {
@@ -131,19 +136,29 @@ namespace TTRPG_manager
             if (sender == characterEditButton)
             {
                 int i = CharacterComboBox.SelectedIndex;
-                ShowCharacterEditPanel(updated_config.Characters[i]);
+                Character edited = updated_config.Characters[i];
+                CharacterEditWindow charEdit = new CharacterEditWindow(Height, Width, edited);
+                var dialogResult = charEdit.ShowDialog();
+                if (dialogResult == true)
+                {
+                    updated_config.Characters[i] = edited;
+                    ConfigManager.SaveConfig(updated_config);
+                }
             }
             else if (sender == memberEditButton)
             {
                 int i = partyComboBox.SelectedIndex;
                 int j = memberComboBox.SelectedIndex;
-                ShowCharacterEditPanel(updated_config.Parties[i].Members[j]);
+                Character edited = updated_config.Parties[i].Members[j];
+                CharacterEditWindow charEdit = new CharacterEditWindow(Height, Width, edited);
+                var dialogResult = charEdit.ShowDialog();
+                if (dialogResult == true)
+                {
+                    updated_config.Parties[i].Members[j] = edited;
+                    ConfigManager.SaveConfig(updated_config);
+                }
 
             }
-        }
-        private void ShowCharacterEditPanel(Character old_character)
-        {
-
         }
     }
 }
