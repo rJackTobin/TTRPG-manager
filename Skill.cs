@@ -17,5 +17,6 @@ namespace TTRPG_manager
         public int HPCost { get; set; }
         public int SkillLevel { get; set; }
         public int RemainingUses { get; set; }
+        public int MaxUses { get; set; }
     }
 }

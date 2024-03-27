@@ -1,0 +1,53 @@
+﻿<Window x:Class="TTRPG_manager.CharacterEditWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:TTRPG_manager"
+        mc:Ignorable="d"
+        Title="CharacterEditWindow" Height="450" Width="800">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="4*"/>
+            
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="1*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Width="1*"/>
+        </Grid.ColumnDefinitions>
+        <!-- Name -->
+        <TextBlock Grid.Row="1" Grid.Column="0" Text="Name:" VerticalAlignment="Center"/>
+        <TextBox Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="3" Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}" Tag="Enter name"/>
+
+        <!-- Description -->
+        <TextBlock Grid.Row="2" Grid.Column="0" Text="Description:" VerticalAlignment="Center"/>
+        <TextBox Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="3" Text="{Binding Description, UpdateSourceTrigger=PropertyChanged}" Tag="Enter description"/>
+
+        <!-- Age -->
+        <TextBlock Grid.Row="3" Grid.Column="0" Text="Age:" VerticalAlignment="Center"/>
+        <TextBox Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="1" Text="{Binding Age, UpdateSourceTrigger=PropertyChanged}"  Tag="Enter age"/>
+
+        <!-- Gender -->
+        <TextBlock Grid.Row="3" Grid.Column="2" Text="Gender:" VerticalAlignment="Center"/>
+        <TextBox Grid.Row="3" Grid.Column="3" Grid.ColumnSpan="1" Text="{Binding Gender, UpdateSourceTrigger=PropertyChanged}"  Tag="Enter gender"/>
+
+        <!-- Race -->
+        <TextBlock Grid.Row="4" Grid.Column="0" Text="Race:" VerticalAlignment="Center"/>
+        <TextBox Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="3" Text="{Binding Race, UpdateSourceTrigger=PropertyChanged}"  Tag="Enter race"/>
+
+        <!-- Title -->
+        <TextBlock Grid.Row="5" Grid.Column="0" Text="Title:" VerticalAlignment="Center"/>
+        <TextBox Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="3" Text="{Binding Title, UpdateSourceTrigger=PropertyChanged}"  Tag="Enter title"/>
+
+        <!-- Image Path with Browse Button -->
+        
+    </Grid>
+</Window>

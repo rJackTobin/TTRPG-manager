@@ -24,7 +24,7 @@ namespace TTRPG_manager
     {
         private AppConfig updated_config;
         // This property will be used for the binding of characterComboBox's ItemsSource
-        public ObservableCollection<Character> CharacterComboBoxItemsSource => updated_config.Parties[partyComboBox.SelectedIndex].Members;
+        public ObservableCollection<Character> MembersComboBoxItemsSource => updated_config.Parties[partyComboBox.SelectedIndex].Members;
 
         public EditModeWindow(AppConfig config, double height, double width)
         {
@@ -41,11 +41,7 @@ namespace TTRPG_manager
             this.Width = width * 0.8;
         }
 
-        public void AddCharacterButton_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
-        public void CreateCharacterButton_Click(object sender, RoutedEventArgs e)
+        public void AddMemberButton_Click(object sender, RoutedEventArgs e)
         {
             int i = partyComboBox.SelectedIndex;
             if (i != -1)
@@ -56,11 +52,31 @@ namespace TTRPG_manager
                 ConfigManager.SaveConfig(updated_config);
             }
         }
+        public void AddCharacterButton_Click(object sender, RoutedEventArgs e)
+        {
+            int i = partyComboBox.SelectedIndex;
+            int j = CharacterComboBox.SelectedIndex;
+            if (i != -1 && j != -1)
+            {
+                updated_config.Parties[i].Members.Add(updated_config.Characters[j]);
+                updated_config.Characters.RemoveAt(j);
+                ConfigManager.SaveConfig(updated_config);
+            }
+        }
+        public void CreateCharacterButton_Click(object sender, RoutedEventArgs e)
+        {
+                Character newChar = new Character();
+                newChar.Name = "Unassigned Character";
+                updated_config.Characters.Add(newChar);
+                ConfigManager.SaveConfig(updated_config);
+        }
         public void DeleteCharacterButton_Click(object sender, RoutedEventArgs e)
         {
-            if (partyComboBox.SelectedIndex != -1)
+            int i = CharacterComboBox.SelectedIndex;
+            if (i != -1)
             {
-
+                updated_config.Characters.RemoveAt(i);
+                ConfigManager.SaveConfig(updated_config);
             }
         }
         public void CreatePartyButton_Click(object sender, RoutedEventArgs e)
@@ -87,17 +103,47 @@ namespace TTRPG_manager
             if (partyComboBox.SelectedIndex != -1)
             {
                 // Directly set the ItemsSource of the character ComboBox
-                characterComboBox.ItemsSource = updated_config.Parties[partyComboBox.SelectedIndex].Members;
+                memberComboBox.ItemsSource = updated_config.Parties[partyComboBox.SelectedIndex].Members;
 
                 // If using DisplayMemberPath to show character names, ensure it's set (assuming Character class has a Name property)
-                characterComboBox.DisplayMemberPath = "Name";
+                memberComboBox.DisplayMemberPath = "Name";
             }
             else
             {
                 // Clear the character ComboBox if no party is selected
-                characterComboBox.ItemsSource = null;
+                memberComboBox.ItemsSource = null;
             }
         }
 
+        private void RemoveMemberButton_Click(object sender, RoutedEventArgs e)
+        {
+            int i = partyComboBox.SelectedIndex;
+            int j = memberComboBox.SelectedIndex;
+            if (i != -1 && j != 1)
+            {
+                updated_config.Characters.Add(updated_config.Parties[i].Members[j]);
+                updated_config.Parties[i].Members.RemoveAt(j);
+                ConfigManager.SaveConfig(updated_config);
+            }
+        }
+        private void EditCharacterButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender == characterEditButton)
+            {
+                int i = CharacterComboBox.SelectedIndex;
+                ShowCharacterEditPanel(updated_config.Characters[i]);
+            }
+            else if (sender == memberEditButton)
+            {
+                int i = partyComboBox.SelectedIndex;
+                int j = memberComboBox.SelectedIndex;
+                ShowCharacterEditPanel(updated_config.Parties[i].Members[j]);
+
+            }
+        }
+        private void ShowCharacterEditPanel(Character old_character)
+        {
+
+        }
     }
 }
