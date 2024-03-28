@@ -34,9 +34,10 @@ namespace TTRPG_manager
             // Copy values from old_config to new_config if needed
 
             this.DataContext = updated_config; // Set DataContext for data binding
-
-            this.Height = height * 0.5;
-            this.Width = width * 0.5;
+            var parts = config.Resolution.Split('x');
+            this.Width = int.Parse(parts[0])*0.5;
+            this.Height = int.Parse(parts[1])*0.5;
+            
         }
 
         private async void ApplyButton_Click(object sender, RoutedEventArgs e)

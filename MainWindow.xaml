@@ -8,7 +8,7 @@
         Title="MainWindow"
         d:DesignHeight="1080"
         d:DesignWidth="1920"
-        ResizeMode="CanMinimize"
+        ResizeMode="CanResize"
         >
     <Grid>
         <Grid.Background>

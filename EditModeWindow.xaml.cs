@@ -39,8 +39,9 @@ namespace TTRPG_manager
 
             this.DataContext = updated_config; // Set DataContext for data binding
 
-            this.Height = height * 0.8;
-            this.Width = width * 0.8;
+            var parts = config.Resolution.Split('x');
+            this.Width = int.Parse(parts[0]) * 0.8;
+            this.Height = int.Parse(parts[1]) * 0.8;
         }
 
         public void AddMemberButton_Click(object sender, RoutedEventArgs e)
