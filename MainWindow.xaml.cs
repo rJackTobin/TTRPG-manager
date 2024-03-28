@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -17,13 +18,14 @@ namespace TTRPG_manager
         private AppConfig _config;
         
         ConfigManager manager = new ConfigManager();
+
         public MainWindow()
         {
             InitializeComponent();
-            DataContext = this;
-            
             _config = manager.LoadConfig();
+            DataContext = _config;
             ApplyConfig();
+            PopulateCharacterPanels();
         }
 
         private void ApplyConfig()
@@ -77,6 +79,29 @@ namespace TTRPG_manager
             {
                 _config = manager.LoadConfig();
                 ApplyConfig();
+            }
+        }
+        private void PartyComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            _config.selectedPartyIndex = partyComboBox.SelectedIndex;
+            ConfigManager.SaveConfig(_config);
+        }
+
+        private void PopulateCharacterPanels()
+        {
+            CharacterPanels.Children.Clear(); // Clear existing panels if any
+
+            foreach (Character character in _config.Parties[_config.selectedPartyIndex].Members)
+            {
+                var panel = new StackPanel
+                {
+                    Background = new SolidColorBrush(Colors.Red), // Example styling
+                    Margin = new Thickness(5), // Example styling
+                    Width = 500, // Example sizing
+                    Height = 500 // Example sizing
+                };
+
+                // You can add more content to 'panel' here, such as character name, stats, etc.
             }
         }
     }

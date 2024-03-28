@@ -13,7 +13,7 @@
     </Style>
     <Style TargetType="Button">
         <Setter Property="FontSize" Value="{Binding Path=Width, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource ScaleConverter}, ConverterParameter=0.015}"/>
-            <Setter Property="Margin" Value="10,5,10,5"/>
+        <Setter Property="Margin" Value="10,5,10,5"/>
         </Style>
     <Style TargetType="ComboBox">
         <Setter Property="FontSize" Value="{Binding Path=Width, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource ScaleConverter}, ConverterParameter=0.015}"/>

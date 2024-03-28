@@ -29,8 +29,14 @@
                 <StackPanel Orientation="Horizontal">
                     <Button Width="100" Click="SettingsButton_Click">Settings</Button>
                     <Button Width="100" Click="EditMode_Click">Edit Mode</Button>
+                    <ComboBox x:Name="partyComboBox" Width="100" ItemsSource="{Binding Parties}" DisplayMemberPath="Name" 
+                              SelectedIndex="{Binding selectedPartyIndex, Mode=TwoWay}"
+                              SelectionChanged="PartyComboBox_SelectionChanged"></ComboBox>
                 </StackPanel>
             </Viewbox>
+        </StackPanel>
+        <StackPanel Grid.Row="1" x:Name="CharacterPanels" Orientation="Horizontal" HorizontalAlignment="Left">
+
         </StackPanel>
     </Grid>
 </Window>

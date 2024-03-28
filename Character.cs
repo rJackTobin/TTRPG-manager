@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace TTRPG_manager
 {
-    public class Character
+    public class Character : ICloneable
     {   
         public string Name { get; set; }
         public string Description { get; set; }
@@ -30,6 +30,10 @@ namespace TTRPG_manager
         public string ImagePath { get; set; }
         public int ActionsPerTurn { get; set; }
         
+        public object Clone()
+        {
+            return this.MemberwiseClone();
+        }
         public Character()
         {
             Skills = new ObservableCollection<Skill>();

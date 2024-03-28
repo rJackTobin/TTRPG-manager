@@ -20,6 +20,8 @@ namespace TTRPG_manager
     /// <summary>
     /// Interaction logic for EditModeWindow.xaml
     /// </summary>
+    /// 
+
     public partial class EditModeWindow : Window
     {
         private AppConfig updated_config;
@@ -136,9 +138,10 @@ namespace TTRPG_manager
             if (sender == characterEditButton)
             {
                 int i = CharacterComboBox.SelectedIndex;
-                Character edited = updated_config.Characters[i];
+                Character edited = (Character)updated_config.Characters[i].Clone();
                 CharacterEditWindow charEdit = new CharacterEditWindow(Height, Width, edited);
                 var dialogResult = charEdit.ShowDialog();
+                
                 if (dialogResult == true)
                 {
                     updated_config.Characters[i] = edited;
@@ -149,7 +152,7 @@ namespace TTRPG_manager
             {
                 int i = partyComboBox.SelectedIndex;
                 int j = memberComboBox.SelectedIndex;
-                Character edited = updated_config.Parties[i].Members[j];
+                Character edited = (Character)updated_config.Parties[i].Members[j].Clone();
                 CharacterEditWindow charEdit = new CharacterEditWindow(Height, Width, edited);
                 var dialogResult = charEdit.ShowDialog();
                 if (dialogResult == true)
