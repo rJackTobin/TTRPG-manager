@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using Microsoft.Win32;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Text;
 using System.Windows;
@@ -23,7 +24,8 @@ namespace TTRPG_manager
         {
             InitializeComponent();
             _config = manager.LoadConfig();
-            DataContext = _config;
+            this.WindowState = WindowState.Maximized;
+            this.DataContext = _config;
             ApplyConfig();
             PopulateCharacterPanels();
         }
@@ -64,6 +66,7 @@ namespace TTRPG_manager
             {
                 _config = manager.LoadConfig();
                 ApplyConfig();
+                PopulateCharacterPanels();
             }
         }
 
@@ -95,13 +98,40 @@ namespace TTRPG_manager
             {
                 var panel = new StackPanel
                 {
-                    Background = new SolidColorBrush(Colors.Red), // Example styling
+                    Background = new SolidColorBrush(Colors.LightGray) { Opacity = 0.9 }, // Example styling
                     Margin = new Thickness(5), // Example styling
-                    Width = 500, // Example sizing
-                    Height = 500 // Example sizing
+                    Width = Width/6, // Example sizing
+                    Height = Height*29/30 // Example sizing
                 };
 
-                // You can add more content to 'panel' here, such as character name, stats, etc.
+                // Example content: Add a TextBlock for the character's name
+                var characterNameText = new TextBlock
+                {
+                    Text = character.Name,
+                    FontSize = Width / 100,
+                    Foreground = new SolidColorBrush(Colors.Black),
+                    Margin = new Thickness(10) // Just for some padding
+                };
+                Image characterImage = null;
+                if (!string.IsNullOrEmpty(character.ImagePath))
+                {
+                    
+                    characterImage = new Image
+                    {
+                        Source = new BitmapImage(new Uri(character.ImagePath, UriKind.Absolute)),
+                        Width = Width/6, // Set the height or let it be auto-sized based on the image's aspect ratio
+                        Margin = new Thickness(5) // Optional: Adjust the margin as needed
+                    };
+                     // Add the Image to the panel
+                }
+
+
+                panel.Children.Add(characterNameText); // Add the TextBlock to the panel
+                if (characterImage != null) { panel.Children.Add(characterImage); }
+                
+                
+
+                CharacterPanels.Children.Add(panel); // Finally, add the panel to the CharacterPanels stack panel
             }
         }
     }

@@ -42,6 +42,13 @@
                 <ComboBoxItem Content="2560x1440"/>
                 <ComboBoxItem Content="3840x2160"/>
             </ComboBox>
+            <ComboBox x:Name="ScreenComboBox"  
+                SelectedValue="{Binding Path=ScreenType, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                SelectedValuePath="Content" Margin="0,0,0,10">
+                <ComboBoxItem Content="Windowed"/>
+                <ComboBoxItem Content="Borderless Windowed"/>
+                <ComboBoxItem Content="Fullscreen"/>
+            </ComboBox>
             <TextBlock Text="Background Image:" Margin="0,0,0,10" />
             <TextBlock x:Name="FilePath" Margin="0,0,0,10" />
             <Button Content="Browse" Click="Browse_Click" Margin="0,0,0,10" />

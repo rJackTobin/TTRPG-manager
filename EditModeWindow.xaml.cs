@@ -152,15 +152,17 @@ namespace TTRPG_manager
             {
                 int i = partyComboBox.SelectedIndex;
                 int j = memberComboBox.SelectedIndex;
-                Character edited = (Character)updated_config.Parties[i].Members[j].Clone();
-                CharacterEditWindow charEdit = new CharacterEditWindow(Height, Width, edited);
-                var dialogResult = charEdit.ShowDialog();
-                if (dialogResult == true)
+                if (i != -1 && j != -1)
                 {
-                    updated_config.Parties[i].Members[j] = edited;
-                    ConfigManager.SaveConfig(updated_config);
+                    Character edited = (Character)updated_config.Parties[i].Members[j].Clone();
+                    CharacterEditWindow charEdit = new CharacterEditWindow(Height, Width, edited);
+                    var dialogResult = charEdit.ShowDialog();
+                    if (dialogResult == true)
+                    {
+                        updated_config.Parties[i].Members[j] = edited;
+                        ConfigManager.SaveConfig(updated_config);
+                    }
                 }
-
             }
         }
     }
