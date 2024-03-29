@@ -104,6 +104,30 @@ namespace TTRPG_manager
                 ConfigManager.SaveConfig(updated_config);
             }
         }
+        public void CreateItemButton_Click(object sender, RoutedEventArgs e)
+        {
+            Item newItem = new Item();
+            newItem.Name = ItemNameBox.Text;
+            newItem.Description = ItemDescBox.Text;
+            newItem.Count = 1;
+            updated_config.Items.Add(newItem);
+            ConfigManager.SaveConfig(updated_config);
+            ItemNameBox.Text = null; ItemDescBox.Text = null;
+        }
+        public void SaveItemButton_Click(object sender, RoutedEventArgs e)
+        {
+            updated_config.Items[ItemList.SelectedIndex].Name = ItemNameBox.Text;
+            updated_config.Items[ItemList.SelectedIndex].Description = ItemDescBox.Text;
+            ConfigManager.SaveConfig(updated_config);
+            ItemNameBox.Text = null; ItemDescBox.Text = null;
+        }
+
+        public void DeleteItemButton_Click(object sender, RoutedEventArgs e)
+        {
+            updated_config.Items.RemoveAt(ItemList.SelectedIndex);
+            ConfigManager.SaveConfig(updated_config);
+            ItemNameBox.Text = null; ItemDescBox.Text = null;
+        }
 
         private void PartyComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
@@ -123,6 +147,16 @@ namespace TTRPG_manager
             }
         }
 
+        private void ItemList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (ItemList.SelectedIndex != -1)
+            {
+                ItemNameBox.Text = updated_config.Items[ItemList.SelectedIndex].Name;
+                ItemDescBox.Text = updated_config.Items[ItemList.SelectedIndex].Description;
+            }
+        }
+        
+
         private void RemoveMemberButton_Click(object sender, RoutedEventArgs e)
         {
             int i = partyComboBox.SelectedIndex;
@@ -133,6 +167,31 @@ namespace TTRPG_manager
                 updated_config.Parties[i].Members.RemoveAt(j);
                 ConfigManager.SaveConfig(updated_config);
             }
+        }
+        public void CreateSkillButton_Click(object sender, RoutedEventArgs e)
+        {
+            Skill newSkill = new Skill();
+            newSkill.Name = "New Skill";
+            SkillEditWindow newCharEdit = new SkillEditWindow(Height, Width, newSkill);
+            var dialogResult = newCharEdit.ShowDialog();
+            if (dialogResult == true)
+            {
+                updated_config.Skills.Add(newSkill);
+                ConfigManager.SaveConfig(updated_config);
+            }
+        }
+        public void DeleteSkillButton_Click(object sender, RoutedEventArgs e)
+        {
+            int i = SkillList.SelectedIndex;
+            if (i != -1)
+            {
+                updated_config.Skills.RemoveAt(i);
+                ConfigManager.SaveConfig(updated_config);
+            }
+        }
+        public void SaveSkillButton_Click(object sender, RoutedEventArgs e)
+        {
+
         }
         private void EditCharacterButton_Click(object sender, RoutedEventArgs e)
         {

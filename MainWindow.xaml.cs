@@ -88,6 +88,7 @@ namespace TTRPG_manager
         {
             _config.selectedPartyIndex = partyComboBox.SelectedIndex;
             ConfigManager.SaveConfig(_config);
+            PopulateCharacterPanels();
         }
 
         private void PopulateCharacterPanels()
@@ -124,12 +125,71 @@ namespace TTRPG_manager
                     };
                      // Add the Image to the panel
                 }
+                // Horizontal StackPanel for Actions and Currency
+                var InfoPanel = new StackPanel
+                {
+                    Orientation = Orientation.Horizontal,
+                    Margin = new Thickness(5)
+                };
+
+                var actionsText = new TextBlock
+                {
+                    Text = $"Actions/Turn: {character.ActionsPerTurn}",
+                    FontSize = Width / 150,
+                    Foreground = new SolidColorBrush(Colors.Black),
+                    Margin = new Thickness(5)
+                };
+
+                var currencyText = new TextBlock
+                {
+                    Text = $"Currency: {character.Currency}",
+                    FontSize = Width / 150,
+                    Foreground = new SolidColorBrush(Colors.Black),
+                    Margin = new Thickness(5)
+                };
+
+                InfoPanel.Children.Add(actionsText);
+                InfoPanel.Children.Add(currencyText);
+
+                // Populate skills
+                var skillsText = new TextBlock
+                {
+                    Text = "Skills: " + string.Join(", ", character.Skills.Select(s => s.Name)),
+                    FontSize = Width / 150,
+                    Foreground = new SolidColorBrush(Colors.Black),
+                    Margin = new Thickness(5),
+                    TextWrapping = TextWrapping.Wrap
+                };
+
+                // Populate equipped items
+                var equippedItemsText = new TextBlock
+                {
+                    Text = "Equipped: " + string.Join(", ", character.EquippedItems.Select(i => i.Name)),
+                    FontSize = Width / 150,
+                    Foreground = new SolidColorBrush(Colors.Black),
+                    Margin = new Thickness(5),
+                    TextWrapping = TextWrapping.Wrap
+                };
+
+                // Populate inventory
+                var inventoryText = new TextBlock
+                {
+                    Text = "Inventory: " + string.Join(", ", character.Inventory.Select(i => i.Name)),
+                    FontSize = Width / 150,
+                    Foreground = new SolidColorBrush(Colors.Black),
+                    Margin = new Thickness(5),
+                    TextWrapping = TextWrapping.Wrap
+                };
+
+                // Adding elements to the main panel
+                panel.Children.Add(characterNameText);
+                if (characterImage != null) panel.Children.Add(characterImage);
+                panel.Children.Add(InfoPanel);
+                panel.Children.Add(skillsText);
+                panel.Children.Add(equippedItemsText);
+                panel.Children.Add(inventoryText);
 
 
-                panel.Children.Add(characterNameText); // Add the TextBlock to the panel
-                if (characterImage != null) { panel.Children.Add(characterImage); }
-                
-                
 
                 CharacterPanels.Children.Add(panel); // Finally, add the panel to the CharacterPanels stack panel
             }
