@@ -11,6 +11,11 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.IO;
+using System.Threading;
+using System;
+using System.Net;
+using System.Threading.Tasks;
 
 namespace TTRPG_manager
 {
@@ -20,6 +25,8 @@ namespace TTRPG_manager
         
         ConfigManager manager = new ConfigManager();
 
+        private ServerManager serverManager = new ServerManager();
+
         public MainWindow()
         {
             InitializeComponent();
@@ -28,13 +35,18 @@ namespace TTRPG_manager
             this.DataContext = _config;
             ApplyConfig();
             PopulateCharacterPanels();
+            
         }
-
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            serverManager.StopServer();
+        }
         private void ApplyConfig()
         {
             var parts = _config.Resolution.Split('x');
             this.Width = int.Parse(parts[0]);
             this.Height = int.Parse(parts[1]);
+            
             if (_config.BackgroundPath != "")
             {
                 try
@@ -45,7 +57,33 @@ namespace TTRPG_manager
                 {
                     //do nothing
                 }
-            } 
+            }
+            switch (_config.ScreenType)
+            {
+                case "Borderless Windowed":
+                    this.WindowStyle = WindowStyle.None;
+                    this.ResizeMode = ResizeMode.NoResize;
+                    this.Topmost = false; // Ensure window stays on top
+                    this.Left = 0; // Align window to the left edge of the screen
+                    this.Top = 0; // Align window to the top edge of the screen
+
+                    // Set the window size to the full screen size, not just the work area
+                    this.Width = SystemParameters.PrimaryScreenWidth;
+                    this.Height = SystemParameters.PrimaryScreenHeight;
+
+                    this.WindowState = WindowState.Normal; // Use Normal state to apply custom size
+                    break;
+
+                case "Windowed":
+                    this.WindowStyle = WindowStyle.SingleBorderWindow;
+                    this.ResizeMode = ResizeMode.CanResize;
+                    // You might want to reset the WindowState or adjust MaxHeight and MaxWidth if needed
+                    break;
+
+                default:
+                    // Handle unexpected screen type
+                    break;
+            }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -89,6 +127,22 @@ namespace TTRPG_manager
             _config.selectedPartyIndex = partyComboBox.SelectedIndex;
             ConfigManager.SaveConfig(_config);
             PopulateCharacterPanels();
+        }
+
+        private void StartServer_Click(object sender, RoutedEventArgs e)
+        {
+            if (serverManager.StartServer())
+            {
+                try
+                {
+                    string localIP = serverManager.GetLocalIPAddress();
+                    txtIpAddress.Text = $"Connect to: http://{localIP}:8080";
+                }
+                catch (Exception ex)
+                {
+                    txtIpAddress.Text = "Unable to determine IP address";
+                }
+            }
         }
 
         private void PopulateCharacterPanels()
@@ -194,5 +248,6 @@ namespace TTRPG_manager
                 CharacterPanels.Children.Add(panel); // Finally, add the panel to the CharacterPanels stack panel
             }
         }
+        
     }
 }

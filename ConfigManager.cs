@@ -30,5 +30,6 @@ namespace TTRPG_manager
             string json = JsonSerializer.Serialize(config, options);
             File.WriteAllText(ConfigFilePath, json);
         }
+
     }
 }

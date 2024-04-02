@@ -20,7 +20,9 @@ namespace TTRPG_manager
         // Prepopulate the dictionary with default values for Resolution and BackgroundPath.
         {"Resolution", "1280x720"},
         {"BackgroundPath", ""},
-        {"LibraryPaths", "" }
+        {"LibraryPaths", "" },
+        {"ScreenType", "Windowed" }
+        
     };
 
         public int selectedPartyIndex { get; set; } = 0;
@@ -54,7 +56,11 @@ namespace TTRPG_manager
             get => Settings.TryGetValue("LibraryPaths", out var librarypaths) ? librarypaths.ToString() : "";
             set => Settings["LibraryPaths"] = value;
         }
-        
-
+        [JsonIgnore]
+        public string ScreenType
+        {
+            get => Settings.TryGetValue("ScreenType", out var screentype) ? screentype.ToString() : "";
+            set => Settings["ScreenType"] = value;
+        }
     }
 }

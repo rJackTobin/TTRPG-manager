@@ -15,6 +15,7 @@ using System.Windows.Shapes;
 
 
 
+
 namespace TTRPG_manager
 {
     /// <summary>
@@ -161,7 +162,7 @@ namespace TTRPG_manager
         {
             int i = partyComboBox.SelectedIndex;
             int j = memberComboBox.SelectedIndex;
-            if (i != -1 && j != 1)
+            if (i != -1 && j != -1)
             {
                 updated_config.Characters.Add(updated_config.Parties[i].Members[j]);
                 updated_config.Parties[i].Members.RemoveAt(j);
@@ -189,9 +190,9 @@ namespace TTRPG_manager
                 ConfigManager.SaveConfig(updated_config);
             }
         }
-        public void SaveSkillButton_Click(object sender, RoutedEventArgs e)
+        public void EditSkillButton_Click(object sender, RoutedEventArgs e)
         {
-
+            
         }
         private void EditCharacterButton_Click(object sender, RoutedEventArgs e)
         {

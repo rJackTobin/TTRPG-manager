@@ -47,7 +47,7 @@
                 SelectedValuePath="Content" Margin="0,0,0,10">
                 <ComboBoxItem Content="Windowed"/>
                 <ComboBoxItem Content="Borderless Windowed"/>
-                <ComboBoxItem Content="Fullscreen"/>
+                
             </ComboBox>
             <TextBlock Text="Background Image:" Margin="0,0,0,10" />
             <TextBlock x:Name="FilePath" Margin="0,0,0,10" />

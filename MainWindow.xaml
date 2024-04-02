@@ -24,19 +24,22 @@
             <ColumnDefinition Width="*" />
             <!-- Takes up the full width -->
         </Grid.ColumnDefinitions>
-        <StackPanel Orientation="Horizontal" Grid.Column="0" Grid.Row="0" >
+        <StackPanel Orientation="Horizontal" Grid.Column="0" Grid.Row="0" Background="White">
             <Viewbox>
                 <StackPanel Orientation="Horizontal">
                     <Button Width="100" Click="SettingsButton_Click">Settings</Button>
                     <Button Width="100" Click="EditMode_Click">Edit Mode</Button>
+                    <Button Width="100" Click="StartServer_Click">Start Server</Button>
                     <ComboBox x:Name="partyComboBox" Width="100" ItemsSource="{Binding Parties}" DisplayMemberPath="Name" 
                               SelectedIndex="{Binding selectedPartyIndex, Mode=TwoWay}"
                               SelectionChanged="PartyComboBox_SelectionChanged"></ComboBox>
+                    <TextBlock x:Name="txtIpAddress" HorizontalAlignment="Right" Margin="10,0,0,0" TextWrapping="Wrap" VerticalAlignment="Center"/>
                 </StackPanel>
             </Viewbox>
         </StackPanel>
         <StackPanel Grid.Row="1" x:Name="CharacterPanels" Orientation="Horizontal" HorizontalAlignment="Left">
 
         </StackPanel>
+        
     </Grid>
 </Window>
