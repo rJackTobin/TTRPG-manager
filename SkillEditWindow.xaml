@@ -6,7 +6,85 @@
         xmlns:local="clr-namespace:TTRPG_manager"
         mc:Ignorable="d"
         Title="SkillEditWindow" Height="450" Width="800">
-    <Grid>
-        
+    <Window.Resources>
+        <local:ScaleConverter x:Key="ScaleConverter"/>
+        <Style TargetType="TextBlock">
+            <Setter Property="FontSize" Value="{Binding Path=Width, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource ScaleConverter}, ConverterParameter=0.015}"/>
+        </Style>
+        <Style TargetType="Button">
+            <Setter Property="FontSize" Value="{Binding Path=Width, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource ScaleConverter}, ConverterParameter=0.015}"/>
+            <Setter Property="Margin" Value="10,5,10,5"/>
+        </Style>
+        <Style TargetType="ComboBox">
+            <Setter Property="FontSize" Value="{Binding Path=Width, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource ScaleConverter}, ConverterParameter=0.015}"/>
+        </Style>
+        <Style TargetType="TextBox">
+            <Setter Property="FontSize" Value="{Binding Path=Width, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource ScaleConverter}, ConverterParameter=0.015}"/>
+            <Setter Property="Margin" Value="10,5,10,5"/>
+        </Style>
+    </Window.Resources>
+    <Grid Margin="10
+      ">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="4*"/>
+
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="1*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Width="2*"/>
+            <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Width="2*"/>
+            <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Width="2*"/>
+            <ColumnDefinition Width="1*"/>
+        </Grid.ColumnDefinitions>
+        <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Text="Create/Edit a Skill" VerticalAlignment="Center"/>
+        <!-- Name -->
+        <TextBlock Grid.Row="2" Grid.Column="0" Text="Name:" VerticalAlignment="Center"/>
+        <TextBox Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="1" Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}" Tag="Enter name"/>
+
+        <!-- Description -->
+        <TextBlock Grid.Row="2" Grid.Column="0" Text="Description:" VerticalAlignment="Center"/>
+        <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding Description, UpdateSourceTrigger=PropertyChanged}" AcceptsReturn="True" TextWrapping="Wrap" Height="100"/>
+
+        <!-- DamageType -->
+        <TextBlock Grid.Row="3" Grid.Column="0" Text="Damage Type:" VerticalAlignment="Center"/>
+        <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding DamageType, UpdateSourceTrigger=PropertyChanged}"/>
+
+        <!-- DamageAmount -->
+        <TextBlock Grid.Row="4" Grid.Column="0" Text="Damage Amount:" VerticalAlignment="Center"/>
+        <TextBox Grid.Row="4" Grid.Column="1" Text="{Binding DamageAmount, UpdateSourceTrigger=PropertyChanged}"/>
+
+        <!-- Cooldown -->
+        <TextBlock Grid.Row="5" Grid.Column="0" Text="Cooldown:" VerticalAlignment="Center"/>
+        <TextBox Grid.Row="5" Grid.Column="1" Text="{Binding Cooldown, UpdateSourceTrigger=PropertyChanged}"/>
+
+        <!-- MPCost -->
+        <TextBlock Grid.Row="6" Grid.Column="0" Text="MP Cost:" VerticalAlignment="Center"/>
+        <TextBox Grid.Row="6" Grid.Column="1" Text="{Binding MPCost, UpdateSourceTrigger=PropertyChanged}"/>
+
+        <!-- HPCost -->
+        <TextBlock Grid.Row="7" Grid.Column="0" Text="HP Cost:" VerticalAlignment="Center"/>
+        <TextBox Grid.Row="7" Grid.Column="1" Text="{Binding HPCost, UpdateSourceTrigger=PropertyChanged}"/>
+
+        <!-- SkillLevel -->
+        <TextBlock Grid.Row="2" Grid.Column="2" Text="Skill Level:" VerticalAlignment="Center"/>
+        <TextBox Grid.Row="2" Grid.Column="3" Text="{Binding SkillLevel, UpdateSourceTrigger=PropertyChanged}"/>
+
+        <!-- RemainingUses -->
+        <TextBlock Grid.Row="3" Grid.Column="2" Text="Remaining Uses:" VerticalAlignment="Center"/>
+        <TextBox Grid.Row="3" Grid.Column="3" Text="{Binding RemainingUses, UpdateSourceTrigger=PropertyChanged}"/>
+
+        <!-- MaxUses -->
+        <TextBlock Grid.Row="4" Grid.Column="2" Text="Max Uses:" VerticalAlignment="Center"/>
+        <TextBox Grid.Row="4" Grid.Column="3" Text="{Binding MaxUses, UpdateSourceTrigger=PropertyChanged}"/>
+    
     </Grid>
 </Window>
