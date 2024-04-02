@@ -12,7 +12,7 @@ namespace TTRPG_manager
     {
         private static readonly string ConfigFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "AppConfig.json");
 
-        public AppConfig LoadConfig()
+        public static AppConfig LoadConfig()
         {
             AppConfig loaded_config = new AppConfig();
             if (File.Exists(ConfigFilePath))

@@ -23,14 +23,14 @@ namespace TTRPG_manager
     {
         private AppConfig _config;
         
-        ConfigManager manager = new ConfigManager();
+        
 
         private ServerManager serverManager = new ServerManager();
 
         public MainWindow()
         {
             InitializeComponent();
-            _config = manager.LoadConfig();
+            _config = ConfigManager.LoadConfig();
             this.WindowState = WindowState.Maximized;
             this.DataContext = _config;
             ApplyConfig();
@@ -98,11 +98,11 @@ namespace TTRPG_manager
         }
         private void ShowSettingsDialog()
         {
-            SettingsWindow settingsWindow = new SettingsWindow(this._config, this.Height, this.Width);
+            SettingsWindow settingsWindow = new SettingsWindow(this.Height, this.Width);
             var dialogResult = settingsWindow.ShowDialog();
             if (dialogResult == true)
             {
-                _config = manager.LoadConfig();
+                _config = ConfigManager.LoadConfig();
                 ApplyConfig();
                 PopulateCharacterPanels();
             }
@@ -114,16 +114,18 @@ namespace TTRPG_manager
         }
         private void ShowEditDialog()
         {
-            EditModeWindow editModeWindow = new EditModeWindow(this._config, this.Height, this.Width);
+            EditModeWindow editModeWindow = new EditModeWindow(this.Height, this.Width);
             var dialogResult = editModeWindow.ShowDialog();
             if (dialogResult == true)
             {
-                _config = manager.LoadConfig();
+                _config = ConfigManager.LoadConfig();
                 ApplyConfig();
+                PopulateCharacterPanels();
             }
         }
         private void PartyComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            _config = ConfigManager.LoadConfig();
             _config.selectedPartyIndex = partyComboBox.SelectedIndex;
             ConfigManager.SaveConfig(_config);
             PopulateCharacterPanels();

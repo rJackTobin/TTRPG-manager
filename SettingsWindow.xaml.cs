@@ -24,17 +24,17 @@ namespace TTRPG_manager
     {
         private AppConfig updated_config;
 
-        public SettingsWindow(AppConfig config, double height, double width)
+        public SettingsWindow(double height, double width)
         {
             InitializeComponent();
 
-            updated_config = config;
+            updated_config = ConfigManager.LoadConfig();
             // Or however you instantiate it
 
             // Copy values from old_config to new_config if needed
 
             this.DataContext = updated_config; // Set DataContext for data binding
-            var parts = config.Resolution.Split('x');
+            var parts = updated_config.Resolution.Split('x');
             this.Width = int.Parse(parts[0])*0.5;
             this.Height = int.Parse(parts[1])*0.5;
             

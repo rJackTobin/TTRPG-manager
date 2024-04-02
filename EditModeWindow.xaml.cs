@@ -29,18 +29,18 @@ namespace TTRPG_manager
         // This property will be used for the binding of characterComboBox's ItemsSource
         public ObservableCollection<Character> MembersComboBoxItemsSource => updated_config.Parties[partyComboBox.SelectedIndex].Members;
 
-        public EditModeWindow(AppConfig config, double height, double width)
+        public EditModeWindow(double height, double width)
         {
             InitializeComponent();
 
-            updated_config = config;
+            updated_config = ConfigManager.LoadConfig();
             // Or however you instantiate it
 
             // Copy values from old_config to new_config if needed
 
             this.DataContext = updated_config; // Set DataContext for data binding
 
-            var parts = config.Resolution.Split('x');
+            var parts = updated_config.Resolution.Split('x');
             this.Width = int.Parse(parts[0]) * 0.8;
             this.Height = int.Parse(parts[1]) * 0.8;
         }
