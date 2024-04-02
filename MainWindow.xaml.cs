@@ -143,6 +143,7 @@ namespace TTRPG_manager
                     txtIpAddress.Text = "Unable to determine IP address";
                 }
             }
+            
         }
 
         private void PopulateCharacterPanels()

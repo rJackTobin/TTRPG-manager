@@ -22,11 +22,12 @@ namespace TTRPG_manager
         {"BackgroundPath", ""},
         {"LibraryPaths", "" },
         {"ScreenType", "Windowed" }
-        
+
     };
 
         public int selectedPartyIndex { get; set; } = 0;
-        
+        public bool addedFirewallRule { get; set; } = false;
+
         public ObservableCollection<Party> Parties { get; set; } = new ObservableCollection<Party>();
 
         public ObservableCollection<Item> Items { get; set; } = new ObservableCollection<Item>();
