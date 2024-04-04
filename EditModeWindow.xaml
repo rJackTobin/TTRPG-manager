@@ -104,7 +104,7 @@
 
 
         <TextBlock Grid.Row="5" Grid.Column="3" Grid.ColumnSpan="3">Global Skill List</TextBlock>
-        <TextBox x:Name="SkillNameBox" MinWidth="70" Grid.Row="6" Grid.Column="3"></TextBox>
+        <Button  Grid.Row="6" Grid.Column="3" Content=" Add to character " Click="AddSkillButton_Click"></Button>
         <StackPanel Orientation="Horizontal" Grid.Row="6" Grid.Column="4" HorizontalAlignment="Center" Grid.ColumnSpan="2">
             <Button  Content=" Create " Click="CreateSkillButton_Click"></Button>
             <Button  Content=" Edit " Click="EditSkillButton_Click"></Button>

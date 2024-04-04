@@ -28,6 +28,14 @@ namespace TTRPG_manager
             this.DataContext = skill;
 
         }
+        private void SaveCloseButtonClick(object sender, RoutedEventArgs e)
+        {
+            this.DialogResult = true;
+        }
 
+        private void CancelButtonClick(object sender, RoutedEventArgs e)
+        {
+            this.DialogResult = false;
+        }
     }
 }

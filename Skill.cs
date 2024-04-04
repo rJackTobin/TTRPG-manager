@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace TTRPG_manager
 {
-    public class Skill
+    public class Skill : ICloneable
     {
         public string Name { get; set; }
         public string Description { get; set; }
@@ -18,5 +18,10 @@ namespace TTRPG_manager
         public int SkillLevel { get; set; }
         public int RemainingUses { get; set; }
         public int MaxUses { get; set; }
+
+        public object Clone()
+        {
+            return this.MemberwiseClone();
+        }
     }
 }

@@ -147,6 +147,25 @@ namespace TTRPG_manager
             }
             
         }
+        private void AddItemButton_Click(object sender, RoutedEventArgs e)
+        {
+            var result = MessageBox.Show("Do you want to create a new item? Select 'Yes' to create a new item, or 'No' to choose from the list.", "New Item", MessageBoxButton.YesNo, MessageBoxImage.Question);
+
+            if (result == MessageBoxResult.Yes)
+            {
+                // The user chose to create a new item.
+                // Add logic to open a form or dialog for creating a new item.
+            }
+            else
+            {
+                // The user chose to select from the list.
+                // Add logic to present the list of items for the user to choose from.
+            }
+            }
+            private void AddSkillButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
 
         private void PopulateCharacterPanels()
         {
@@ -214,9 +233,32 @@ namespace TTRPG_manager
                     Text = "Skills: " + string.Join(", ", character.Skills.Select(s => s.Name)),
                     FontSize = Width / 150,
                     Foreground = new SolidColorBrush(Colors.Black),
-                    Margin = new Thickness(5),
+                    Margin = new Thickness(5, -Height / 50, 5, 5),
                     TextWrapping = TextWrapping.Wrap
                 };
+                var addItemButton = new Button
+                {
+                    Content = "+",
+                    Tag = character, // Store the character in the Tag property
+                    Width = Width / 30,
+                    HorizontalAlignment = HorizontalAlignment.Right,
+                    Margin = new Thickness(5),
+
+                    FontSize = Width / 150
+                };
+                addItemButton.Click += AddItemButton_Click;
+                var addSkillButton = new Button
+                {
+                    Content = "+",
+                    Tag = character, // Store the character in the Tag property
+                    Margin = new Thickness(5),
+                    Width = Width / 30,
+                    HorizontalAlignment = HorizontalAlignment.Right,
+                    VerticalContentAlignment = VerticalAlignment.Center,
+                    FontSize = Width / 150
+                 };
+                addItemButton.Click += AddSkillButton_Click;
+                
 
                 // Populate equipped items
                 var equippedItemsText = new TextBlock
@@ -234,7 +276,7 @@ namespace TTRPG_manager
                     Text = "Inventory: " + string.Join(", ", character.Inventory.Select(i => i.Name)),
                     FontSize = Width / 150,
                     Foreground = new SolidColorBrush(Colors.Black),
-                    Margin = new Thickness(5),
+                    Margin = new Thickness(5, -Height / 50, 5, 5),
                     TextWrapping = TextWrapping.Wrap
                 };
 
@@ -242,8 +284,10 @@ namespace TTRPG_manager
                 panel.Children.Add(characterNameText);
                 if (characterImage != null) panel.Children.Add(characterImage);
                 panel.Children.Add(InfoPanel);
+                panel.Children.Add(addSkillButton);
                 panel.Children.Add(skillsText);
                 panel.Children.Add(equippedItemsText);
+                panel.Children.Add(addItemButton);
                 panel.Children.Add(inventoryText);
 
 

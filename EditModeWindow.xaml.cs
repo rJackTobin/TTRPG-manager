@@ -192,7 +192,37 @@ namespace TTRPG_manager
         }
         public void EditSkillButton_Click(object sender, RoutedEventArgs e)
         {
-            
+            int i = SkillList.SelectedIndex;
+            Skill edited = (Skill)updated_config.Skills[i].Clone();
+            SkillEditWindow charEdit = new SkillEditWindow(Height, Width, edited);
+            var dialogResult = charEdit.ShowDialog();
+
+            if (dialogResult == true)
+            {
+                updated_config.Skills[i] = edited;
+                ConfigManager.SaveConfig(updated_config);
+            }
+        }
+
+        public void AddSkillButton_Click(object sender, RoutedEventArgs e)
+        {
+            int i = SkillList.SelectedIndex;
+            int j = CharacterComboBox.SelectedIndex;
+            int k = memberComboBox.SelectedIndex;
+            if (i != -1)
+            {
+                if (j != -1)
+                {
+                    updated_config.Characters[j].Skills.Add(updated_config.Skills[i]);
+                    ConfigManager.SaveConfig(updated_config);
+                }
+                if (k != -1)
+                {
+                    updated_config.Parties[partyComboBox.SelectedIndex].Members[k].Skills.Add(updated_config.Skills[i]);
+                    ConfigManager.SaveConfig(updated_config);
+                }
+                
+            }
         }
         private void EditCharacterButton_Click(object sender, RoutedEventArgs e)
         {

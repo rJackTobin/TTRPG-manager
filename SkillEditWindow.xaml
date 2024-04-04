@@ -51,40 +51,42 @@
         <TextBox Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="1" Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}" Tag="Enter name"/>
 
         <!-- Description -->
-        <TextBlock Grid.Row="2" Grid.Column="0" Text="Description:" VerticalAlignment="Center"/>
-        <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding Description, UpdateSourceTrigger=PropertyChanged}" AcceptsReturn="True" TextWrapping="Wrap" Height="100"/>
+        <TextBlock Grid.Row="3" Grid.Column="0" Text="Description:" VerticalAlignment="Center"/>
+        <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding Description, UpdateSourceTrigger=PropertyChanged}" Grid.ColumnSpan="3" TextWrapping="Wrap" Grid.RowSpan="1"/>
 
         <!-- DamageType -->
-        <TextBlock Grid.Row="3" Grid.Column="0" Text="Damage Type:" VerticalAlignment="Center"/>
-        <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding DamageType, UpdateSourceTrigger=PropertyChanged}"/>
+        <TextBlock Grid.Row="4" Grid.Column="0" Text="Damage Type:" VerticalAlignment="Center"/>
+        <TextBox Grid.Row="4" Grid.Column="1" Text="{Binding DamageType, UpdateSourceTrigger=PropertyChanged}"/>
 
         <!-- DamageAmount -->
-        <TextBlock Grid.Row="4" Grid.Column="0" Text="Damage Amount:" VerticalAlignment="Center"/>
-        <TextBox Grid.Row="4" Grid.Column="1" Text="{Binding DamageAmount, UpdateSourceTrigger=PropertyChanged}"/>
+        <TextBlock Grid.Row="5" Grid.Column="0" Text="Damage Amount:" VerticalAlignment="Center"/>
+        <TextBox Grid.Row="5" Grid.Column="1" Text="{Binding DamageAmount, UpdateSourceTrigger=PropertyChanged}"/>
 
         <!-- Cooldown -->
-        <TextBlock Grid.Row="5" Grid.Column="0" Text="Cooldown:" VerticalAlignment="Center"/>
-        <TextBox Grid.Row="5" Grid.Column="1" Text="{Binding Cooldown, UpdateSourceTrigger=PropertyChanged}"/>
+        <TextBlock Grid.Row="6" Grid.Column="0" Text="Cooldown:" VerticalAlignment="Center"/>
+        <TextBox Grid.Row="6" Grid.Column="1" Text="{Binding Cooldown, UpdateSourceTrigger=PropertyChanged}"/>
 
         <!-- MPCost -->
-        <TextBlock Grid.Row="6" Grid.Column="0" Text="MP Cost:" VerticalAlignment="Center"/>
-        <TextBox Grid.Row="6" Grid.Column="1" Text="{Binding MPCost, UpdateSourceTrigger=PropertyChanged}"/>
+        <TextBlock Grid.Row="7" Grid.Column="0" Text="MP Cost:" VerticalAlignment="Center"/>
+        <TextBox Grid.Row="7" Grid.Column="1" Text="{Binding MPCost, UpdateSourceTrigger=PropertyChanged}"/>
 
         <!-- HPCost -->
-        <TextBlock Grid.Row="7" Grid.Column="0" Text="HP Cost:" VerticalAlignment="Center"/>
-        <TextBox Grid.Row="7" Grid.Column="1" Text="{Binding HPCost, UpdateSourceTrigger=PropertyChanged}"/>
+        <TextBlock Grid.Row="7" Grid.Column="2" Text="HP Cost:" VerticalAlignment="Center"/>
+        <TextBox Grid.Row="7" Grid.Column="3" Text="{Binding HPCost, UpdateSourceTrigger=PropertyChanged}"/>
 
         <!-- SkillLevel -->
-        <TextBlock Grid.Row="2" Grid.Column="2" Text="Skill Level:" VerticalAlignment="Center"/>
-        <TextBox Grid.Row="2" Grid.Column="3" Text="{Binding SkillLevel, UpdateSourceTrigger=PropertyChanged}"/>
+        <TextBlock Grid.Row="4" Grid.Column="2" Text="Skill Level:" VerticalAlignment="Center"/>
+        <TextBox Grid.Row="4" Grid.Column="3" Text="{Binding SkillLevel, UpdateSourceTrigger=PropertyChanged}"/>
 
         <!-- RemainingUses -->
-        <TextBlock Grid.Row="3" Grid.Column="2" Text="Remaining Uses:" VerticalAlignment="Center"/>
-        <TextBox Grid.Row="3" Grid.Column="3" Text="{Binding RemainingUses, UpdateSourceTrigger=PropertyChanged}"/>
+        <TextBlock Grid.Row="5" Grid.Column="2" Text="Remaining Uses:" VerticalAlignment="Center"/>
+        <TextBox Grid.Row="5" Grid.Column="3" Text="{Binding RemainingUses, UpdateSourceTrigger=PropertyChanged}"/>
 
         <!-- MaxUses -->
-        <TextBlock Grid.Row="4" Grid.Column="2" Text="Max Uses:" VerticalAlignment="Center"/>
-        <TextBox Grid.Row="4" Grid.Column="3" Text="{Binding MaxUses, UpdateSourceTrigger=PropertyChanged}"/>
-    
+        <TextBlock Grid.Row="6" Grid.Column="2" Text="Max Uses:" VerticalAlignment="Center"/>
+        <TextBox Grid.Row="6" Grid.Column="3" Text="{Binding MaxUses, UpdateSourceTrigger=PropertyChanged}"/>
+
+        <Button Grid.Row="6" Grid.Column="5" Click="SaveCloseButtonClick">Save and Close</Button>
+        <Button Grid.Row="7" Grid.Column="5" Click="CancelButtonClick">Cancel</Button>
     </Grid>
 </Window>
