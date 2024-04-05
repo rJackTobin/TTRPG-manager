@@ -10,6 +10,21 @@
         d:DesignWidth="1920"
         ResizeMode="CanResize"
         >
+    <Window.Resources>
+        <local:ScaleConverter x:Key="ScaleConverter"/>
+        <Style TargetType="TextBlock">
+            <Setter Property="FontSize" Value="{Binding Path=Width, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource ScaleConverter}, ConverterParameter=0.005}"/>
+        </Style>
+        <Style TargetType="Button">
+            <Setter Property="FontSize" Value="{Binding Path=Width, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource ScaleConverter}, ConverterParameter=0.005}"/>
+        </Style>
+        <Style TargetType="ComboBox">
+            <Setter Property="FontSize" Value="{Binding Path=Width, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource ScaleConverter}, ConverterParameter=0.005}"/>
+        </Style>
+        <Style TargetType="TextBox">
+            <Setter Property="FontSize" Value="{Binding Path=Width, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource ScaleConverter}, ConverterParameter=0.005}"/>
+        </Style>
+    </Window.Resources>
     <Grid>
         <Grid.Background>
             <ImageBrush x:Name="background" Stretch="UniformToFill"/>
@@ -42,4 +57,5 @@
         </StackPanel>
         
     </Grid>
+        
 </Window>

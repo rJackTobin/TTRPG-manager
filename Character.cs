@@ -42,7 +42,27 @@ namespace TTRPG_manager
             Inventory = new ObservableCollection<Item>();
             StatusEffects = new ObservableCollection<StatusEffect>();
         }
-
+        public void RemoveItem(Item item)
+        {
+            if (!this.Inventory.Remove(item))
+            {
+                this.EquippedItems.Remove(item);
+            }
+        }
+        public void Equip(Item item)
+        {
+            this.EquippedItems.Add(item);
+            this.Inventory.Remove(item);
+        }
+        public void Unequip(Item item)
+        {
+            this.Inventory.Add(item);
+            this.EquippedItems.Remove(item);
+        }
+        public void RemoveSkill(Skill skill)
+        {
+            this.Skills.Remove(skill);
+        }
     }
 
 }
