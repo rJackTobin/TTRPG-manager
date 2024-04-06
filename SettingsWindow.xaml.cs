@@ -14,6 +14,7 @@ using System.Windows.Shapes;
 using System.IO;
 using Microsoft.Win32;
 using System.ComponentModel;
+using System.Collections.ObjectModel;
 
 namespace TTRPG_manager
 {
@@ -65,5 +66,27 @@ namespace TTRPG_manager
                 this.FilePath.Text = openFileDialog.FileName;
             }
         }
+        private void AddPath_Click(object sender, RoutedEventArgs e)
+        {
+            var folderDialog = new System.Windows.Forms.FolderBrowserDialog(); // Use Windows Forms folder browser
+            System.Windows.Forms.DialogResult result = folderDialog.ShowDialog();
+            if (result == System.Windows.Forms.DialogResult.OK)
+            {
+                string folderPath = folderDialog.SelectedPath;
+                if (!updated_config.LibraryPaths.Contains(folderPath))
+                {
+                    updated_config.LibraryPaths.Add(folderPath);
+                }
+            }
+        }
+
+        private void DeletePath_Click(object sender, RoutedEventArgs e)
+        {
+            if (LibraryPathList.SelectedItem != null)
+            {
+                updated_config.LibraryPaths.Remove(LibraryPathList.SelectedItem as string);
+            }
+        }
+        
     }
 }

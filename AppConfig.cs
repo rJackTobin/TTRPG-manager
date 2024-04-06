@@ -20,7 +20,6 @@ namespace TTRPG_manager
         // Prepopulate the dictionary with default values for Resolution and BackgroundPath.
         {"Resolution", "1280x720"},
         {"BackgroundPath", ""},
-        {"LibraryPaths", "" },
         {"ScreenType", "Windowed" }
 
     };
@@ -38,6 +37,9 @@ namespace TTRPG_manager
 
         public ObservableCollection<StatusEffect> StatusEffects { get; set; } = new ObservableCollection<StatusEffect>();
 
+        public ObservableCollection<Enemy> Enemies { get; set; } = new ObservableCollection<Enemy>();
+
+        public ObservableCollection<string> LibraryPaths { get; set; } = new ObservableCollection<string>();
         // Convenience methods to access specific settings easily
         [JsonIgnore]
         public string Resolution
@@ -50,12 +52,6 @@ namespace TTRPG_manager
         {
             get => Settings.TryGetValue("BackgroundPath", out var backgroundPath) ? backgroundPath.ToString() : "";
             set => Settings["BackgroundPath"] = value;
-        }
-        [JsonIgnore]
-        public string LibraryPaths
-        {
-            get => Settings.TryGetValue("LibraryPaths", out var librarypaths) ? librarypaths.ToString() : "";
-            set => Settings["LibraryPaths"] = value;
         }
         [JsonIgnore]
         public string ScreenType

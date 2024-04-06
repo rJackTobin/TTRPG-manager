@@ -63,6 +63,22 @@ namespace TTRPG_manager
         {
             this.Skills.Remove(skill);
         }
+        public void UpHP(int amount)
+        {
+            this.CurrentHP = Math.Min(this.MaxHP, this.CurrentHP + amount);
+        }
+        public void DownHP(int amount)
+        {
+            this.CurrentHP = Math.Max(0, this.CurrentHP - amount);
+        }
+        public void UpMP(int amount)
+        {
+            this.CurrentMP = Math.Min(this.MaxMP, this.CurrentMP + amount);
+        }
+        public void DownMP(int amount)
+        {
+            this.CurrentMP = Math.Max(0, this.CurrentMP - amount);
+        }
     }
 
 }

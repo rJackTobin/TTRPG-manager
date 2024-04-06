@@ -16,6 +16,7 @@ using System.Threading;
 using System;
 using System.Net;
 using System.Threading.Tasks;
+using Genesis;
 
 namespace TTRPG_manager
 {
@@ -35,7 +36,7 @@ namespace TTRPG_manager
             this.DataContext = _config;
             ApplyConfig();
             PopulateCharacterPanels();
-            
+            SetImageSize();
         }
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
@@ -84,8 +85,15 @@ namespace TTRPG_manager
                     // Handle unexpected screen type
                     break;
             }
+            
         }
+        public void SetImageSize()
+        {
+            double totalPanelWidth = CharacterPanels.Children.Count * ((Width / 7) + 10) + 15;
 
+            // Set the maximum width of MainImage to take up the remaining space
+            MainImage.MaxWidth = Width - totalPanelWidth;
+        }
         public event PropertyChangedEventHandler PropertyChanged;
         protected virtual void OnPropertyChanged(string propertyName)
         {
@@ -105,6 +113,7 @@ namespace TTRPG_manager
                 _config = ConfigManager.LoadConfig();
                 ApplyConfig();
                 PopulateCharacterPanels();
+                SetImageSize();
             }
         }
 
@@ -146,6 +155,19 @@ namespace TTRPG_manager
                 }
             }
             
+        }
+        private void ChangeImageButton_Click(object sender, RoutedEventArgs e)
+        {
+            var imageSelectionWindow = new ImageSelectionWindow();
+            imageSelectionWindow.ImageSelected += ImageSelectionWindow_ImageSelected;
+            imageSelectionWindow.Closed += (s, args) => imageSelectionWindow.ImageSelected -= ImageSelectionWindow_ImageSelected;
+            imageSelectionWindow.Show();
+        }
+
+
+        private void ImageSelectionWindow_ImageSelected(string imagePath)
+        {
+            MainImage.Source = new BitmapImage(new Uri(imagePath));
         }
         private void AddItemButton_Click(object sender, RoutedEventArgs e)
         {
@@ -247,15 +269,20 @@ namespace TTRPG_manager
                     Width = Width / 8,
                     Value = character.CurrentHP,
                     Maximum = character.MaxHP,
+                    Foreground= new SolidColorBrush(Colors.Crimson),
                 };
                 var plusHP = new Button
                 {
+                    BorderThickness = new Thickness(0),
                     Content = ">"
                 };
+                plusHP.Click += (sender, e) => { character.UpHP(1); ConfigManager.SaveConfig(_config); PopulateCharacterPanels(); };
                 var minusHP = new Button
                 {
+                    BorderThickness = new Thickness(0),
                     Content = "<"
                 };
+                minusHP.Click += (sender, e) => { character.DownHP(1); ConfigManager.SaveConfig(_config); PopulateCharacterPanels(); };
                 HPPanel.Children.Add(minusHP);
                 HPPanel.Children.Add(HPBar);
                 HPPanel.Children.Add(plusHP);
@@ -271,15 +298,20 @@ namespace TTRPG_manager
                     Width = Width /8,
                     Value = character.CurrentMP,
                     Maximum = character.MaxMP,
+                    Foreground = new SolidColorBrush(Colors.CadetBlue),
                 };
                 var plusMP = new Button
                 {
+                    BorderThickness = new Thickness(0),
                     Content = ">"
                 };
+                plusMP.Click += (sender, e) => { character.UpMP(1); ConfigManager.SaveConfig(_config); PopulateCharacterPanels(); };
                 var minusMP = new Button
                 {
+                    BorderThickness = new Thickness(0),
                     Content = "<"
                 };
+                minusMP.Click += (sender, e) => { character.DownMP(1); ConfigManager.SaveConfig(_config); PopulateCharacterPanels(); };
                 MPPanel.Children.Add(minusMP);
                 MPPanel.Children.Add(MPBar);
                 MPPanel.Children.Add(plusMP);

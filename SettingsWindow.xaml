@@ -20,11 +20,22 @@
         <Style TargetType="TextBox">
             <Setter Property="FontSize" Value="{Binding Path=Width, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource ScaleConverter}, ConverterParameter=0.015}"/>
         </Style>
+        <Style TargetType="ListBox">
+            <Setter Property="FontSize" Value="{Binding Path=Width, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource ScaleConverter}, ConverterParameter=0.015}"/>
+        </Style>
     </Window.Resources>
     <Grid Margin="10">
         <Grid.RowDefinitions>
             <RowDefinition Height="1*"/>
-            <RowDefinition Height="14*"/>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="1*"/>
             <RowDefinition Height="1*"/>
             <RowDefinition Height="1*"/>
         </Grid.RowDefinitions>
@@ -32,28 +43,37 @@
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
-        <StackPanel Grid.Column="0" Grid.Row="1">
-            <TextBlock Text="Resolution:" Margin="0,0,0,10" />
-            <ComboBox x:Name="ResolutionComboBox"  
+
+        <TextBlock Text="Resolution:" Margin="5" Grid.Row="1" VerticalAlignment="Bottom"/>
+            <ComboBox x:Name="ResolutionComboBox" Grid.Row="2" 
                 SelectedValue="{Binding Path=Resolution, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                SelectedValuePath="Content" Margin="0,0,0,10">
+                SelectedValuePath="Content" Margin="5">
                 <ComboBoxItem Content="1280x720"/>
                 <ComboBoxItem Content="1920x1080"/>
                 <ComboBoxItem Content="2560x1440"/>
                 <ComboBoxItem Content="3840x2160"/>
             </ComboBox>
-            <ComboBox x:Name="ScreenComboBox"  
+            <ComboBox x:Name="ScreenComboBox"  Grid.Row="3"
                 SelectedValue="{Binding Path=ScreenType, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                SelectedValuePath="Content" Margin="0,0,0,10">
+                SelectedValuePath="Content" Margin="5">
                 <ComboBoxItem Content="Windowed"/>
                 <ComboBoxItem Content="Borderless Windowed"/>
                 
             </ComboBox>
-            <TextBlock Text="Background Image:" Margin="0,0,0,10" />
-            <TextBlock x:Name="FilePath" Margin="0,0,0,10" />
-            <Button Content="Browse" Click="Browse_Click" Margin="0,0,0,10" />
+        <TextBlock Text="Background Image:" Margin="5" Grid.Row="4" VerticalAlignment="Bottom"/>
+        <TextBlock x:Name="FilePath" Margin="5" Grid.Row="4" VerticalAlignment="Bottom"/>
+        <Button Content="Browse" Click="Browse_Click" Margin="5" Grid.Row="5"/>
+        <TextBlock Text="Image Gallery paths:" Grid.Row="6" Margin="5" VerticalAlignment="Bottom"/>
+        <ListBox x:Name="LibraryPathList" ItemsSource="{Binding LibraryPaths}" Grid.Row="7" Margin="5" Grid.RowSpan="2">
+        </ListBox>
+        <StackPanel Grid.Row="9" Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button Content="Add" Margin="10" Click="AddPath_Click"/>
+            <Button Content="Delete" Margin="10" Click="DeletePath_Click"/>
         </StackPanel>
-        <Button Content="OK" Grid.Column="1" Grid.Row ="2" Margin="10,0,10,0" Click="ApplyButton_Click" />
-        <Button Content="Cancel" Grid.Column="0" Grid.Row ="2" Margin="10,0,10,0"  Click="ApplyButton_Click" />
+        
+        
+        <Button Content="OK" Grid.Column="1" Grid.Row ="11" Margin="10,0,10,0" Click="ApplyButton_Click" />
+        <Button Content="Cancel" Grid.Column="0" Grid.Row ="11" Margin="10,0,10,0"  Click="ApplyButton_Click" />
+        
     </Grid>
 </Window>
