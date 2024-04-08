@@ -44,9 +44,9 @@ namespace TTRPG_manager
         }
         private void ApplyConfig()
         {
-            var parts = _config.Resolution.Split('x');
+            /*var parts = _config.Resolution.Split('x');
             this.Width = int.Parse(parts[0]);
-            this.Height = int.Parse(parts[1]);
+            this.Height = int.Parse(parts[1]);*/
             
             if (_config.BackgroundPath != "")
             {

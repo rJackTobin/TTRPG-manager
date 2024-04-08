@@ -9,6 +9,8 @@
         d:DesignHeight="1080"
         d:DesignWidth="1920"
         ResizeMode="CanResize"
+        Width="{x:Static SystemParameters.PrimaryScreenWidth}"  
+        Height="{x:Static SystemParameters.PrimaryScreenHeight}"
         >
     <Window.Resources>
         <local:ScaleConverter x:Key="ScaleConverter"/>
@@ -24,6 +26,7 @@
         <Style TargetType="TextBox">
             <Setter Property="FontSize" Value="{Binding Path=Width, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource ScaleConverter}, ConverterParameter=0.005}"/>
         </Style>
+        
     </Window.Resources>
     <Grid>
         <Grid.Background>
