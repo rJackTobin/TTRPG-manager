@@ -9,8 +9,7 @@
         d:DesignHeight="1080"
         d:DesignWidth="1920"
         ResizeMode="CanResize"
-        Width="{x:Static SystemParameters.PrimaryScreenWidth}"  
-        Height="{x:Static SystemParameters.PrimaryScreenHeight}"
+        
         >
     <Window.Resources>
         <local:ScaleConverter x:Key="ScaleConverter"/>
@@ -42,20 +41,22 @@
             <ColumnDefinition Width="*" />
             <!-- Takes up the full width -->
         </Grid.ColumnDefinitions>
-        <StackPanel Orientation="Horizontal" Grid.Column="0" Grid.Row="0" Background="White">
-            <Viewbox>
-                <StackPanel Orientation="Horizontal">
-                    <Button Width="100" Click="SettingsButton_Click">Settings</Button>
-                    <Button Width="100" Click="EditMode_Click">Edit Mode</Button>
-                    <Button Width="100" Click="StartServer_Click">Start Server</Button>
-                    <Button Width="100" Click="ChangeImageButton_Click">Change Image</Button>
-                    <ComboBox x:Name="partyComboBox" Width="100" ItemsSource="{Binding Parties}" DisplayMemberPath="Name" 
+
+
+        <StackPanel x:Name="mainPanel" Orientation="Horizontal" Background="White" Grid.Column="0" Grid.Row="0">
+            <Button  Click="SettingsButton_Click" FontSize="{Binding Path=Width, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource ScaleConverter}, ConverterParameter=0.01}">Settings</Button>
+            <Button  Click="EditMode_Click" FontSize="{Binding Path=Width, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource ScaleConverter}, ConverterParameter=0.01}">Edit Mode</Button>
+            <Button   Click="StartServer_Click" FontSize="{Binding Path=Width, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource ScaleConverter}, ConverterParameter=0.01}">Start Server</Button>
+            <Button   Click="ChangeImageButton_Click" FontSize="{Binding Path=Width, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource ScaleConverter}, ConverterParameter=0.01}">Change Image</Button>
+                    <ComboBox  x:Name="partyComboBox" Width="{Binding buttonWidth}" ItemsSource="{Binding Parties}" DisplayMemberPath="Name" 
                               SelectedIndex="{Binding selectedPartyIndex, Mode=TwoWay}"
-                              SelectionChanged="PartyComboBox_SelectionChanged"></ComboBox>
-                    <TextBlock x:Name="txtIpAddress" HorizontalAlignment="Right" Margin="10,0,0,0" TextWrapping="Wrap" VerticalAlignment="Center"/>
+                              SelectionChanged="PartyComboBox_SelectionChanged"
+                               FontSize="{Binding Path=Width, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource ScaleConverter}, ConverterParameter=0.01}"></ComboBox>
+
+            <TextBlock x:Name="txtIpAddress" HorizontalAlignment="Right" Margin="10,0,0,0" TextWrapping="Wrap" VerticalAlignment="Center" FontSize="{Binding Path=Width, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource ScaleConverter}, ConverterParameter=0.01}"/>
                 </StackPanel>
-            </Viewbox>
-        </StackPanel>
+            
+        
         <StackPanel Grid.Row="1" x:Name="CharacterPanels" Orientation="Horizontal" HorizontalAlignment="Left">
 
         </StackPanel>
