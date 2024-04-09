@@ -13,6 +13,7 @@ namespace TTRPG_manager
         public string DamageType { get; set; }
         public int DamageAmount { get; set; }
         public int Cooldown { get; set; }
+        public int BaseCooldown { get; set; }
         public int MPCost { get; set; }
         public int HPCost { get; set; }
         public int SkillLevel { get; set; }

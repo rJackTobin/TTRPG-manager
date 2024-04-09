@@ -46,6 +46,7 @@ namespace TTRPG_manager
                 return false;
             }
         }
+
         private async Task HandleIncomingConnections()
         {
             while (isServerRunning)
@@ -54,7 +55,6 @@ namespace TTRPG_manager
                 HttpListenerRequest request = ctx.Request;
                 HttpListenerResponse response = ctx.Response;
                 string responseString = "";
-
                 try
                 {
                     if (request.Url.AbsolutePath.StartsWith("/images/"))
@@ -227,6 +227,40 @@ namespace TTRPG_manager
             }
 
             return wirelessIP;
+        }
+        public bool StartOnlineServer()
+        {
+            AppConfig config = ConfigManager.LoadConfig();
+            ProcessStartInfo authInfo = new ProcessStartInfo()
+            {
+                FileName = "ngrok.exe",
+                Arguments = " ngrok config add-authtoken {config.NgrokAuthKey}",
+                UseShellExecute = false,
+                RedirectStandardOutput = false,
+                CreateNoWindow = false
+            };
+            using (Process process = Process.Start(authInfo))
+            {
+                process.WaitForExit(); // Waits here for the process to exit.
+            }
+            /*ProcessStartInfo startInfo = new ProcessStartInfo()
+            {
+                FileName = "ngrok.exe",
+                Arguments = "http 8080 --log=stdout", // Assuming you want to tunnel HTTP traffic from port 8080
+                UseShellExecute = false,
+                RedirectStandardOutput = false,
+                CreateNoWindow = false
+            };
+            
+            Process proc = new Process() { StartInfo = startInfo };
+            proc.Start();
+
+            */
+            return true;
+        }
+        public string GetNgrokAddress()
+        {
+            return "";
         }
         private string GenerateDropdownFromParties()
         {

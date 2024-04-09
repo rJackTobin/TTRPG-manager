@@ -25,7 +25,10 @@
         <Style TargetType="TextBox">
             <Setter Property="FontSize" Value="{Binding Path=Width, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource ScaleConverter}, ConverterParameter=0.005}"/>
         </Style>
-        
+        <Style TargetType="Label">
+            <Setter Property="FontSize" Value="{Binding Path=Width, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource ScaleConverter}, ConverterParameter=0.013}"/>
+        </Style>
+
     </Window.Resources>
     <Grid>
         <Grid.Background>
@@ -41,7 +44,22 @@
             <ColumnDefinition Width="*" />
             <!-- Takes up the full width -->
         </Grid.ColumnDefinitions>
+        <StackPanel VerticalAlignment="Top" HorizontalAlignment="Right" Grid.Row="1" Grid.Column="0">
 
+            <!-- Label to display the current turn -->
+            <Label x:Name="lblTurnStatus" Margin="0" FontWeight="Bold" FontStyle="Italic">
+                Turn: 0
+            </Label>
+
+            <!-- Button to declare an ambush -->
+            <Button x:Name="btnAmbush" Content="Ambush!" Margin="0" Click="btnAmbush_Click"/>
+
+            <!-- Button to go to the next turn -->
+            <Button x:Name="btnNextTurn" Content="Next Turn" Margin="0" Click="btnNextTurn_Click"/>
+
+            <!-- Button to end combat -->
+            <Button x:Name="btnEndCombat" Content="End Combat" Margin="0" Click="btnEndCombat_Click"/>
+        </StackPanel>
 
         <StackPanel x:Name="mainPanel" Orientation="Horizontal" Background="White" Grid.Column="0" Grid.Row="0">
             <Button  Click="SettingsButton_Click" FontSize="{Binding Path=Width, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource ScaleConverter}, ConverterParameter=0.01}">Settings</Button>
@@ -60,7 +78,7 @@
         <StackPanel Grid.Row="1" x:Name="CharacterPanels" Orientation="Horizontal" HorizontalAlignment="Left">
 
         </StackPanel>
-        <Image x:Name="MainImage" Grid.Row="1" HorizontalAlignment="Right" Margin="10"></Image>
+        <Image x:Name="MainImage" Grid.Row="1" HorizontalAlignment="Right" SizeChanged="MainImage_SizeChanged"></Image>
     </Grid>
    
 </Window>

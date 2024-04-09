@@ -18,6 +18,7 @@ using System.Net;
 using System.Threading.Tasks;
 using Genesis;
 using System.Windows.Interop;
+using System.Diagnostics;
 
 namespace TTRPG_manager
 {
@@ -38,6 +39,7 @@ namespace TTRPG_manager
             SetImageSize();
             this.Loaded += MainWindow_Loaded;
             this.SizeChanged += MainWindow_SizeChanged;
+            UpdateUI();
 
         }
         protected override void OnSourceInitialized(EventArgs e)
@@ -139,6 +141,28 @@ namespace TTRPG_manager
 
             // Set the maximum width of MainImage to take up the remaining space
             MainImage.MaxWidth = Width - totalPanelWidth;
+            MainImage.MaxHeight = Height / 1.33;
+            MainImage.Margin = new Thickness(0, 0, (Width - totalPanelWidth - MainImage.MaxWidth) / 2, 0);
+        }
+        private void MainImage_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            UpdateImageMargin();
+        }
+
+        private void UpdateImageMargin()
+        {
+            double totalPanelWidth = CharacterPanels.Children.Count * ((Width / 7) + 10) + 15;
+
+            // Assuming MainImage.Source is not null and properly set
+            double imageActualWidth = MainImage.ActualWidth;
+            MainImage.MaxWidth = Width - totalPanelWidth;
+            MainImage.MaxHeight = Height / 1.33;
+
+            // Calculate the right margin
+            double availableWidthForImage = Width - totalPanelWidth;
+            double rightMargin = (availableWidthForImage - imageActualWidth + 8) / 2;
+
+            MainImage.Margin = new Thickness(0, 0, rightMargin, 0);
         }
         public event PropertyChangedEventHandler PropertyChanged;
         protected virtual void OnPropertyChanged(string propertyName)
@@ -186,22 +210,37 @@ namespace TTRPG_manager
             PopulateCharacterPanels();
         }
 
-        private void StartServer_Click(object sender, RoutedEventArgs e)
-        {
-            if (serverManager.StartServer())
+         private void StartServer_Click(object sender, RoutedEventArgs e)
+         {
+            if (!_config.usingNgrok)
             {
+                if (serverManager.StartServer())
+                {
+                    try
+                    {
+                        string localIP = serverManager.GetLocalIPAddress();
+                        txtIpAddress.Text = $"Connect to: http://{localIP}:8080";
+                    }
+                    catch (Exception ex)
+                    {
+                        txtIpAddress.Text = "Unable to determine IP address";
+                    }
+                }
+            } else
+            {
+                if (serverManager.StartOnlineServer())
                 try
                 {
-                    string localIP = serverManager.GetLocalIPAddress();
-                    txtIpAddress.Text = $"Connect to: http://{localIP}:8080";
+                    string url = serverManager.GetNgrokAddress();
+                        txtIpAddress.Text = $"Connect to: {url}";
                 }
-                catch (Exception ex)
-                {
-                    txtIpAddress.Text = "Unable to determine IP address";
-                }
+                    catch(Exception ex)
+                    {
+                        txtIpAddress.Text = "Unable to connect to Ngrok";
+                    }
             }
-            
-        }
+
+         }
         private void ChangeImageButton_Click(object sender, RoutedEventArgs e)
         {
             var imageSelectionWindow = new ImageSelectionWindow();
@@ -243,6 +282,43 @@ namespace TTRPG_manager
         private void chooseSkillButton_Click(object sender, RoutedEventArgs e)
         {
 
+        }
+        private void btnAmbush_Click(object sender, RoutedEventArgs e)
+        {
+            CombatManager.Ambush();
+            UpdateUI();
+        }
+
+        private void btnNextTurn_Click(object sender, RoutedEventArgs e)
+        {
+            CombatManager.NextTurn();
+            UpdateUI();
+        }
+
+        private void btnEndCombat_Click(object sender, RoutedEventArgs e)
+        {
+            CombatManager.EndCombat();
+            UpdateUI();
+        }
+
+        private void UpdateUI()
+        {
+            // Update the label to reflect the current turn
+            lblTurnStatus.Content = $"Turn: {CombatManager.turn}";
+
+            // Change label color based on who's turn it is
+            if (CombatManager.isPlayersTurn)
+            {
+                lblTurnStatus.Foreground = new SolidColorBrush(Colors.MidnightBlue);
+            }
+            else if (CombatManager.isEnemiesTurn)
+            {
+                lblTurnStatus.Foreground = new SolidColorBrush(Colors.DarkRed);
+            }
+            else
+            {
+                lblTurnStatus.Foreground = new SolidColorBrush(Colors.MidnightBlue); // Default color when neither's turn
+            }
         }
         private void PopulateCharacterPanels()
         {

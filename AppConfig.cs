@@ -26,6 +26,8 @@ namespace TTRPG_manager
 
         public int selectedPartyIndex { get; set; } = 0;
         public bool addedFirewallRule { get; set; } = false;
+        public string NgrokAuthKey { get; set; } = "";
+        public bool usingNgrok { get; set; } = false;
 
         public ObservableCollection<Party> Parties { get; set; } = new ObservableCollection<Party>();
 

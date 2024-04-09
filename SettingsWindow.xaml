@@ -23,6 +23,7 @@
         <Style TargetType="ListBox">
             <Setter Property="FontSize" Value="{Binding Path=Width, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource ScaleConverter}, ConverterParameter=0.015}"/>
         </Style>
+        <BooleanToVisibilityConverter x:Key="MyBoolToVisibilityConverter" />
     </Window.Resources>
     <Grid Margin="10">
         <Grid.RowDefinitions>
@@ -74,6 +75,15 @@
         
         <Button Content="OK" Grid.Column="1" Grid.Row ="11" Margin="10,0,10,0" Click="ApplyButton_Click" />
         <Button Content="Cancel" Grid.Column="0" Grid.Row ="11" Margin="10,0,10,0"  Click="ApplyButton_Click" />
+
+        <TextBlock Grid.Row ="1" Grid.Column="1" TextWrapping="Wrap" VerticalAlignment="Bottom" Margin="5">Ngrok is used for online servers. You must make an Ngrok account for this</TextBlock>
+        <Button Grid.Row="2" Grid.Column="1" Margin="150,5,150,5">Make an account here</Button>
+        <CheckBox Grid.Row="3" Grid.Column="1" VerticalAlignment="Center" Margin="5" IsChecked="{Binding Path=usingNgrok, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">Use Ngrok port forwarding</CheckBox>
+        <TextBox x:Name="NgrokAuthKeyTextBox" Grid.Row="4" Grid.Column="1" Text="{Binding Path=NgrokAuthKey, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
+        <TextBlock Grid.Row="5" Grid.Column="1" Margin="5">Your server link: </TextBlock>
+        <TextBlock Grid.Row="4" Grid.Column="1" Margin="5" MinWidth="50" Text="Enter your authentication key here" 
+                   Foreground="Gray" Visibility="{Binding ElementName=NgrokAuthKeyTextBox, Path=Text.IsEmpty, Converter={StaticResource MyBoolToVisibilityConverter}}" IsHitTestVisible="False"/>
+        <!-- enter term here -->
         
     </Grid>
 </Window>

@@ -64,7 +64,7 @@
 
         <!-- Cooldown -->
         <TextBlock Grid.Row="6" Grid.Column="0" Text="Cooldown:" VerticalAlignment="Center"/>
-        <TextBox Grid.Row="6" Grid.Column="1" Text="{Binding Cooldown, UpdateSourceTrigger=PropertyChanged}"/>
+        <TextBox Grid.Row="6" Grid.Column="1" Text="{Binding BaseCooldown, UpdateSourceTrigger=PropertyChanged}"/>
 
         <!-- MPCost -->
         <TextBlock Grid.Row="7" Grid.Column="0" Text="MP Cost:" VerticalAlignment="Center"/>
