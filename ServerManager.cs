@@ -228,35 +228,53 @@ namespace TTRPG_manager
 
             return wirelessIP;
         }
-        public bool StartOnlineServer()
+        public string StartOnlineServer()
         {
             AppConfig config = ConfigManager.LoadConfig();
             ProcessStartInfo authInfo = new ProcessStartInfo()
             {
-                FileName = "ngrok.exe",
-                Arguments = " ngrok config add-authtoken {config.NgrokAuthKey}",
+                FileName = "cmd.exe",
+                Arguments = $"ngrok.exe config add-authtoken {config.NgrokAuthKey}",
                 UseShellExecute = false,
                 RedirectStandardOutput = false,
-                CreateNoWindow = false
+                CreateNoWindow = true
             };
-            using (Process process = Process.Start(authInfo))
-            {
-                process.WaitForExit(); // Waits here for the process to exit.
-            }
-            /*ProcessStartInfo startInfo = new ProcessStartInfo()
-            {
-                FileName = "ngrok.exe",
-                Arguments = "http 8080 --log=stdout", // Assuming you want to tunnel HTTP traffic from port 8080
-                UseShellExecute = false,
-                RedirectStandardOutput = false,
-                CreateNoWindow = false
-            };
+            Process process = Process.Start(authInfo);
             
+                process.Kill();  // This will still wait for the cmd to close, but it will remain open because of /K.
+            
+            // Optional: Start the ngrok HTTP tunnel similarly
+            ProcessStartInfo startInfo = new ProcessStartInfo()
+            {
+                FileName = "cmd.exe",
+                Arguments = $"/K ngrok.exe http 8080 --log=stdout",
+                UseShellExecute = false,
+                RedirectStandardOutput = true,
+                CreateNoWindow = false
+            };
+
             Process proc = new Process() { StartInfo = startInfo };
             proc.Start();
 
-            */
-            return true;
+            string ngrokUrl = null;
+            while (!proc.StandardOutput.EndOfStream)
+            {
+                var line = proc.StandardOutput.ReadLine();
+                Console.WriteLine(line);  // Optionally print the line for debugging
+
+                // Check if the line contains the URL
+                if (line.Contains("url=https://"))
+                {
+                    int startIndex = line.IndexOf("url=") + 4;
+                    int endIndex = line.IndexOf(".ngrok-free.app") + 15; // 15 is the length of ".ngrok-free.app"
+                    ngrokUrl = line.Substring(startIndex, endIndex - startIndex);
+                    break;
+                }
+            }
+
+              // Wait for the process to exit after finding the URL
+
+            return ngrokUrl;
         }
         public string GetNgrokAddress()
         {

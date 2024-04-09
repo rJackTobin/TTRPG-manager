@@ -19,6 +19,8 @@ using System.Threading.Tasks;
 using Genesis;
 using System.Windows.Interop;
 using System.Diagnostics;
+using System.Windows.Media.Animation;
+
 
 namespace TTRPG_manager
 {
@@ -60,7 +62,29 @@ namespace TTRPG_manager
             }
             return IntPtr.Zero;
         }
+        private void LoadCharAnim(Character character)
+        {
+            BitmapImage bitmap = new BitmapImage(new Uri(character.ImagePath));
+            var rect = new Int32Rect(0, 50, bitmap.PixelWidth, bitmap.PixelHeight - 100); // Cropping 50px from top and 50px from bottom
+            CroppedBitmap croppedBitmap = new CroppedBitmap(bitmap, rect);
 
+            imageBrush.ImageSource = croppedBitmap;
+        }
+        private void AnimateImage()
+        {
+            var canvasWidth = this.Width; // Ensure the canvas stretches across the window for this to work correctly
+            DoubleAnimation animation = new DoubleAnimation();
+            animation.From = 0;
+            animation.To = canvasWidth - animatedImage.Width; // Subtract width of the rectangle to prevent it from going off screen
+            animation.Duration = TimeSpan.FromSeconds(2); // Duration of 2 seconds
+            animation.RepeatBehavior = RepeatBehavior.Forever; // Repeat forever
+
+            Storyboard.SetTarget(animation, animatedImage);
+            Storyboard.SetTargetProperty(animation, new PropertyPath(Canvas.LeftProperty));
+            Storyboard storyboard = new Storyboard();
+            storyboard.Children.Add(animation);
+            storyboard.Begin();
+        }
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             serverManager.StopServer();
@@ -68,6 +92,8 @@ namespace TTRPG_manager
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
             SetButtonsWidth();
+            LoadCharAnim(_config.Parties[_config.selectedPartyIndex].Members[0]);
+            AnimateImage();
         }
 
         private void MainWindow_SizeChanged(object sender, SizeChangedEventArgs e)
@@ -218,26 +244,21 @@ namespace TTRPG_manager
                 {
                     try
                     {
-                        string localIP = serverManager.GetLocalIPAddress();
-                        txtIpAddress.Text = $"Connect to: http://{localIP}:8080";
+                        serverManager.GetLocalIPAddress();
+                        
                     }
                     catch (Exception ex)
                     {
                         txtIpAddress.Text = "Unable to determine IP address";
                     }
                 }
+                string localIP = serverManager.GetLocalIPAddress();
+                txtIpAddress.Text = $"Connect to: http://{localIP}:8080";
             } else
             {
-                if (serverManager.StartOnlineServer())
-                try
-                {
-                    string url = serverManager.GetNgrokAddress();
-                        txtIpAddress.Text = $"Connect to: {url}";
-                }
-                    catch(Exception ex)
-                    {
-                        txtIpAddress.Text = "Unable to connect to Ngrok";
-                    }
+                string url = serverManager.StartOnlineServer();
+                serverManager.StartServer();
+                txtIpAddress.Text = $"Connect to: {url}";
             }
 
          }
