@@ -64,25 +64,114 @@ namespace TTRPG_manager
         }
         private void LoadCharAnim(Character character)
         {
-            BitmapImage bitmap = new BitmapImage(new Uri(character.ImagePath));
-            var rect = new Int32Rect(0, 50, bitmap.PixelWidth, bitmap.PixelHeight - 100); // Cropping 50px from top and 50px from bottom
-            CroppedBitmap croppedBitmap = new CroppedBitmap(bitmap, rect);
 
-            imageBrush.ImageSource = croppedBitmap;
+            animatedImage.Width = Height*3/ 4;
+            animatedImage.Height = Height / 3;
+            
+            // Load the bitmap from the character's image path
+            BitmapImage bitmap = new BitmapImage(new Uri(character.ImagePath));
+            animatedImage.Source = bitmap;
+            RectangleGeometry clip = new RectangleGeometry();
+            clip.Rect = new Rect(0, animatedImage.Height*(1-character.eyeLevel)-animatedImage.Height/4, animatedImage.Width, animatedImage.Height/2);
+            animatedImage.Clip = clip;
+            ScaleTransform scale = new ScaleTransform(2, 2,0,0); // No width scaling, triple height scaling
+
+            // Calculate vertical translation to center the clip
+            TranslateTransform translate = new TranslateTransform(-animatedImage.Height/2, -animatedImage.Height*2 * (1 - character.eyeLevel)+ animatedImage.Height / 2);
+
+            // Combine scale and translate transformations
+            TransformGroup transformGroup = new TransformGroup();
+            transformGroup.Children.Add(scale);
+            transformGroup.Children.Add(translate);
+            animatedImage.RenderTransform = transformGroup;
+
+
+
+            var hexColor = "#111111"; // Example: Orange color
+            var color = (Color)ColorConverter.ConvertFromString(hexColor);
+            var brush = new SolidColorBrush(color);
+
+            ImageBorder.Stroke = brush;
+                ImageBorder.StrokeThickness = animatedImage.Height/20;
+            ImageBorder.Fill = brush;
+            
+            ImageBorder.Points = new PointCollection
+            {
+            new Point(0, 0), // Start point shifted to the right for slant effect
+            new Point(animatedImage.Width*4/3, 0), // Top right point
+            new Point(animatedImage.Width, animatedImage.Height), // Bottom right point, aligns with image bottom
+            new Point(-animatedImage.Width/3, animatedImage.Height) // Bottom left point
+            };
+            leftCover.Stroke = brush;
+            leftCover.Fill = brush;
+            rightCover.Stroke = brush;
+            rightCover.Fill = brush;
+            leftCover.Points = new PointCollection
+            { 
+                new Point(0, 0),
+                new Point(animatedImage.Width*1/6,0),
+                new Point(-animatedImage.Width/6, animatedImage.Height)
+            };
+            rightCover.Points = new PointCollection
+            {
+                new Point(animatedImage.Width*7/6, 0),
+                new Point(animatedImage.Width,animatedImage.Height),
+                new Point(animatedImage.Width*5/6, animatedImage.Height)
+            };
         }
         private void AnimateImage()
         {
-            var canvasWidth = this.Width; // Ensure the canvas stretches across the window for this to work correctly
-            DoubleAnimation animation = new DoubleAnimation();
-            animation.From = 0;
-            animation.To = canvasWidth - animatedImage.Width; // Subtract width of the rectangle to prevent it from going off screen
-            animation.Duration = TimeSpan.FromSeconds(2); // Duration of 2 seconds
-            animation.RepeatBehavior = RepeatBehavior.Forever; // Repeat forever
+            var canvasWidth = this.Width;
+            var canvasHeight = this.Height;
 
-            Storyboard.SetTarget(animation, animatedImage);
-            Storyboard.SetTargetProperty(animation, new PropertyPath(Canvas.LeftProperty));
+            // Set initial positioning of the animationCanvas
+            double initialLeftPosition = -(Width * 3);
+            Canvas.SetLeft(animCanvas, initialLeftPosition);
+            double centerTopPosition = (canvasHeight - animatedImage.Height) / 2;
+            Canvas.SetTop(animCanvas, centerTopPosition);
+
+            // Phase 1 Animation
+            DoubleAnimation phase1Animation = new DoubleAnimation
+            {
+                From = initialLeftPosition,
+                To = Width/5, // Midway minus half width of the container
+                Duration = TimeSpan.FromSeconds(1),
+                EasingFunction = new PowerEase { Power = 2, EasingMode = EasingMode.EaseIn }
+            };
+
+            DoubleAnimation midAnimation = new DoubleAnimation
+            {
+                From = Width/5,
+                To = Width/4,
+                Duration = TimeSpan.FromSeconds(1),
+                BeginTime = TimeSpan.FromSeconds(1),
+                
+            };
+            // Phase 2 Animation
+            DoubleAnimation phase2Animation = new DoubleAnimation
+            {
+                From = Width/4,
+                To = Width * 3, // To the end beyond the initial right edge
+                Duration = TimeSpan.FromSeconds(1),
+                EasingFunction = new PowerEase { Power = 2, EasingMode = EasingMode.EaseOut },
+                BeginTime = TimeSpan.FromSeconds(2) // Start after phase 1 ends and a slight pause
+            };
+
+            // Storyboard setup
             Storyboard storyboard = new Storyboard();
-            storyboard.Children.Add(animation);
+            storyboard.Children.Add(phase1Animation);
+            storyboard.Children.Add(midAnimation);
+            storyboard.Children.Add(phase2Animation);
+
+            Storyboard.SetTarget(phase1Animation, animCanvas);
+            Storyboard.SetTarget(phase2Animation, animCanvas);
+            Storyboard.SetTarget(midAnimation, animCanvas);
+
+            Storyboard.SetTargetProperty(phase1Animation, new PropertyPath(Canvas.LeftProperty));
+            Storyboard.SetTargetProperty(phase2Animation, new PropertyPath(Canvas.LeftProperty));
+            Storyboard.SetTargetProperty(midAnimation, new PropertyPath(Canvas.LeftProperty));
+
+
             storyboard.Begin();
         }
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
@@ -92,13 +181,12 @@ namespace TTRPG_manager
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
             SetButtonsWidth();
-            LoadCharAnim(_config.Parties[_config.selectedPartyIndex].Members[0]);
-            AnimateImage();
         }
 
         private void MainWindow_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             SetButtonsWidth();
+            
         }
 
         private void SetButtonsWidth()
@@ -298,7 +386,11 @@ namespace TTRPG_manager
         }
         private void chooseItemButton_Click(object sender, RoutedEventArgs e)
         {
-
+            _config = ConfigManager.LoadConfig();
+            var button = sender as Button;
+            int index = (int)button.Tag;
+            LoadCharAnim(_config.Parties[_config.selectedPartyIndex].Members[index]);
+            AnimateImage();
         }
         private void chooseSkillButton_Click(object sender, RoutedEventArgs e)
         {
@@ -343,11 +435,15 @@ namespace TTRPG_manager
         }
         private void PopulateCharacterPanels()
         {
+            _config = ConfigManager.LoadConfig();
+            int i = 0;
             CharacterPanels.Children.Clear(); // Clear existing panels 
             if (_config.Parties.Count > 0 && _config.selectedPartyIndex >= 0 && _config.selectedPartyIndex < _config.Parties.Count)
             { 
                 foreach (Character character in _config.Parties[_config.selectedPartyIndex].Members)
                 {
+                    int index = i;
+                    i++;
                     var panel = new StackPanel
                     {
                         Background = new SolidColorBrush(Colors.LightGray) { Opacity = 0.9 }, // Example styling
@@ -459,6 +555,9 @@ namespace TTRPG_manager
                     MPPanel.Children.Add(minusMP);
                     MPPanel.Children.Add(MPBar);
                     MPPanel.Children.Add(plusMP);
+                    
+                                  
+                    
                     var skillPanel = new StackPanel
                     {
                         Height = Height / 30,
@@ -490,7 +589,7 @@ namespace TTRPG_manager
                     var chooseSkillButton = new Button
                     {
                         Content = "+",
-                        Tag = character, // Store the character in the Tag property
+                        Tag = index, // Store the character in the Tag property
                         Margin = new Thickness(Width / 17, Height / 150, Width / 500, Height / 150),
                         Width = Width / 60,
                         HorizontalAlignment = HorizontalAlignment.Right,
@@ -545,7 +644,7 @@ namespace TTRPG_manager
                     var chooseItemButton = new Button
                     {
                         Content = "+",
-                        Tag = character, // Store the character in the Tag property
+                        Tag = index, // Store the character in the Tag property
                         Width = Width / 60,
                         HorizontalAlignment = HorizontalAlignment.Right,
                         Margin = new Thickness(Width / 17, Height / 150, Width / 500, Height / 150),
@@ -634,9 +733,40 @@ namespace TTRPG_manager
                             ConfigManager.SaveConfig(_config);
                         };
                         expander.Content = descriptionTextBox;
-
+                        var SPBar = new ProgressBar
+                        {
+                            Margin = new Thickness(0, 2, 0, 2),
+                            Height = Height / 50,
+                            Width = Width / 8,
+                            Value = skill.Cooldown,
+                            Maximum = skill.BaseCooldown,
+                            Foreground = new SolidColorBrush(Colors.Gold),
+                        };
+                        var SPPanel = new StackPanel
+                        {
+                            Orientation = Orientation.Horizontal,
+                            HorizontalAlignment = HorizontalAlignment.Center,
+                        };
+                        var plusSP = new Button
+                        {
+                            BorderThickness = new Thickness(0),
+                            Content = ">"
+                        };
+                        plusSP.Click += (sender, e) => { skill.UpSP(1); ConfigManager.SaveConfig(_config); PopulateCharacterPanels(); };
+                        var minusSP = new Button
+                        {
+                            BorderThickness = new Thickness(0),
+                            Content = "<"
+                        };
+                        minusSP.Click += (sender, e) => { skill.DownSP(1); ConfigManager.SaveConfig(_config); PopulateCharacterPanels(); };
+                        SPPanel.Children.Add(minusSP);
+                        SPPanel.Children.Add(SPBar);
+                        SPPanel.Children.Add(plusSP);
                         // Add the Expander to the panel
                         panel.Children.Add(expander);
+                        if (skill.BaseCooldown > 0) {
+                            panel.Children.Add(SPPanel);
+                        }
                     }
                     panel.Children.Add(equippedItemsText);
                     foreach (var item in character.EquippedItems)

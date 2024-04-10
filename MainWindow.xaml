@@ -80,11 +80,12 @@
         </StackPanel>
         <Image x:Name="MainImage" Grid.Row="1" HorizontalAlignment="Right" SizeChanged="MainImage_SizeChanged"></Image>
         <Canvas Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-            <Rectangle x:Name="animatedImage" Width="200" Height="100" Canvas.Left="0" HorizontalAlignment="Center" VerticalAlignment="Top">
-                <Rectangle.Fill>
-                    <ImageBrush x:Name="imageBrush" Stretch="UniformToFill"/>
-                </Rectangle.Fill>
-            </Rectangle>
+            <Canvas x:Name="animCanvas">
+                <Polygon x:Name="ImageBorder"></Polygon>
+                <Image x:Name="animatedImage"/>
+                <Polygon x:Name="leftCover"></Polygon>
+                <Polygon x:Name="rightCover"></Polygon>
+            </Canvas>
         </Canvas>
     </Grid>
    

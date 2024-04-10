@@ -24,5 +24,13 @@ namespace TTRPG_manager
         {
             return this.MemberwiseClone();
         }
+        public void UpSP(int amount)
+        {
+            this.Cooldown = Math.Min(this.BaseCooldown, this.Cooldown + amount);
+        }
+        public void DownSP(int amount)
+        {
+            this.Cooldown = Math.Max(0, this.Cooldown - amount);
+        }
     }
 }

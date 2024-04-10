@@ -79,7 +79,7 @@
         <!-- Image Path with Browse Button -->
         <Image x:Name="portrait" Grid.Row="1" Grid.Column="5" Source="{Binding ImagePath, Mode=OneWay}"></Image>
         <Button Grid.Row="2" Grid.Column="5" Click="OnBrowseButtonClick">Browse</Button>
-
+        <Slider x:Name="eyeLevelSlider" Grid.Row="1" Grid.Column="6" Orientation="Vertical" Minimum="0" Maximum="1" Value="{Binding eyeLevel, Mode=TwoWay}" VerticalAlignment="Stretch"/>
         <Button Grid.Row="7" Grid.Column="5" Click="SaveCloseButtonClick">Save and Close</Button>
         <Button Grid.Row="7" Grid.Column="3" Click="CancelButtonClick">Cancel</Button>
 

@@ -29,7 +29,8 @@ namespace TTRPG_manager
         public ObservableCollection<StatusEffect> StatusEffects { get; set; }
         public string ImagePath { get; set; }
         public int ActionsPerTurn { get; set; }
-        
+        public double eyeLevel { get; set; }
+
         public object Clone()
         {
             return this.MemberwiseClone();
