@@ -112,5 +112,16 @@
         </StackPanel>
         <ListBox x:Name="SkillList" Grid.Row="7" Grid.Column="3" Grid.RowSpan="2" ItemsSource="{Binding Skills}" DisplayMemberPath="Name"
          Grid.ColumnSpan="3"></ListBox>
+
+        <TextBlock Grid.Row="5" Grid.Column="6" Grid.ColumnSpan="3">Global Enemy List</TextBlock>
+        
+        <StackPanel Orientation="Horizontal" Grid.Row="6" Grid.Column="7" HorizontalAlignment="Center" Grid.ColumnSpan="2">
+            <Button  Content=" Create " Click="CreateEnemyButton_Click"></Button>
+            <Button  Content=" Edit " Click="EditEnemyButton_Click"></Button>
+            <Button  Content=" Delete " Click="DeleteEnemyButton_Click"></Button>
+        </StackPanel>
+        <ListBox x:Name="EnemyList" Grid.Row="7" Grid.Column="6" Grid.RowSpan="2" ItemsSource="{Binding Enemies}" DisplayMemberPath="Name"
+ Grid.ColumnSpan="3"></ListBox>
+
     </Grid>
 </Window>

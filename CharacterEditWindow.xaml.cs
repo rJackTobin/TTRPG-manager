@@ -23,7 +23,6 @@ namespace TTRPG_manager
         public CharacterEditWindow(double height, double width, Character character)
         {
             InitializeComponent();
-
             this.Height = height;
             this.Width = width;
             this.DataContext = character;
@@ -46,7 +45,41 @@ namespace TTRPG_manager
                 }
             }
         }
+        public void DeleteSkillButton_Click(object sender, RoutedEventArgs e)
+        {
+            var character = DataContext as Character;
+            int i = SkillList.SelectedIndex;
+            if (i != -1)
+            {
+                character.Skills.RemoveAt(i);
+            }
+        }
+        public void EditSkillButton_Click(object sender, RoutedEventArgs e)
+        {
+            var character = DataContext as Character;
+            int i = SkillList.SelectedIndex;
+            Skill edited = (Skill)character.Skills[i].Clone();
+            SkillEditWindow charEdit = new SkillEditWindow(Height, Width, edited);
+            var dialogResult = charEdit.ShowDialog();
 
+            if (dialogResult == true)
+            {
+                character.Skills[i] = edited;
+            }
+        }
+        public void CreateSkillButton_Click(object sender, RoutedEventArgs e)
+        {
+            var character = DataContext as Character;
+            Skill newSkill = new Skill();
+            newSkill.Name = "New Skill";
+            SkillEditWindow newCharEdit = new SkillEditWindow(Height, Width, newSkill);
+            var dialogResult = newCharEdit.ShowDialog();
+            if (dialogResult == true)
+            {
+                character.Skills.Add(newSkill);
+                
+            }
+        }
         private void SaveCloseButtonClick(object sender, RoutedEventArgs e)
         {
             this.DialogResult = true;

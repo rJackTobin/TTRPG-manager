@@ -108,9 +108,12 @@ namespace TTRPG_manager
         public void CreateItemButton_Click(object sender, RoutedEventArgs e)
         {
             Item newItem = new Item();
+            
             newItem.Name = ItemNameBox.Text;
             newItem.Description = ItemDescBox.Text;
             newItem.Count = 1;
+            if (newItem.Name == "")
+            { return; }
             updated_config.Items.Add(newItem);
             ConfigManager.SaveConfig(updated_config);
             ItemNameBox.Text = null; ItemDescBox.Text = null;
@@ -193,6 +196,8 @@ namespace TTRPG_manager
         public void EditSkillButton_Click(object sender, RoutedEventArgs e)
         {
             int i = SkillList.SelectedIndex;
+            if (i == -1)
+            { return; }
             Skill edited = (Skill)updated_config.Skills[i].Clone();
             SkillEditWindow charEdit = new SkillEditWindow(Height, Width, edited);
             var dialogResult = charEdit.ShowDialog();
@@ -222,6 +227,42 @@ namespace TTRPG_manager
                     ConfigManager.SaveConfig(updated_config);
                 }
                 
+            }
+        }
+        public void CreateEnemyButton_Click(object sender, RoutedEventArgs e)
+        {
+            Enemy newEnemy = new Enemy();
+            newEnemy.Name = "Unknown";
+            EnemyEditWindow newCharEdit = new EnemyEditWindow(Height, Width, newEnemy);
+            var dialogResult = newCharEdit.ShowDialog();
+            if (dialogResult == true)
+            {
+                updated_config.Enemies.Add(newEnemy);
+                ConfigManager.SaveConfig(updated_config);
+            }
+        }
+        public void DeleteEnemyButton_Click(object sender, RoutedEventArgs e)
+        {
+            int i = EnemyList.SelectedIndex;
+            if (i != -1)
+            {
+                updated_config.Enemies.RemoveAt(i);
+                ConfigManager.SaveConfig(updated_config);
+            }
+        }
+        public void EditEnemyButton_Click(object sender, RoutedEventArgs e)
+        {
+            int i = EnemyList.SelectedIndex;
+            if (i == -1)
+            { return; }
+            Enemy edited = (Enemy)updated_config.Enemies[i].Clone();
+            EnemyEditWindow charEdit = new EnemyEditWindow(Height, Width, edited);
+            var dialogResult = charEdit.ShowDialog();
+
+            if (dialogResult == true)
+            {
+                updated_config.Enemies[i] = edited;
+                ConfigManager.SaveConfig(updated_config);
             }
         }
         private void EditCharacterButton_Click(object sender, RoutedEventArgs e)
