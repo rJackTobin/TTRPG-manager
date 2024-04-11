@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace TTRPG_manager
 {
-    public class Skill : ICloneable
+    public class Skill : ICloneable, INameable
     {
         public string Name { get; set; }
         public string Description { get; set; }

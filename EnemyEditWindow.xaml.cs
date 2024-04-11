@@ -23,6 +23,7 @@ namespace TTRPG_manager
     {
         public EnemyEditWindow(double height, double width, Enemy enemy)
         {
+            InitializeComponent();
             this.Height = height;
             this.Width = width;
             this.DataContext = enemy;

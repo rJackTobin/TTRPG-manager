@@ -18,7 +18,6 @@ namespace TTRPG_manager
     {
         private AppConfig _config;
 
-        
         private HttpListener listener;
         private bool isServerRunning = false;
         public bool StartServer()
@@ -76,41 +75,84 @@ namespace TTRPG_manager
                     }
                     else if (request.HttpMethod == "POST")
                     {
-                        using (var reader = new StreamReader(request.InputStream, request.ContentEncoding))
+                        if (request.RawUrl.Contains("/useSkill"))
                         {
-                            string postData = await reader.ReadToEndAsync();
-                            var formData = HttpUtility.ParseQueryString(postData);
-
-                            if (request.RawUrl.Contains("/updateCharacter"))
+                            using (var reader = new StreamReader(request.InputStream, request.ContentEncoding))
                             {
-                                // Process the update form submission
-                                string name = formData["Name"];
-                                string description = formData["Description"];
-                                int age = int.Parse(formData["Age"]); // Add error handling for parsing
-                                string gender = formData["Gender"];
-                                string race = formData["Race"];
-                                string title = formData["Title"];
-                                // Find and update the character
-                                var characterToUpdate = _config.Parties[_config.selectedPartyIndex].Members.FirstOrDefault(c => c.Name == name);
-                                if (characterToUpdate != null)
+                                string postData = await reader.ReadToEndAsync();
+                                var formData = HttpUtility.ParseQueryString(postData);
+
+                                string characterName = formData["CharacterName"];
+                                string skillName = formData["SkillName"];
+
+                                var character = _config.Parties[_config.selectedPartyIndex].Members.FirstOrDefault(c => c.Name == characterName);
+                                if (character != null)
                                 {
-                                    characterToUpdate.Description = description;
-                                    characterToUpdate.Age = age;
-                                    characterToUpdate.Gender = gender;
-                                    characterToUpdate.Race = race;
-                                    characterToUpdate.Title = title;
-                                    // Update other fields as needed
+                                    var skill = character.Skills.FirstOrDefault(s => s.Name == skillName);
+                                    if (skill != null)
+                                    {
+                                        // Apply skill use logic
+                                        character.useSkill(skill);
+                                        ConfigManager.SaveConfig(_config); // Save changes
+                                        Application.Current.Dispatcher.Invoke(() =>
+                                        {
+                                            var mainWindow = Application.Current.MainWindow as MainWindow;
+                                            mainWindow?.StartAnimation(character);
+                                            mainWindow?.PopulateCharacterPanels();
+                                             // Assuming you have a method RunAnimation for animations
+                                        });
+                                        responseString = "Skill used successfully.";
+                                    }
+                                    else
+                                    {
+                                        responseString = "Skill not found.";
+                                    }
                                 }
-                                ConfigManager.SaveConfig(_config);
-
-                                // Optionally redirect to a confirmation page or back to the form
-                                response.Redirect("/editCharacter?name=" + HttpUtility.UrlEncode(name));
-
+                                else
+                                {
+                                    responseString = "Character not found.";
+                                }
                             }
-                            else
+
+                        }
+                        else
+                        {
+                            using (var reader = new StreamReader(request.InputStream, request.ContentEncoding))
                             {
-                                // Handling other POST requests if any
-                                responseString = "Invalid request.";
+                                string postData = await reader.ReadToEndAsync();
+                                var formData = HttpUtility.ParseQueryString(postData);
+
+                                if (request.RawUrl.Contains("/updateCharacter"))
+                                {
+                                    // Process the update form submission
+                                    string name = formData["Name"];
+                                    string description = formData["Description"];
+                                    int age = int.Parse(formData["Age"]); // Add error handling for parsing
+                                    string gender = formData["Gender"];
+                                    string race = formData["Race"];
+                                    string title = formData["Title"];
+                                    // Find and update the character
+                                    var characterToUpdate = _config.Parties[_config.selectedPartyIndex].Members.FirstOrDefault(c => c.Name == name);
+                                    if (characterToUpdate != null)
+                                    {
+                                        characterToUpdate.Description = description;
+                                        characterToUpdate.Age = age;
+                                        characterToUpdate.Gender = gender;
+                                        characterToUpdate.Race = race;
+                                        characterToUpdate.Title = title;
+                                        // Update other fields as needed
+                                    }
+                                    ConfigManager.SaveConfig(_config);
+
+                                    // Optionally redirect to a confirmation page or back to the form
+                                    response.Redirect("/editCharacter?name=" + HttpUtility.UrlEncode(name));
+
+                                }
+                                else
+                                {
+                                    // Handling other POST requests if any
+                                    responseString = "Invalid request.";
+                                }
                             }
                         }
                     }
@@ -331,10 +373,28 @@ namespace TTRPG_manager
             stringBuilder.Append("@media (min-width: 100px) { .character-image { width: 40%; } }");
             stringBuilder.Append("@media (min-width: 1500px) { .character-image { width: 50%; } }");
             stringBuilder.Append("</style>");
+            // Include the JavaScript function for AJAX calls
+            stringBuilder.Append("<script>");
+            stringBuilder.Append(@"
+    function useSkill(characterName, skillName) {
+        const data = `CharacterName=${encodeURIComponent(characterName)}&SkillName=${encodeURIComponent(skillName)}`;
+        fetch('/useSkill', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+            body: data
+        })
+        .then(response => response.text())
+        .then(text => {
+            alert('Skill used successfully! Response: ' + text);
+            // Optionally update the UI here to reflect changes
+        })
+        .catch(error => console.error('Error using skill:', error));
+    }");
+            stringBuilder.Append("</script>");
             stringBuilder.Append("</head><body>");
             stringBuilder.AppendFormat("<h2>{0}</h2><br>", character.Name);
             stringBuilder.Append("<form action='/updateCharacter' method='post'>");
-
+            
             stringBuilder.AppendFormat("<img src='/images/{0}' class='character-image' alt='Character Image'/>", HttpUtility.UrlEncode(character.Name));
 
             // Add hidden input for character name to identify the character on submission
@@ -360,7 +420,8 @@ namespace TTRPG_manager
             stringBuilder.Append("<h3>Skills</h3><ul>");
             foreach (var skill in character.Skills)
             {
-                stringBuilder.AppendFormat("<li>{0} - {1} (Damage: {2} {3}, MPCost: {4}, HPCost: {5}, Cooldown: {6}, Skill Level: {7}, Remaining Uses: {8}/{9})</li>", skill.Name, skill.Description, skill.DamageAmount, skill.DamageType, skill.MPCost, skill.HPCost, skill.Cooldown, skill.SkillLevel, skill.RemainingUses, skill.MaxUses);
+                stringBuilder.AppendFormat("<li>{0} - {1} <button onclick=\"useSkill('{2}', '{3}')\">Use Skill</button></li>",
+                skill.Name, skill.Description, character.Name, skill.Name);
             }
             stringBuilder.Append("</ul>");
             // Append more fields as needed, based on Character class properties

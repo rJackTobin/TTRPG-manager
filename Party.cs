@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace TTRPG_manager
 {
-    public class Party
+    public class Party : INameable
     {
         public ObservableCollection<Character> Members { get; set; }
         public string Name { get; set; }

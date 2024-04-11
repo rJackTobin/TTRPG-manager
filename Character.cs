@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace TTRPG_manager
 {
-    public class Character : ICloneable
+    public class Character : ICloneable, INameable
     {   
         public string Name { get; set; }
         public string Description { get; set; }
@@ -42,6 +42,14 @@ namespace TTRPG_manager
             EquippedItems = new ObservableCollection<Item>();
             Inventory = new ObservableCollection<Item>();
             StatusEffects = new ObservableCollection<StatusEffect>();
+        }
+        public void GiveItem(Item item)
+        {
+            this.Inventory.Add(item);
+        }
+        public void GiveSkill(Skill skill) 
+        {
+            this.Skills.Add(skill);
         }
         public void RemoveItem(Item item)
         {

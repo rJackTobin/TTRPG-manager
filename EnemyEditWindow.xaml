@@ -23,8 +23,7 @@
             <Setter Property="Margin" Value="10,5,10,5"/>
         </Style>
     </Window.Resources>
-    <Grid Margin="10
-  ">
+    <Grid Margin="10">
         <Grid.RowDefinitions>
             <RowDefinition Height="1*"/>
             <RowDefinition Height="4*"/>

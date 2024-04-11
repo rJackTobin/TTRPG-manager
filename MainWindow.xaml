@@ -73,12 +73,17 @@
 
             <TextBox Background="Transparent" x:Name="txtIpAddress" BorderThickness="0" IsReadOnly="True" HorizontalAlignment="Right" Margin="10,0,0,0"  TextWrapping="Wrap" VerticalAlignment="Center" FontSize="{Binding Path=Width, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource ScaleConverter}, ConverterParameter=0.01}"/>
                 </StackPanel>
-            
-        
+
+
         <StackPanel Grid.Row="1" x:Name="CharacterPanels" Orientation="Horizontal" HorizontalAlignment="Left">
 
         </StackPanel>
         <Image x:Name="MainImage" Grid.Row="1" HorizontalAlignment="Right" SizeChanged="MainImage_SizeChanged"></Image>
+        <StackPanel Grid.Row="1" x:Name="EnemyPanels" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Bottom">
+
+        </StackPanel>
+        <Button x:Name="AddEnemyButton" Grid.Row="1" HorizontalAlignment="Right" VerticalAlignment="Bottom" Click="AddEnemyButton_Click" Content=" + "></Button>
+
         <Canvas Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
             <Canvas x:Name="animCanvas">
                 <Polygon x:Name="ImageBorder"></Polygon>
@@ -87,6 +92,7 @@
                 <Polygon x:Name="rightCover"></Polygon>
             </Canvas>
         </Canvas>
+
     </Grid>
    
 </Window>

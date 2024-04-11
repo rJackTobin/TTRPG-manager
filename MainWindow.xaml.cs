@@ -29,7 +29,7 @@ namespace TTRPG_manager
         private AppConfig _config;
 
         private ServerManager serverManager = new ServerManager();
-
+        public static MainWindow Instance { get; private set; }
         public MainWindow()
         {
             InitializeComponent();
@@ -42,7 +42,7 @@ namespace TTRPG_manager
             this.Loaded += MainWindow_Loaded;
             this.SizeChanged += MainWindow_SizeChanged;
             UpdateUI();
-
+            Instance = this;
         }
         protected override void OnSourceInitialized(EventArgs e)
         {
@@ -64,21 +64,6 @@ namespace TTRPG_manager
         }
         private void LoadCharAnim(Character character)
         {
-
-            /* animatedImage.Width = Width/2;
-             animatedImage.Height = Height / 3;
-
-             // Load the bitmap from the character's image path
-             BitmapImage bitmap = new BitmapImage(new Uri(character.ImagePath));
-             animatedImage.Source = bitmap;
-             RectangleGeometry clip = new RectangleGeometry();
-             clip.Rect = new Rect(0, animatedImage.Height*(1-character.eyeLevel)-animatedImage.Height/4, animatedImage.Width, animatedImage.Height/2);
-             animatedImage.Clip = clip;
-             ScaleTransform scale = new ScaleTransform(2, 2,0,0); // No width scaling, triple height scaling
-
-             // Calculate vertical translation to center the clip
-             TranslateTransform translate = new TranslateTransform(-animatedImage.Height/2, -animatedImage.Height*2 * (1 - character.eyeLevel)+ animatedImage.Height / 2);
-            */
             animatedImage.Width = Width*2/5;
             animatedImage.Height = Height / 3;
 
@@ -193,6 +178,7 @@ namespace TTRPG_manager
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             serverManager.StopServer();
+            ConfigManager.SaveConfig(_config);
         }
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
@@ -219,6 +205,8 @@ namespace TTRPG_manager
                     ((ComboBox)child).Width = width;
                 }
             }
+            AddEnemyButton.Width = Width / 50;
+            AddEnemyButton.Height = Width / 50;
         }
         private void ApplyConfig()
         {
@@ -395,32 +383,63 @@ namespace TTRPG_manager
             if (button == null) return; // Safeguard, should not happen
             var character = button.Tag as Character;
             if (character == null) return; // Another safeguard
-            if (character == null) return; // Another safeguard
             characterManager.NewSkill(character);
             ConfigManager.SaveConfig(_config);
             PopulateCharacterPanels();
         }
 
-        private void StartAnimation(int index)
+        public void StartAnimation(Character character)
         {
             _config = ConfigManager.LoadConfig();
-            LoadCharAnim(_config.Parties[_config.selectedPartyIndex].Members[index]);
+            LoadCharAnim(character);
             AnimateImage();
         }
         private void chooseItemButton_Click(object sender, RoutedEventArgs e)
         {
-            
+            SelectionWindow window = new SelectionWindow(_config.Items, Height, Width);
+            if (window.ShowDialog() == true)
+            {
+                var selectedItem = (Item)window.SelectedItem;
+                var button = sender as Button;
+                if (button == null) return; // Safeguard, should not happen
+                var character = button.Tag as Character;
+                if (character == null) return;
+                characterManager.AddItem(character, selectedItem);
+                ConfigManager.SaveConfig(_config);
+                PopulateCharacterPanels();
+            }
         }
         private void chooseSkillButton_Click(object sender, RoutedEventArgs e)
         {
-
+            SelectionWindow window = new SelectionWindow(_config.Skills, Height, Width);
+            if (window.ShowDialog() == true)
+            {
+                var selectedItem = (Skill)window.SelectedItem;
+                var button = sender as Button;
+                if (button == null) return; // Safeguard, should not happen
+                var character = button.Tag as Character;
+                if (character == null) return;
+                characterManager.AddSkill(character, selectedItem);
+                ConfigManager.SaveConfig(_config);
+                PopulateCharacterPanels();
+            }
         }
         private void btnAmbush_Click(object sender, RoutedEventArgs e)
         {
             CombatManager.Ambush();
             UpdateUI();
         }
+        private void AddEnemyButton_Click(object sender, RoutedEventArgs e)
+        {
+            SelectionWindow window = new SelectionWindow(_config.Enemies, Height, Width);
+            if (window.ShowDialog() == true)
+            {
+                var selectedItem = (Enemy)window.SelectedItem;
+                var panel = new EnemyPanelControl(selectedItem);
+                EnemyPanels.Children.Add(panel);
+            }
 
+        }
         private void btnNextTurn_Click(object sender, RoutedEventArgs e)
         {
             CombatManager.NextTurn();
@@ -454,9 +473,11 @@ namespace TTRPG_manager
                 lblTurnStatus.Foreground = new SolidColorBrush(Colors.MidnightBlue); // Default color when neither's turn
             }
         }
-        private void PopulateCharacterPanels()
+        public void PopulateCharacterPanels()
         {
-            _config = ConfigManager.LoadConfig();
+            this.Dispatcher.Invoke(() =>
+            {
+                _config = ConfigManager.LoadConfig();
             int i = 0;
             CharacterPanels.Children.Clear(); // Clear existing panels 
             if (_config.Parties.Count > 0 && _config.selectedPartyIndex >= 0 && _config.selectedPartyIndex < _config.Parties.Count)
@@ -610,7 +631,7 @@ namespace TTRPG_manager
                     var chooseSkillButton = new Button
                     {
                         Content = "+",
-                        Tag = index, // Store the character in the Tag property
+                        Tag = character, // Store the character in the Tag property
                         Margin = new Thickness(Width / 17, Height / 150, Width / 500, Height / 150),
                         Width = Width / 60,
                         HorizontalAlignment = HorizontalAlignment.Right,
@@ -665,7 +686,7 @@ namespace TTRPG_manager
                     var chooseItemButton = new Button
                     {
                         Content = "+",
-                        Tag = index, // Store the character in the Tag property
+                        Tag = character, // Store the character in the Tag property
                         Width = Width / 60,
                         HorizontalAlignment = HorizontalAlignment.Right,
                         Margin = new Thickness(Width / 17, Height / 150, Width / 500, Height / 150),
@@ -773,7 +794,7 @@ namespace TTRPG_manager
                             TextWrapping = TextWrapping.Wrap,
                             Margin = new Thickness(5),
                             AcceptsReturn = true,
-                            Background = new SolidColorBrush(Colors.Transparent), // Optional
+                            Background = new SolidColorBrush(Colors.LightGray), // Optional
                             BorderThickness = new Thickness(0) // Optionally remove border
                         };
                         descriptionTextBox.TextChanged += (sender, e) =>
@@ -790,7 +811,7 @@ namespace TTRPG_manager
                         var SPBar = new ProgressBar
                         {
                             Margin = new Thickness(0, 2, 0, 2),
-                            Height = Height / 50,
+                            Height = Height / 80,
                             Width = Width / 8,
                             Value = skill.Cooldown,
                             Maximum = skill.BaseCooldown,
@@ -805,7 +826,7 @@ namespace TTRPG_manager
                         {
                             character.useSkill(skill);  // Call the ExecuteSkill() method when the ProgressBar is clicked
                             ConfigManager.SaveConfig(_config);
-                            StartAnimation(index);
+                            StartAnimation(character);
                             PopulateCharacterPanels();
                         };
                         var SPPanel = new StackPanel
@@ -854,7 +875,7 @@ namespace TTRPG_manager
                             Margin = new Thickness(0),
                             BorderThickness = new Thickness(0), // Optionally remove border for a cleaner look
                             Background = new SolidColorBrush(Colors.Transparent), // Optional: make the TextBox background transparent
-                            Width = Width / 7,
+                            Width = Width / 12,
                         };
                         // Bind the TextChanged event to update the item's name
                         nameTextBox.TextChanged += (sender, e) =>
@@ -888,8 +909,40 @@ namespace TTRPG_manager
 
                         // Assign the context menu to the Expander
                         expander.ContextMenu = contextMenu;
+                        var headerPanel = new StackPanel
+                        {
+                            Orientation = Orientation.Horizontal,
+                            HorizontalAlignment = HorizontalAlignment.Stretch,
+                        };
+                        var usesTextBox = new TextBox
+                        {
+                            Text = $"{item.Count} / {item.MaxUses}",
+                            Margin = new Thickness(5, 0, 5, 0),
+                            BorderThickness = new Thickness(0),
+                            Background = new SolidColorBrush(Colors.Transparent),
+                            Width = Width / 15, // Adjust width as needed to accommodate the text
+                            HorizontalAlignment = HorizontalAlignment.Right,
+                            TextAlignment = TextAlignment.Center // Center the text for better aesthetics
+                        };
+                        usesTextBox.TextChanged += (sender, e) =>
+                        {
+                            var parts = usesTextBox.Text.Split('/');
+                            if (parts.Length == 2 && int.TryParse(parts[0].Trim(), out int newRemainingUses) && int.TryParse(parts[1].Trim(), out int newMaxUses))
+                            {
+                                item.Count = newRemainingUses;
+                                item.MaxUses = newMaxUses;
+                                ConfigManager.SaveConfig(_config);
+                            }
+                        };
+
+                        // Add the usesTextBox to the headerPanel
+
+                        // Add the nameTextBox to the headerPanel
+                        headerPanel.Children.Add(nameTextBox);
+                        headerPanel.Children.Add(usesTextBox);
+                        expander.Header = headerPanel;
                         // Set the Expander's header to the TextBox
-                        expander.Header = nameTextBox;
+                        
                         // Create a TextBox for the item's description inside the Expander's content
                         var descriptionTextBox = new TextBox
                         {
@@ -898,7 +951,7 @@ namespace TTRPG_manager
                             TextWrapping = TextWrapping.Wrap,
                             Margin = new Thickness(5),
                             AcceptsReturn = true,
-                            Background = new SolidColorBrush(Colors.Transparent), // Optional
+                            Background = new SolidColorBrush(Colors.LightGray), // Optional
                             BorderThickness = new Thickness(0) // Optionally remove border
                         };
                         descriptionTextBox.TextChanged += (sender, e) =>
@@ -935,7 +988,7 @@ namespace TTRPG_manager
                             Margin = new Thickness(0),
                             BorderThickness = new Thickness(0), // Optionally remove border for a cleaner look
                             Background = new SolidColorBrush(Colors.Transparent), // Optional: make the TextBox background transparent
-                            Width = Width / 7,
+                            Width = Width / 12,
                         };
 
                         // Bind the TextChanged event to update the item's name
@@ -951,7 +1004,38 @@ namespace TTRPG_manager
                         };
 
                         // Set the Expander's header to the TextBox
-                        expander.Header = nameTextBox;
+                        var headerPanel = new StackPanel
+                        {
+                            Orientation = Orientation.Horizontal,
+                            HorizontalAlignment = HorizontalAlignment.Stretch,
+                        };
+                        var usesTextBox = new TextBox
+                        {
+                            Text = $"{item.Count} / {item.MaxUses}",
+                            Margin = new Thickness(5, 0, 5, 0),
+                            BorderThickness = new Thickness(0),
+                            Background = new SolidColorBrush(Colors.Transparent),
+                            Width = Width / 15, // Adjust width as needed to accommodate the text
+                            HorizontalAlignment = HorizontalAlignment.Right,
+                            TextAlignment = TextAlignment.Center // Center the text for better aesthetics
+                        };
+                        usesTextBox.TextChanged += (sender, e) =>
+                        {
+                            var parts = usesTextBox.Text.Split('/');
+                            if (parts.Length == 2 && int.TryParse(parts[0].Trim(), out int newRemainingUses) && int.TryParse(parts[1].Trim(), out int newMaxUses))
+                            {
+                                item.Count = newRemainingUses;
+                                item.MaxUses = newMaxUses;
+                                ConfigManager.SaveConfig(_config);
+                            }
+                        };
+
+                        // Add the usesTextBox to the headerPanel
+
+                        // Add the nameTextBox to the headerPanel
+                        headerPanel.Children.Add(nameTextBox);
+                        headerPanel.Children.Add(usesTextBox);
+                        expander.Header = headerPanel;
 
                         var contextMenu = new ContextMenu
                         {
@@ -1004,7 +1088,7 @@ namespace TTRPG_manager
                     CharacterPanels.Children.Add(panel); // Finally, add the panel to the CharacterPanels stack panel
                 }
             }
+            });
         }
-        
-    }
+    }    
 }
