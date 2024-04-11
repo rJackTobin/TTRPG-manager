@@ -18,7 +18,7 @@ public static class CombatManager
         {
             foreach (Skill skill in character.Skills)
             {
-                skill.Cooldown = Math.Max(0, skill.Cooldown - 1);
+                skill.Cooldown = Math.Min(skill.BaseCooldown, skill.Cooldown+1);
             }
         }
 
@@ -47,6 +47,7 @@ public static class CombatManager
 
         }
         totalTurns++;
+        ConfigManager.SaveConfig(config);
     }
 
     private static void EndRound()
@@ -107,21 +108,13 @@ public static class CombatManager
             }
         }
         ResetTurn();
+        ConfigManager.SaveConfig(config);
     }
 
     public static bool IsCombatOver()
     {
         // Placeholder logic to determine if combat should end
         return false; // Actual implementation needed
-    }
-
-    public static void ExecuteSkill(Character character, Skill skill)
-    {
-        if (skill.Cooldown == 0)
-        {
-            // Execute skill logic here
-            skill.Cooldown = 0;
-        }
     }
 
     public static void changeParty()

@@ -400,13 +400,16 @@ namespace TTRPG_manager
             ConfigManager.SaveConfig(_config);
             PopulateCharacterPanels();
         }
-        private void chooseItemButton_Click(object sender, RoutedEventArgs e)
+
+        private void StartAnimation(int index)
         {
             _config = ConfigManager.LoadConfig();
-            var button = sender as Button;
-            int index = (int)button.Tag;
             LoadCharAnim(_config.Parties[_config.selectedPartyIndex].Members[index]);
             AnimateImage();
+        }
+        private void chooseItemButton_Click(object sender, RoutedEventArgs e)
+        {
+            
         }
         private void chooseSkillButton_Click(object sender, RoutedEventArgs e)
         {
@@ -422,12 +425,14 @@ namespace TTRPG_manager
         {
             CombatManager.NextTurn();
             UpdateUI();
+            PopulateCharacterPanels();
         }
 
         private void btnEndCombat_Click(object sender, RoutedEventArgs e)
         {
             CombatManager.EndCombat();
             UpdateUI();
+            PopulateCharacterPanels();
         }
 
         private void UpdateUI()
@@ -680,8 +685,10 @@ namespace TTRPG_manager
                     panel.Children.Add(HPPanel);
                     panel.Children.Add(MPPanel);
                     panel.Children.Add(skillPanel);
+                    
                     foreach (var skill in character.Skills)
                     {
+                        
                         // Create the Expander
                         var expander = new Expander
                         {
@@ -696,7 +703,7 @@ namespace TTRPG_manager
                             Margin = new Thickness(0),
                             BorderThickness = new Thickness(0), // Optionally remove border for a cleaner look
                             Background = new SolidColorBrush(Colors.Transparent), // Optional: make the TextBox background transparent
-                            Width = Width / 11,
+                            Width = Width / 12,
                         };
                         // Bind the TextChanged event to update the item's name
                         nameTextBox.TextChanged += (sender, e) =>
@@ -725,7 +732,38 @@ namespace TTRPG_manager
                         // Assign the context menu to the Expander
                         expander.ContextMenu = contextMenu;
                         // Set the Expander's header to the TextBox
-                        expander.Header = nameTextBox;
+                        var headerPanel = new StackPanel
+                        {
+                            Orientation = Orientation.Horizontal,
+                            HorizontalAlignment = HorizontalAlignment.Stretch,
+                        };
+                        var usesTextBox = new TextBox
+                        {
+                            Text = $"{skill.RemainingUses} / {skill.MaxUses}",
+                            Margin = new Thickness(5, 0, 5, 0),
+                            BorderThickness = new Thickness(0),
+                            Background = new SolidColorBrush(Colors.Transparent),
+                            Width = Width / 15, // Adjust width as needed to accommodate the text
+                            HorizontalAlignment = HorizontalAlignment.Right,
+                            TextAlignment = TextAlignment.Center // Center the text for better aesthetics
+                        };
+                        usesTextBox.TextChanged += (sender, e) =>
+                        {
+                            var parts = usesTextBox.Text.Split('/');
+                            if (parts.Length == 2 && int.TryParse(parts[0].Trim(), out int newRemainingUses) && int.TryParse(parts[1].Trim(), out int newMaxUses))
+                            {
+                                skill.RemainingUses = newRemainingUses;
+                                skill.MaxUses = newMaxUses;
+                                ConfigManager.SaveConfig(_config);
+                            }
+                        };
+
+                        // Add the usesTextBox to the headerPanel
+                        
+                        // Add the nameTextBox to the headerPanel
+                        headerPanel.Children.Add(nameTextBox);
+                        headerPanel.Children.Add(usesTextBox);
+                        expander.Header = headerPanel;
 
                         // Create a TextBox for the item's description inside the Expander's content
                         var descriptionTextBox = new TextBox
@@ -758,6 +796,18 @@ namespace TTRPG_manager
                             Maximum = skill.BaseCooldown,
                             Foreground = new SolidColorBrush(Colors.Gold),
                         };
+                        var clickableArea = new Border
+                        {
+                            Background = new SolidColorBrush(Colors.Transparent), // Make the border transparent
+                            Child = SPBar
+                        };
+                        clickableArea.MouseLeftButtonDown += (sender, e) =>
+                        {
+                            character.useSkill(skill);  // Call the ExecuteSkill() method when the ProgressBar is clicked
+                            ConfigManager.SaveConfig(_config);
+                            StartAnimation(index);
+                            PopulateCharacterPanels();
+                        };
                         var SPPanel = new StackPanel
                         {
                             Orientation = Orientation.Horizontal,
@@ -776,13 +826,15 @@ namespace TTRPG_manager
                         };
                         minusSP.Click += (sender, e) => { skill.DownSP(1); ConfigManager.SaveConfig(_config); PopulateCharacterPanels(); };
                         SPPanel.Children.Add(minusSP);
-                        SPPanel.Children.Add(SPBar);
+                        
+                        SPPanel.Children.Add(clickableArea);
                         SPPanel.Children.Add(plusSP);
                         // Add the Expander to the panel
                         panel.Children.Add(expander);
                         if (skill.BaseCooldown > 0) {
                             panel.Children.Add(SPPanel);
                         }
+
                     }
                     panel.Children.Add(equippedItemsText);
                     foreach (var item in character.EquippedItems)

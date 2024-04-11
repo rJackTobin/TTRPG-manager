@@ -80,6 +80,17 @@ namespace TTRPG_manager
         {
             this.CurrentMP = Math.Max(0, this.CurrentMP - amount);
         }
+
+        public void useSkill(Skill skill)
+        {
+            for (int i = 0; i < this.Skills.Count; i++)
+            {
+                if (skill == this.Skills[i])
+                {
+                    this.Skills[i].Cooldown = 0;
+                }
+            }
+        }
     }
 
 }
