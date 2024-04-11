@@ -65,22 +65,38 @@ namespace TTRPG_manager
         private void LoadCharAnim(Character character)
         {
 
-            animatedImage.Width = Height*3/ 4;
+            /* animatedImage.Width = Width/2;
+             animatedImage.Height = Height / 3;
+
+             // Load the bitmap from the character's image path
+             BitmapImage bitmap = new BitmapImage(new Uri(character.ImagePath));
+             animatedImage.Source = bitmap;
+             RectangleGeometry clip = new RectangleGeometry();
+             clip.Rect = new Rect(0, animatedImage.Height*(1-character.eyeLevel)-animatedImage.Height/4, animatedImage.Width, animatedImage.Height/2);
+             animatedImage.Clip = clip;
+             ScaleTransform scale = new ScaleTransform(2, 2,0,0); // No width scaling, triple height scaling
+
+             // Calculate vertical translation to center the clip
+             TranslateTransform translate = new TranslateTransform(-animatedImage.Height/2, -animatedImage.Height*2 * (1 - character.eyeLevel)+ animatedImage.Height / 2);
+            */
+            animatedImage.Width = Width*2/5;
             animatedImage.Height = Height / 3;
-            
+
             // Load the bitmap from the character's image path
             BitmapImage bitmap = new BitmapImage(new Uri(character.ImagePath));
             animatedImage.Source = bitmap;
+            double aspectRatio = bitmap.PixelWidth / (double)bitmap.PixelHeight;
+      
             RectangleGeometry clip = new RectangleGeometry();
-            clip.Rect = new Rect(0, animatedImage.Height*(1-character.eyeLevel)-animatedImage.Height/4, animatedImage.Width, animatedImage.Height/2);
+            clip.Rect = new Rect(0, animatedImage.Height * (1 - character.eyeLevel) - animatedImage.Height*aspectRatio / 4, animatedImage.Width, animatedImage.Height*aspectRatio / 2);
             animatedImage.Clip = clip;
-            ScaleTransform scale = new ScaleTransform(2, 2,0,0); // No width scaling, triple height scaling
+            ScaleTransform scale = new ScaleTransform(2/aspectRatio, 2/aspectRatio, 0, 0); // No width scaling, triple height scaling
 
             // Calculate vertical translation to center the clip
-            TranslateTransform translate = new TranslateTransform(-animatedImage.Height/2, -animatedImage.Height*2 * (1 - character.eyeLevel)+ animatedImage.Height / 2);
-
-            // Combine scale and translate transformations
-            TransformGroup transformGroup = new TransformGroup();
+            TranslateTransform translate = new TranslateTransform(-animatedImage.Height /(aspectRatio*2), -animatedImage.Height/aspectRatio * 2 * (1 - character.eyeLevel) + animatedImage.Height /(2));
+            
+             // Combine scale and translate transformations
+             TransformGroup transformGroup = new TransformGroup();
             transformGroup.Children.Add(scale);
             transformGroup.Children.Add(translate);
             animatedImage.RenderTransform = transformGroup;
