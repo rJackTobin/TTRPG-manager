@@ -99,7 +99,7 @@ namespace TTRPG_manager
                                             var mainWindow = Application.Current.MainWindow as MainWindow;
                                             mainWindow?.StartAnimation(character);
                                             mainWindow?.PopulateCharacterPanels();
-                                             // Assuming you have a method RunAnimation for animations
+                                             
                                         });
                                         responseString = "Skill used successfully.";
                                     }
@@ -377,19 +377,25 @@ namespace TTRPG_manager
             stringBuilder.Append("<script>");
             stringBuilder.Append(@"
     function useSkill(characterName, skillName) {
-        const data = `CharacterName=${encodeURIComponent(characterName)}&SkillName=${encodeURIComponent(skillName)}`;
-        fetch('/useSkill', {
-            method: 'POST',
-            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-            body: data
-        })
-        .then(response => response.text())
-        .then(text => {
-            alert('Skill used successfully! Response: ' + text);
-            // Optionally update the UI here to reflect changes
-        })
-        .catch(error => console.error('Error using skill:', error));
-    }");
+    const data = `CharacterName=${encodeURIComponent(characterName)}&SkillName=${encodeURIComponent(skillName)}`;
+    fetch('/useSkill', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        body: data
+    })
+    .then(response => response.text())
+    .then(text => {
+        // Only show alert if there is a problem or specific condition
+        if (!text.includes(""successfully"")) { // Change this condition based on actual success message
+            alert('Response: ' + text);
+        }
+        // Optionally update the UI here to reflect changes
+    })
+    .catch(error => {
+        console.error('Error using skill:', error);
+        alert('Error using skill: ' + error); // Show alert on errors
+    });
+}");
             stringBuilder.Append("</script>");
             stringBuilder.Append("</head><body>");
             stringBuilder.AppendFormat("<h2>{0}</h2><br>", character.Name);
@@ -408,13 +414,7 @@ namespace TTRPG_manager
             stringBuilder.AppendFormat("<p>Race: <input type='text' name='Race' value='{0}' /></p>", character.Race);
             stringBuilder.AppendFormat("<p>Title: <input type='text' name='Title' value='{0}' /></p>", character.Title);
 
-            // Inventory section
-            stringBuilder.Append("<h3>Inventory</h3><ul>");
-            foreach (var item in character.Inventory)
-            {
-                stringBuilder.AppendFormat("<li>{0} - {1} (Count: {2}, Uses: {3}/{4})</li>", item.Name, item.Description, item.Count, item.Uses, item.MaxUses);
-            }
-            stringBuilder.Append("</ul>");
+            
 
             // Skills section
             stringBuilder.Append("<h3>Skills</h3><ul>");
@@ -424,7 +424,20 @@ namespace TTRPG_manager
                 skill.Name, skill.Description, character.Name, skill.Name);
             }
             stringBuilder.Append("</ul>");
-            // Append more fields as needed, based on Character class properties
+            //Equipped Items Section
+            stringBuilder.Append("<h3>Equipment</h3><ul>");
+            foreach (var item in character.EquippedItems)
+            {
+                stringBuilder.AppendFormat("<li>{0} - {1} (Count: {2}</li>", item.Name, item.Description);
+            }
+            stringBuilder.Append("</ul>");
+            // Inventory section
+            stringBuilder.Append("<h3>Inventory</h3><ul>");
+            foreach (var item in character.Inventory)
+            {
+                stringBuilder.AppendFormat("<li>{0} - {1} (Count: {2}, Uses: {3}/{4})</li>", item.Name, item.Description, item.Count, item.Uses, item.MaxUses);
+            }
+            stringBuilder.Append("</ul>");
 
             stringBuilder.Append("<input type='submit' value='Update Character'/>");
             stringBuilder.Append("</form>");
