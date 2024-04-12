@@ -343,7 +343,8 @@ namespace TTRPG_manager
             stringBuilder.Append("<select name='name'>");
 
             
-                foreach (var character in _config.Parties[_config.selectedPartyIndex].Members)
+
+            foreach (var character in _config.Parties[_config.selectedPartyIndex].Members)
                 {
                     stringBuilder.AppendFormat("<option value='{0}'>{0}</option>", character.Name);
                 }

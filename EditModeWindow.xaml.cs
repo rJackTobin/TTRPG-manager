@@ -124,17 +124,23 @@ namespace TTRPG_manager
         }
         public void SaveItemButton_Click(object sender, RoutedEventArgs e)
         {
-            updated_config.Items[ItemList.SelectedIndex].Name = ItemNameBox.Text;
-            updated_config.Items[ItemList.SelectedIndex].Description = ItemDescBox.Text;
-            ConfigManager.SaveConfig(updated_config);
-            ItemNameBox.Text = null; ItemDescBox.Text = null;
+            if (ItemList.SelectedIndex != -1)
+            {
+                updated_config.Items[ItemList.SelectedIndex].Name = ItemNameBox.Text;
+                updated_config.Items[ItemList.SelectedIndex].Description = ItemDescBox.Text;
+                ConfigManager.SaveConfig(updated_config);
+                ItemNameBox.Text = null; ItemDescBox.Text = null;
+            }
         }
 
         public void DeleteItemButton_Click(object sender, RoutedEventArgs e)
         {
-            updated_config.Items.RemoveAt(ItemList.SelectedIndex);
-            ConfigManager.SaveConfig(updated_config);
-            ItemNameBox.Text = null; ItemDescBox.Text = null;
+            if (ItemList.SelectedIndex != -1)
+            {
+                updated_config.Items.RemoveAt(ItemList.SelectedIndex);
+                ConfigManager.SaveConfig(updated_config);
+                ItemNameBox.Text = null; ItemDescBox.Text = null;
+            }
         }
 
         private void PartyComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -273,6 +279,7 @@ namespace TTRPG_manager
         {
             if (sender == characterEditButton)
             {
+                if (CharacterComboBox.SelectedIndex == -1) { return; }
                 int i = CharacterComboBox.SelectedIndex;
                 Character edited = (Character)updated_config.Characters[i].Clone();
                 CharacterEditWindow charEdit = new CharacterEditWindow(Height, Width, edited);
@@ -286,6 +293,7 @@ namespace TTRPG_manager
             }
             else if (sender == memberEditButton)
             {
+                if (memberComboBox.SelectedIndex == -1) { return; }
                 int i = partyComboBox.SelectedIndex;
                 int j = memberComboBox.SelectedIndex;
                 if (i != -1 && j != -1)

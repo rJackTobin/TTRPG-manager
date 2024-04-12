@@ -18,7 +18,7 @@
         </Style>
         
         <Style TargetType="Button">
-            <Setter Property="FontSize" Value="{Binding Path=Width, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource ScaleConverter}, ConverterParameter=0.005}"/>
+            <Setter Property="FontSize" Value="{Binding Path=Width, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource ScaleConverter}, ConverterParameter=0.006}"/>
         </Style>
         <Style TargetType="ComboBox">
             <Setter Property="FontSize" Value="{Binding Path=Width, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource ScaleConverter}, ConverterParameter=0.005}"/>

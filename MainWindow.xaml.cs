@@ -126,7 +126,7 @@ namespace TTRPG_manager
             var canvasHeight = this.Height;
 
             // Set initial positioning of the animationCanvas
-            double initialLeftPosition = -(Width * 3);
+            double initialLeftPosition = -(Width * 2);
             Canvas.SetLeft(animCanvas, initialLeftPosition);
             double centerTopPosition = (canvasHeight - animatedImage.Height) / 2;
             Canvas.SetTop(animCanvas, centerTopPosition);
@@ -136,7 +136,7 @@ namespace TTRPG_manager
             {
                 From = initialLeftPosition,
                 To = Width/5, // Midway minus half width of the container
-                Duration = TimeSpan.FromSeconds(1),
+                Duration = TimeSpan.FromSeconds(0.3),
                 EasingFunction = new PowerEase { Power = 2, EasingMode = EasingMode.EaseIn }
             };
 
@@ -145,7 +145,7 @@ namespace TTRPG_manager
                 From = Width/5,
                 To = Width/4,
                 Duration = TimeSpan.FromSeconds(1),
-                BeginTime = TimeSpan.FromSeconds(1),
+                BeginTime = TimeSpan.FromSeconds(0.3),
                 
             };
             // Phase 2 Animation
@@ -155,7 +155,7 @@ namespace TTRPG_manager
                 To = Width * 3, // To the end beyond the initial right edge
                 Duration = TimeSpan.FromSeconds(1),
                 EasingFunction = new PowerEase { Power = 2, EasingMode = EasingMode.EaseOut },
-                BeginTime = TimeSpan.FromSeconds(2) // Start after phase 1 ends and a slight pause
+                BeginTime = TimeSpan.FromSeconds(1.3) // Start after phase 1 ends and a slight pause
             };
 
             // Storyboard setup
@@ -330,6 +330,7 @@ namespace TTRPG_manager
 
          private void StartServer_Click(object sender, RoutedEventArgs e)
          {
+            if (_config.Parties.Count == 0 || _config.selectedPartyIndex == -1) { return; }
             if (!_config.usingNgrok)
             {
                 if (serverManager.StartServer())
@@ -611,6 +612,7 @@ namespace TTRPG_manager
                     {
                         Text = "Skills: ",
                         FontSize = Width / 150,
+                        FontWeight = FontWeights.Bold,
                         Foreground = new SolidColorBrush(Colors.Black),
                         Margin = new Thickness(Width / 500, 5, Width / 500, 5),
                         TextWrapping = TextWrapping.Wrap,
@@ -649,6 +651,7 @@ namespace TTRPG_manager
                     {
                         Text = "Equipped: ",
                         FontSize = Width / 150,
+                        FontWeight = FontWeights.Bold,
                         Foreground = new SolidColorBrush(Colors.Black),
                         Margin = new Thickness(5),
                         TextWrapping = TextWrapping.Wrap,
@@ -666,6 +669,7 @@ namespace TTRPG_manager
                     {
                         Text = "Inventory: ",
                         FontSize = Width / 150,
+                        FontWeight = FontWeights.Bold,
                         Foreground = new SolidColorBrush(Colors.Black),
                         Margin = new Thickness(Width / 500, 5, Width / 500, 5),
                         TextWrapping = TextWrapping.Wrap,
@@ -702,7 +706,7 @@ namespace TTRPG_manager
                     // Adding elements to the main panel
                     panel.Children.Add(characterNameText);
                     if (characterImage != null) panel.Children.Add(characterImage);
-                    panel.Children.Add(InfoPanel);
+                    //panel.Children.Add(InfoPanel);
                     panel.Children.Add(HPPanel);
                     panel.Children.Add(MPPanel);
                     panel.Children.Add(skillPanel);
@@ -724,7 +728,7 @@ namespace TTRPG_manager
                             Margin = new Thickness(0),
                             BorderThickness = new Thickness(0), // Optionally remove border for a cleaner look
                             Background = new SolidColorBrush(Colors.Transparent), // Optional: make the TextBox background transparent
-                            Width = Width / 12,
+                            Width = Width / 12 - 10,
                         };
                         // Bind the TextChanged event to update the item's name
                         nameTextBox.TextChanged += (sender, e) =>
@@ -765,7 +769,7 @@ namespace TTRPG_manager
                             BorderThickness = new Thickness(0),
                             Background = new SolidColorBrush(Colors.Transparent),
                             Width = Width / 15, // Adjust width as needed to accommodate the text
-                            HorizontalAlignment = HorizontalAlignment.Right,
+                            HorizontalAlignment = HorizontalAlignment.Left,
                             TextAlignment = TextAlignment.Center // Center the text for better aesthetics
                         };
                         usesTextBox.TextChanged += (sender, e) =>
@@ -875,7 +879,7 @@ namespace TTRPG_manager
                             Margin = new Thickness(0),
                             BorderThickness = new Thickness(0), // Optionally remove border for a cleaner look
                             Background = new SolidColorBrush(Colors.Transparent), // Optional: make the TextBox background transparent
-                            Width = Width / 12,
+                            Width = Width / 12 - 10,
                         };
                         // Bind the TextChanged event to update the item's name
                         nameTextBox.TextChanged += (sender, e) =>
@@ -988,7 +992,7 @@ namespace TTRPG_manager
                             Margin = new Thickness(0),
                             BorderThickness = new Thickness(0), // Optionally remove border for a cleaner look
                             Background = new SolidColorBrush(Colors.Transparent), // Optional: make the TextBox background transparent
-                            Width = Width / 12,
+                            Width = Width / 12 - 10,
                         };
 
                         // Bind the TextChanged event to update the item's name

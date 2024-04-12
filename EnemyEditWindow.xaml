@@ -63,6 +63,6 @@
         <Button Grid.Row="6" Grid.Column="5" Click="SaveCloseButtonClick">Save and Close</Button>
         <Button Grid.Row="7" Grid.Column="5" Click="CancelButtonClick">Cancel</Button>
         <Image x:Name="portrait" Grid.Row="1" Grid.Column="5" Source="{Binding ImagePath, Mode=OneWay}"></Image>
-        <Button Grid.Row="2" Grid.Column="5" Click="OnBrowseButtonClick">Browse</Button>
+        <Button Grid.Row="2" Grid.Column="5" Click="OnBrowseButtonClick">Browse for Image</Button>
     </Grid>
 </Window>

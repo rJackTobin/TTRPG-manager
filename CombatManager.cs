@@ -12,7 +12,7 @@ public static class CombatManager
     public static void NextTurn()
     {
         AppConfig config = ConfigManager.LoadConfig();
-
+        if (config.Parties.Count == 0) { return; }
         // Reduce skill cooldowns for the active party
         foreach (Character character in config.Parties[config.selectedPartyIndex].Members)
         {
@@ -100,6 +100,8 @@ public static class CombatManager
     {
         // Clean up combat state, potentially calculate rewards or outcomes
         AppConfig config = ConfigManager.LoadConfig();
+        if (config.Parties.Count == 0) { return; }
+
         foreach (Character character in config.Parties[config.selectedPartyIndex].Members)
         {
             foreach (Skill skill in character.Skills)
