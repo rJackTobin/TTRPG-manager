@@ -43,8 +43,12 @@ namespace TTRPG_manager
             var parts = updated_config.Resolution.Split('x');
             this.Width = SystemParameters.PrimaryScreenWidth * 0.8;
             this.Height = SystemParameters.PrimaryScreenHeight * 0.8;
+            this.Closing += Window_Closing;
         }
-
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            DialogResult = true;
+        }
         public void AddMemberButton_Click(object sender, RoutedEventArgs e)
         {
             int i = partyComboBox.SelectedIndex;
