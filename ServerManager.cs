@@ -137,7 +137,17 @@ namespace TTRPG_manager
                                         mainWindow?.PopulateCharacterPanels();
 
                                     });
-                                    responseString = "HP updated successfully.";
+                                    var responseObj = new
+                                    {
+                                        Success = true,
+                                        CurrentHP = character.CurrentHP,
+                                        MaxHP = character.MaxHP,
+                                        Message = "HP updated successfully."
+                                    };
+
+                                    // Convert the response object to JSON
+                                    responseString = JsonSerializer.Serialize(responseObj);
+                                    response.ContentType = "application/json";
                                 }
                                 else
                                 {
@@ -166,7 +176,17 @@ namespace TTRPG_manager
                                         mainWindow?.PopulateCharacterPanels();
 
                                     });
-                                    responseString = "HP updated successfully.";
+                                    var responseObj = new
+                                    {
+                                        Success = true,
+                                        CurrentHP = character.CurrentHP,
+                                        MaxHP = character.MaxHP,
+                                        Message = "HP updated successfully."
+                                    };
+
+                                    // Convert the response object to JSON
+                                    responseString = JsonSerializer.Serialize(responseObj);
+                                    response.ContentType = "application/json";
                                 }
                                 else
                                 {
@@ -195,7 +215,17 @@ namespace TTRPG_manager
                                         mainWindow?.PopulateCharacterPanels();
 
                                     });
-                                    responseString = "HP updated successfully.";
+                                    var responseObj = new
+                                    {
+                                        Success = true,
+                                        CurrentMP = character.CurrentMP,
+                                        MaxMP = character.MaxMP,
+                                        Message = "MP updated successfully."
+                                    };
+
+                                    // Convert the response object to JSON
+                                    responseString = JsonSerializer.Serialize(responseObj);
+                                    response.ContentType = "application/json";
                                 }
                                 else
                                 {
@@ -224,7 +254,17 @@ namespace TTRPG_manager
                                         mainWindow?.PopulateCharacterPanels();
 
                                     });
-                                    responseString = "HP updated successfully.";
+                                    var responseObj = new
+                                    {
+                                        Success = true,
+                                        CurrentMP = character.CurrentMP,
+                                        MaxMP = character.MaxMP,
+                                        Message = "MP updated successfully."
+                                    };
+
+                                    // Convert the response object to JSON
+                                    responseString = JsonSerializer.Serialize(responseObj);
+                                    response.ContentType = "application/json";
                                 }
                                 else
                                 {
@@ -483,8 +523,9 @@ namespace TTRPG_manager
             stringBuilder.Append("<style>");
             stringBuilder.Append("input[type=\"submit\"], button {\r\n    font-size: 24px;\r\n    padding: 10px 20px;\r\n    background-color: #007BFF;\r\n    color: white;\r\n    border: none;\r\n    border-radius: 5px;\r\n    cursor: pointer;\r\n    transition: background-color 0.3s;\r\n}\r\n\r\ninput[type=\"submit\"]:hover, button:hover {\r\n    background-color: #0056b3; /* Darker blue when hovered for better user interaction */\r\n}\r\n");
             stringBuilder.Append(".expander-label {\r\n cursor: pointer;\r\n  max-width: 800px;\r\n  padding: 5px;\r\n    background-color: #f9f9f9;\r\n    border: solid 1px #ccc;\r\n    display: block;\r\n    color: #000;\r\n}\r\n\r\n.expander-content {\r\n    display: none;\r\n  max-width: 800px;\r\n  padding: 5px;\r\n    border: solid 1px #ccc;\r\n    border-top: none;\r\n    background-color: #fff;\r\n}");
-            stringBuilder.Append(".bar-container {\r\n max-width: 400px;\r\n   width: 110%; \r\n    background-color: #ddd; \r\n    border-radius: 8px; \r\n    margin: 5px 0;\r\n    display: flex;  \r\n align-items: center; \r\n}" +
-                ".bar {\r\n    flex-grow: 1; /* Bar takes up most of the space */\r\n    height: 20px;\r\n    color: white;\r\n    text-align: center;\r\n    line-height: 20px;\r\n    border-radius: 8px;\r\n}" +
+            
+            stringBuilder.Append(".bar-container {\r\n max-width: 400px;\r\n   width: 110%; \r\n    background-color: #ddd; \r\n    border-radius: 8px; \r\n    margin: 5px 0;\r\n    display:grid ; \r\n grid-template-columns: auto 1fr auto; \r\n align-items: center; \r\n}" +
+                ".bar {\r\n    height: 20px;\r\n    color: white;\r\n    text-align: center;\r\n    line-height: 20px;\r\n    border-radius: 8px;\r\n}" +
                 "\r\n\r\n.hp-bar { background-color: #f44336; }" +
                 "\r\n.mp-bar { background-color: #2196F3; }" +
                 "\r\n\r\n.adjust-btn {\r\n    width: 30px; /* Fixed width for buttons */\r\n    height: 32px;\r\n    font-size: 24px;\r\n  padding: 10;\r\n  margin: 0 5px;\r\n    background-color: #f0f0f0;" +
@@ -500,6 +541,12 @@ namespace TTRPG_manager
             // Include the JavaScript function for AJAX calls
             stringBuilder.Append("<script>");
             stringBuilder.Append(@"
+                function updateUI() {
+                    const characterName = document.getElementById('character-name');  // Encode the character name to ensure it's safe for URL usage
+                        upHP(characterName, 0);
+                        upMP(characterName, 0);
+                }
+                setInterval(updateUI, 5000);
                 function useSkill(characterName, skillName) {
                 const data = `CharacterName=${encodeURIComponent(characterName)}&SkillName=${encodeURIComponent(skillName)}`;
                 fetch('/useSkill', {
@@ -541,17 +588,19 @@ namespace TTRPG_manager
                     headers: {'Content-Type': 'application/x-www-form-urlencoded'},
                     body: data
                 })
-                .then(response => response.text())
-                .then(text => {
-                    if (!text.includes(""successfully"")) {
-                        alert('Response: ' + text);
+                .then(response => response.json())
+                .then(data => {
+                    if (data.Success) {
+                        updateHPBar(data.CurrentHP, data.MaxHP);
+                    } else {
+                        alert('Failed to update HP: ' + data.Message);
                     }
-                    // Optionally update the UI here to reflect changes
                 })
                 .catch(error => {
                     console.error('Error healing:', error);
                     alert('Error healing: ' + error);
                 });
+            
             }
             function downHP(characterName, amount) {
                 const data = `CharacterName=${encodeURIComponent(characterName)}&amount=${encodeURIComponent(amount)}`;
@@ -560,18 +609,31 @@ namespace TTRPG_manager
                     headers: {'Content-Type': 'application/x-www-form-urlencoded'},
                     body: data
                 })
-                .then(response => response.text())
-                .then(text => {
-                    if (!text.includes(""successfully"")) {
-                        alert('Response: ' + text);
+                .then(response => response.json())
+                .then(data => {
+                    if (data.Success) {
+                        updateHPBar(data.CurrentHP, data.MaxHP);
+                    } else {
+                        alert('Failed to update HP: ' + data.Message);
                     }
-                    // Optionally update the UI here to reflect changes
                 })
                 .catch(error => {
                     console.error('Error healing:', error);
                     alert('Error healing: ' + error);
                 });
             }
+
+            function updateHPBar(currentHP, maxHP) {
+                
+                const hpBar = document.getElementById('hp-bar');
+                if (hpBar) {
+                    hpBar.style.width = `calc(100% * ${currentHP} / ${maxHP})`;
+                }
+                else{
+                    console.log(""HP Bar not found"");
+                }
+            }
+
             function upMP(characterName, amount) {
                 const data = `CharacterName=${encodeURIComponent(characterName)}&amount=${encodeURIComponent(amount)}`;
                 fetch('/upMP', {
@@ -579,12 +641,13 @@ namespace TTRPG_manager
                     headers: {'Content-Type': 'application/x-www-form-urlencoded'},
                     body: data
                 })
-                .then(response => response.text())
-                .then(text => {
-                    if (!text.includes(""successfully"")) {
-                        alert('Response: ' + text);
+                .then(response => response.json())
+                .then(data => {
+                    if (data.Success) {
+                        updateMPBar(data.CurrentMP, data.MaxMP);
+                    } else {
+                        alert('Failed to update MP: ' + data.Message);
                     }
-                    // Optionally update the UI here to reflect changes
                 })
                 .catch(error => {
                     console.error('Error healing:', error);
@@ -598,19 +661,28 @@ namespace TTRPG_manager
                     headers: {'Content-Type': 'application/x-www-form-urlencoded'},
                     body: data
                 })
-                .then(response => response.text())
-                .then(text => {
-                    if (!text.includes(""successfully"")) {
-                        alert('Response: ' + text);
+                .then(response => response.json())
+                .then(data => {
+                    if (data.Success) {
+                        updateMPBar(data.CurrentMP, data.MaxMP);
+                    } else {
+                        alert('Failed to update MP: ' + data.Message);
                     }
-                    // Optionally update the UI here to reflect changes
                 })
                 .catch(error => {
                     console.error('Error healing:', error);
                     alert('Error healing: ' + error);
                 });
             }
-                
+            function updateMPBar(currentMP, maxMP) {
+                const mpBar = document.getElementById('mp-bar');
+                if (mpBar) {
+                    mpBar.style.width = `calc(100% * ${currentMP} / ${maxMP})`;
+                }
+                else{
+                    console.log(""MP Bar not found"");
+                }
+            } 
             ");
             stringBuilder.Append("</script>");
             stringBuilder.Append("</head><body>");
@@ -620,16 +692,16 @@ namespace TTRPG_manager
             stringBuilder.AppendFormat("<img src='/images/{0}' class='character-image' alt='Character Image'/>", HttpUtility.UrlEncode(character.safeName));
 
             // Add hidden input for character name to identify the character on submission
-            stringBuilder.AppendFormat("<input type='hidden' name='Name' value='{0}'/>", character.safeName);
-
+            stringBuilder.AppendFormat("<input id=\"character-name\" type='hidden' name='Name' value='{0}'/>", character.safeName);
+            stringBuilder.Append("<div id=\"character-info-container\">");
             stringBuilder.AppendFormat("\r\n<div class=\"bar-container\">\r\n    " +
-                "<button type=\"button\" onclick=\"downHP({{characterName}}, 1)\" class=\"adjust-btn\">&lt;</button>\r\n    " +
-                "<div class=\"hp-bar bar\" style=\"width: calc(100% * {1} / {2});\"></div>\r\n    " +
+                "<button type=\"button\" onclick=\"downHP('{0}', 1)\" class=\"adjust-btn\">&lt;</button>\r\n    " +
+                "<div id=\"hp-bar\" class=\"hp-bar bar\" style=\"width: calc(100% * {1} / {2});\"></div>\r\n    " +
                 "<button type=\"button\" onclick=\"upHP('{0}', 1)\" class=\"adjust-btn\">&gt;</button>\r\n</div>\r\n\r\n<div class=\"bar-container\">\r\n    " +
-                "<button type=\"button\" onclick=\"downMP({0}, 1)\" class=\"adjust-btn\">&lt;</button>\r\n    " +
-                "<div class=\"mp-bar bar\" style=\"width: calc(100% * {{currentMP}} / {{maxMP}});\"></div>\r\n    " +
-                "<button type=\"button\" onclick=\"upMP({0}, 1)\" class=\"adjust-btn\">&gt;</button>\r\n</div>", 
-                character.safeName, character.CurrentHP, character.MaxHP);
+                "<button type=\"button\" onclick=\"downMP('{0}', 1)\" class=\"adjust-btn\">&lt;</button>\r\n    " +
+                "<div id=\"mp-bar\" class=\"mp-bar bar\" style=\"width: calc(100% * {3} / {4});\"></div>\r\n    " +
+                "<button type=\"button\" onclick=\"upMP('{0}', 1)\" class=\"adjust-btn\">&gt;</button>\r\n</div>", 
+                character.safeName, character.CurrentHP, character.MaxHP, character.CurrentMP, character.MaxMP);
             // For each editable property, create an appropriate input
             
             stringBuilder.AppendFormat("<textarea rows='5' cols='40' name='Description'>{0}</textarea></p>", character.Description);
@@ -666,7 +738,7 @@ namespace TTRPG_manager
                 item.safeName, item.Description, item.Count, item.Uses, item.MaxUses);
             }
             stringBuilder.Append("</ul>");
-
+            stringBuilder.Append("</ div >");
 
             stringBuilder.Append("</form>");
             stringBuilder.Append("</body></html>");
