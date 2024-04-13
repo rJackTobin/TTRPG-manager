@@ -93,7 +93,9 @@
                 <Polygon x:Name="rightCover"></Polygon>
             </Canvas>
         </Canvas>
-
+        <Canvas Grid.Row="1" Name="StickerCanvas" Width="{Binding Width}" Height="{Binding Height}">
+            <!-- Other UI elements can go here -->
+        </Canvas>
     </Grid>
    
 </Window>

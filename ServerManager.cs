@@ -10,6 +10,7 @@ using System.Net.NetworkInformation;
 using System.IO;
 using System.Web;
 using System.Reflection;
+using System.Text.Json;
 
 namespace TTRPG_manager
 {
@@ -60,7 +61,7 @@ namespace TTRPG_manager
                     {
                         // Extract character name from URL
                         string characterName = request.Url.AbsolutePath.Substring("/images/".Length);
-                        var character = _config.Parties[_config.selectedPartyIndex].Members.FirstOrDefault(c => c.Name.Equals(characterName, StringComparison.OrdinalIgnoreCase));
+                        var character = _config.Parties[_config.selectedPartyIndex].Members.FirstOrDefault(c => c.safeName.Equals(characterName, StringComparison.OrdinalIgnoreCase));
                         if (character != null && !string.IsNullOrEmpty(character.ImagePath) && File.Exists(character.ImagePath))
                         {
                             byte[] imageBytes = File.ReadAllBytes(character.ImagePath);
@@ -85,10 +86,10 @@ namespace TTRPG_manager
                                 string characterName = formData["CharacterName"];
                                 string skillName = formData["SkillName"];
 
-                                var character = _config.Parties[_config.selectedPartyIndex].Members.FirstOrDefault(c => c.Name == characterName);
+                                var character = _config.Parties[_config.selectedPartyIndex].Members.FirstOrDefault(c => c.safeName == characterName);
                                 if (character != null)
                                 {
-                                    var skill = character.Skills.FirstOrDefault(s => s.Name == skillName);
+                                    var skill = character.Skills.FirstOrDefault(s => s.safeName == skillName);
                                     if (skill != null)
                                     {
                                         // Apply skill use logic
@@ -115,6 +116,122 @@ namespace TTRPG_manager
                             }
 
                         }
+                        else if (request.RawUrl.Contains("/upHP") && request.HttpMethod == "POST")
+                        {
+                            using (var reader = new StreamReader(request.InputStream, request.ContentEncoding))
+                            {
+                                string postData = await reader.ReadToEndAsync();
+                                var formData = HttpUtility.ParseQueryString(postData);
+
+                                string characterName = formData["CharacterName"];
+                                int amount = int.Parse(formData["amount"]); // Consider adding error handling for parsing
+
+                                var character = _config.Parties[_config.selectedPartyIndex].Members.FirstOrDefault(c => c.safeName == characterName);
+                                if (character != null)
+                                {
+                                    character.UpHP(amount);
+                                    ConfigManager.SaveConfig(_config); // Save changes
+                                    Application.Current.Dispatcher.Invoke(() =>
+                                    {
+                                        var mainWindow = Application.Current.MainWindow as MainWindow;
+                                        mainWindow?.PopulateCharacterPanels();
+
+                                    });
+                                    responseString = "HP updated successfully.";
+                                }
+                                else
+                                {
+                                    responseString = "Character not found.";
+                                }
+                            }
+                        }
+                        else if (request.RawUrl.Contains("/downHP") && request.HttpMethod == "POST")
+                        {
+                            using (var reader = new StreamReader(request.InputStream, request.ContentEncoding))
+                            {
+                                string postData = await reader.ReadToEndAsync();
+                                var formData = HttpUtility.ParseQueryString(postData);
+
+                                string characterName = formData["CharacterName"];
+                                int amount = int.Parse(formData["amount"]); // Consider adding error handling for parsing
+
+                                var character = _config.Parties[_config.selectedPartyIndex].Members.FirstOrDefault(c => c.safeName == characterName);
+                                if (character != null)
+                                {
+                                    character.DownHP(amount);
+                                    ConfigManager.SaveConfig(_config); // Save changes
+                                    Application.Current.Dispatcher.Invoke(() =>
+                                    {
+                                        var mainWindow = Application.Current.MainWindow as MainWindow;
+                                        mainWindow?.PopulateCharacterPanels();
+
+                                    });
+                                    responseString = "HP updated successfully.";
+                                }
+                                else
+                                {
+                                    responseString = "Character not found.";
+                                }
+                            }
+                        }
+                        else if (request.RawUrl.Contains("/upMP") && request.HttpMethod == "POST")
+                        {
+                            using (var reader = new StreamReader(request.InputStream, request.ContentEncoding))
+                            {
+                                string postData = await reader.ReadToEndAsync();
+                                var formData = HttpUtility.ParseQueryString(postData);
+
+                                string characterName = formData["CharacterName"];
+                                int amount = int.Parse(formData["amount"]); // Consider adding error handling for parsing
+
+                                var character = _config.Parties[_config.selectedPartyIndex].Members.FirstOrDefault(c => c.safeName == characterName);
+                                if (character != null)
+                                {
+                                    character.UpMP(amount);
+                                    ConfigManager.SaveConfig(_config); // Save changes
+                                    Application.Current.Dispatcher.Invoke(() =>
+                                    {
+                                        var mainWindow = Application.Current.MainWindow as MainWindow;
+                                        mainWindow?.PopulateCharacterPanels();
+
+                                    });
+                                    responseString = "HP updated successfully.";
+                                }
+                                else
+                                {
+                                    responseString = "Character not found.";
+                                }
+                            }
+                        }
+                        else if (request.RawUrl.Contains("/downMP") && request.HttpMethod == "POST")
+                        {
+                            using (var reader = new StreamReader(request.InputStream, request.ContentEncoding))
+                            {
+                                string postData = await reader.ReadToEndAsync();
+                                var formData = HttpUtility.ParseQueryString(postData);
+
+                                string characterName = formData["CharacterName"];
+                                int amount = int.Parse(formData["amount"]); // Consider adding error handling for parsing
+
+                                var character = _config.Parties[_config.selectedPartyIndex].Members.FirstOrDefault(c => c.safeName == characterName);
+                                if (character != null)
+                                {
+                                    character.DownMP(amount);
+                                    ConfigManager.SaveConfig(_config); // Save changes
+                                    Application.Current.Dispatcher.Invoke(() =>
+                                    {
+                                        var mainWindow = Application.Current.MainWindow as MainWindow;
+                                        mainWindow?.PopulateCharacterPanels();
+
+                                    });
+                                    responseString = "HP updated successfully.";
+                                }
+                                else
+                                {
+                                    responseString = "Character not found.";
+                                }
+                            }
+                        }
                         else
                         {
                             using (var reader = new StreamReader(request.InputStream, request.ContentEncoding))
@@ -132,7 +249,7 @@ namespace TTRPG_manager
                                     string race = formData["Race"];
                                     string title = formData["Title"];
                                     // Find and update the character
-                                    var characterToUpdate = _config.Parties[_config.selectedPartyIndex].Members.FirstOrDefault(c => c.Name == name);
+                                    var characterToUpdate = _config.Parties[_config.selectedPartyIndex].Members.FirstOrDefault(c => c.safeName == name);
                                     if (characterToUpdate != null)
                                     {
                                         characterToUpdate.Description = description;
@@ -342,14 +459,11 @@ namespace TTRPG_manager
             stringBuilder.Append("<form method='GET' action='/editCharacter'>");
             stringBuilder.Append("<select name='name'>");
 
-            
-
             foreach (var character in _config.Parties[_config.selectedPartyIndex].Members)
-                {
-                    stringBuilder.AppendFormat("<option value='{0}'>{0}</option>", character.Name);
-                }
-            
-
+            {
+                // Use UrlEncode to safely encode character names for use in URLs
+                stringBuilder.AppendFormat("<option value='{0}'>{1}</option>", HttpUtility.UrlEncode(character.safeName), character.Name);
+            }
             stringBuilder.Append("</select>");
             stringBuilder.Append("<input type='submit' value='View Character'/>");
             stringBuilder.Append("</form>");
@@ -359,16 +473,25 @@ namespace TTRPG_manager
         }
         private string GenerateCharacterInfoHtml(string characterName)
         {
-            var character = _config.Parties[_config.selectedPartyIndex].Members.FirstOrDefault(c => c.Name.Equals(characterName, StringComparison.OrdinalIgnoreCase));
+            _config = ConfigManager.LoadConfig();
+            var character = _config.Parties[_config.selectedPartyIndex].Members.FirstOrDefault(c => c.safeName.Equals(characterName, StringComparison.OrdinalIgnoreCase));
             if (character == null) return "<html><body>Character not found.</body></html>";
 
             var stringBuilder = new StringBuilder();
             stringBuilder.Append("<html><head><title>View Character</title></head><body>");
             stringBuilder.Append("<meta name='viewport' content='width=device-width, initial-scale=1'>");
             stringBuilder.Append("<style>");
+            stringBuilder.Append("input[type=\"submit\"], button {\r\n    font-size: 24px;\r\n    padding: 10px 20px;\r\n    background-color: #007BFF;\r\n    color: white;\r\n    border: none;\r\n    border-radius: 5px;\r\n    cursor: pointer;\r\n    transition: background-color 0.3s;\r\n}\r\n\r\ninput[type=\"submit\"]:hover, button:hover {\r\n    background-color: #0056b3; /* Darker blue when hovered for better user interaction */\r\n}\r\n");
+            stringBuilder.Append(".expander-label {\r\n cursor: pointer;\r\n  max-width: 800px;\r\n  padding: 5px;\r\n    background-color: #f9f9f9;\r\n    border: solid 1px #ccc;\r\n    display: block;\r\n    color: #000;\r\n}\r\n\r\n.expander-content {\r\n    display: none;\r\n  max-width: 800px;\r\n  padding: 5px;\r\n    border: solid 1px #ccc;\r\n    border-top: none;\r\n    background-color: #fff;\r\n}");
+            stringBuilder.Append(".bar-container {\r\n max-width: 400px;\r\n   width: 110%; \r\n    background-color: #ddd; \r\n    border-radius: 8px; \r\n    margin: 5px 0;\r\n    display: flex;  \r\n align-items: center; \r\n}" +
+                ".bar {\r\n    flex-grow: 1; /* Bar takes up most of the space */\r\n    height: 20px;\r\n    color: white;\r\n    text-align: center;\r\n    line-height: 20px;\r\n    border-radius: 8px;\r\n}" +
+                "\r\n\r\n.hp-bar { background-color: #f44336; }" +
+                "\r\n.mp-bar { background-color: #2196F3; }" +
+                "\r\n\r\n.adjust-btn {\r\n    width: 30px; /* Fixed width for buttons */\r\n    height: 32px;\r\n    font-size: 24px;\r\n  padding: 10;\r\n  margin: 0 5px;\r\n    background-color: #f0f0f0;" +
+                "\r\n    color: #333; \r\n    border: 1px solid #bbb; /* Subtle border */\r\n    border-radius: 4px; /* Rounded corners */\r\n    cursor: pointer;\r\n justify-content: center;\r\n  line-height: 0px;\r\n}");
             stringBuilder.Append("body { font-size: 20px; }"); // Default font size for large screens
             stringBuilder.Append("p { font-size: 20px; }");
-            stringBuilder.Append("@media (max-width: 1300px) { body { font-size: 32px; } }");
+            stringBuilder.Append("@media (max-width: 1300px) { body { font-size: 28px; } }");
             stringBuilder.Append("@media (max-width: 1300px) { p { font-size: 24px; } }");// Larger font size for screens narrower than 600px
             stringBuilder.Append(".character-image { max-width: 100%; height: auto; position: absolute; top: 0; right: 0; }");
             stringBuilder.Append("@media (min-width: 100px) { .character-image { width: 40%; } }");
@@ -377,36 +500,136 @@ namespace TTRPG_manager
             // Include the JavaScript function for AJAX calls
             stringBuilder.Append("<script>");
             stringBuilder.Append(@"
-    function useSkill(characterName, skillName) {
-    const data = `CharacterName=${encodeURIComponent(characterName)}&SkillName=${encodeURIComponent(skillName)}`;
-    fetch('/useSkill', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-        body: data
-    })
-    .then(response => response.text())
-    .then(text => {
-        // Only show alert if there is a problem or specific condition
-        if (!text.includes(""successfully"")) { // Change this condition based on actual success message
-            alert('Response: ' + text);
-        }
-        // Optionally update the UI here to reflect changes
-    })
-    .catch(error => {
-        console.error('Error using skill:', error);
-        alert('Error using skill: ' + error); // Show alert on errors
-    });
-}");
+                function useSkill(characterName, skillName) {
+                const data = `CharacterName=${encodeURIComponent(characterName)}&SkillName=${encodeURIComponent(skillName)}`;
+                fetch('/useSkill', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                    body: data
+                })
+                .then(response => response.text())
+                .then(text => {
+                    // Only show alert if there is a problem or specific condition
+                    if (!text.includes(""successfully"")) { // Change this condition based on actual success message
+                        alert('Response: ' + text);
+                    }
+                    // Optionally update the UI here to reflect changes
+                })
+                .catch(error => {
+                    console.error('Error using skill:', error);
+                    alert('Error using skill: ' + error); // Show alert on errors
+                });
+            }
+
+                function toggleExpander(expanderId) {
+                var content = document.getElementById(expanderId);
+                if (content.style.display === 'block') {
+                    content.style.display = 'none';
+                } else {
+                    content.style.display = 'block';
+                    if (content.innerHTML.trim() === '') { // Check if content is empty and adjust accordingly
+                        content.innerHTML = 'No description available.'; // Provide a default message
+                        content.style.minHeight = '20px'; // Ensure it's visible even if empty
+                    }
+                }
+            }
+
+            function upHP(characterName, amount) {
+                const data = `CharacterName=${encodeURIComponent(characterName)}&amount=${encodeURIComponent(amount)}`;
+                fetch('/upHP', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                    body: data
+                })
+                .then(response => response.text())
+                .then(text => {
+                    if (!text.includes(""successfully"")) {
+                        alert('Response: ' + text);
+                    }
+                    // Optionally update the UI here to reflect changes
+                })
+                .catch(error => {
+                    console.error('Error healing:', error);
+                    alert('Error healing: ' + error);
+                });
+            }
+            function downHP(characterName, amount) {
+                const data = `CharacterName=${encodeURIComponent(characterName)}&amount=${encodeURIComponent(amount)}`;
+                fetch('/downHP', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                    body: data
+                })
+                .then(response => response.text())
+                .then(text => {
+                    if (!text.includes(""successfully"")) {
+                        alert('Response: ' + text);
+                    }
+                    // Optionally update the UI here to reflect changes
+                })
+                .catch(error => {
+                    console.error('Error healing:', error);
+                    alert('Error healing: ' + error);
+                });
+            }
+            function upMP(characterName, amount) {
+                const data = `CharacterName=${encodeURIComponent(characterName)}&amount=${encodeURIComponent(amount)}`;
+                fetch('/upMP', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                    body: data
+                })
+                .then(response => response.text())
+                .then(text => {
+                    if (!text.includes(""successfully"")) {
+                        alert('Response: ' + text);
+                    }
+                    // Optionally update the UI here to reflect changes
+                })
+                .catch(error => {
+                    console.error('Error healing:', error);
+                    alert('Error healing: ' + error);
+                });
+            }
+            function downMP(characterName, amount) {
+                const data = `CharacterName=${encodeURIComponent(characterName)}&amount=${encodeURIComponent(amount)}`;
+                fetch('/downMP', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                    body: data
+                })
+                .then(response => response.text())
+                .then(text => {
+                    if (!text.includes(""successfully"")) {
+                        alert('Response: ' + text);
+                    }
+                    // Optionally update the UI here to reflect changes
+                })
+                .catch(error => {
+                    console.error('Error healing:', error);
+                    alert('Error healing: ' + error);
+                });
+            }
+                
+            ");
             stringBuilder.Append("</script>");
             stringBuilder.Append("</head><body>");
             stringBuilder.AppendFormat("<h2>{0}</h2><br>", character.Name);
             stringBuilder.Append("<form action='/updateCharacter' method='post'>");
             
-            stringBuilder.AppendFormat("<img src='/images/{0}' class='character-image' alt='Character Image'/>", HttpUtility.UrlEncode(character.Name));
+            stringBuilder.AppendFormat("<img src='/images/{0}' class='character-image' alt='Character Image'/>", HttpUtility.UrlEncode(character.safeName));
 
             // Add hidden input for character name to identify the character on submission
-            stringBuilder.AppendFormat("<input type='hidden' name='Name' value='{0}'/>", character.Name);
+            stringBuilder.AppendFormat("<input type='hidden' name='Name' value='{0}'/>", character.safeName);
 
+            stringBuilder.AppendFormat("\r\n<div class=\"bar-container\">\r\n    " +
+                "<button type=\"button\" onclick=\"downHP({{characterName}}, 1)\" class=\"adjust-btn\">&lt;</button>\r\n    " +
+                "<div class=\"hp-bar bar\" style=\"width: calc(100% * {1} / {2});\"></div>\r\n    " +
+                "<button type=\"button\" onclick=\"upHP('{0}', 1)\" class=\"adjust-btn\">&gt;</button>\r\n</div>\r\n\r\n<div class=\"bar-container\">\r\n    " +
+                "<button type=\"button\" onclick=\"downMP({0}, 1)\" class=\"adjust-btn\">&lt;</button>\r\n    " +
+                "<div class=\"mp-bar bar\" style=\"width: calc(100% * {{currentMP}} / {{maxMP}});\"></div>\r\n    " +
+                "<button type=\"button\" onclick=\"upMP({0}, 1)\" class=\"adjust-btn\">&gt;</button>\r\n</div>", 
+                character.safeName, character.CurrentHP, character.MaxHP);
             // For each editable property, create an appropriate input
             
             stringBuilder.AppendFormat("<textarea rows='5' cols='40' name='Description'>{0}</textarea></p>", character.Description);
@@ -414,39 +637,42 @@ namespace TTRPG_manager
             stringBuilder.AppendFormat("<p>Gender: <input type='text' name='Gender' value='{0}' /></p>", character.Gender);
             stringBuilder.AppendFormat("<p>Race: <input type='text' name='Race' value='{0}' /></p>", character.Race);
             stringBuilder.AppendFormat("<p>Title: <input type='text' name='Title' value='{0}' /></p>", character.Title);
+            stringBuilder.Append("<input type='submit' value='Update Character'/>");
 
-            
 
             // Skills section
-            stringBuilder.Append("<h3>Skills</h3><ul>");
+            stringBuilder.Append("<h3>Skills</h3>");
             foreach (var skill in character.Skills)
             {
-                stringBuilder.AppendFormat("<li>{0} - {1} <button onclick=\"useSkill('{2}', '{3}')\">Use Skill</button></li>",
-                skill.Name, skill.Description, character.Name, skill.Name);
+                stringBuilder.AppendFormat("<div class='expander-label' onclick=\"toggleExpander('expander_{0}')\">{1}</div>", skill.safeName, skill.Name);
+                stringBuilder.AppendFormat("<div id='expander_{0}' class='expander-content'>{1}\n(Uses: {4}/{5})<br><button type=\"button\" onclick=\"useSkill('{2}', '{3}')\">Use Skill</button></div>",
+                skill.safeName, skill.Description, character.safeName, skill.safeName, skill.RemainingUses, skill.MaxUses);
             }
-            stringBuilder.Append("</ul>");
-            //Equipped Items Section
-            stringBuilder.Append("<h3>Equipment</h3><ul>");
+
+            // Equipped Items Section
+            stringBuilder.Append("<h3>Equipment</h3>");
             foreach (var item in character.EquippedItems)
             {
-                stringBuilder.AppendFormat("<li>{0} - {1} (Count: {2}</li>", item.Name, item.Description);
+                stringBuilder.AppendFormat("<div class='expander-label' onclick=\"toggleExpander('expander_{0}')\">{1}</div>", item.safeName, item.Name);
+                stringBuilder.AppendFormat("<div id='expander_{0}' class='expander-content'>{1}</div>", item.safeName, item.Description);
             }
-            stringBuilder.Append("</ul>");
+
             // Inventory section
-            stringBuilder.Append("<h3>Inventory</h3><ul>");
+            stringBuilder.Append("<h3>Inventory</h3>");
             foreach (var item in character.Inventory)
             {
-                stringBuilder.AppendFormat("<li>{0} - {1} (Count: {2}, Uses: {3}/{4})</li>", item.Name, item.Description, item.Count, item.Uses, item.MaxUses);
+                stringBuilder.AppendFormat("<div class='expander-label' onclick=\"toggleExpander('expander_{0}')\">{1}</div>", item.safeName, item.Name);
+                stringBuilder.AppendFormat("<div id='expander_{0}' class='expander-content'>{1}\n(Count: {2}, Uses: {3}/{4})</div>",
+                item.safeName, item.Description, item.Count, item.Uses, item.MaxUses);
             }
             stringBuilder.Append("</ul>");
 
-            stringBuilder.Append("<input type='submit' value='Update Character'/>");
+
             stringBuilder.Append("</form>");
             stringBuilder.Append("</body></html>");
 
             return stringBuilder.ToString();
         }
-
     }
 
 }

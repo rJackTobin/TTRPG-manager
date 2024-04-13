@@ -20,6 +20,10 @@ using Genesis;
 using System.Windows.Interop;
 using System.Diagnostics;
 using System.Windows.Media.Animation;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.Rebar;
+using System.Windows.Threading;
+using Microsoft.VisualBasic.ApplicationServices;
+using System.Windows.Media;
 
 
 namespace TTRPG_manager
@@ -30,6 +34,7 @@ namespace TTRPG_manager
 
         private ServerManager serverManager = new ServerManager();
         public static MainWindow Instance { get; private set; }
+        Random rand = new Random();
         public MainWindow()
         {
             InitializeComponent();
@@ -62,6 +67,77 @@ namespace TTRPG_manager
             }
             return IntPtr.Zero;
         }
+        public void PlaceSticker(Sticker sticker)
+        {
+            if (!_config.StickersEnabled) { return; }
+            MediaPlayer mediaPlayer = new MediaPlayer();
+            if (sticker.MediaPath != null)
+            {
+                
+                mediaPlayer.Open(new Uri(sticker.MediaPath, UriKind.RelativeOrAbsolute));
+            }
+            var image = new Image();
+            image.Source = new BitmapImage(new Uri(sticker.ImagePath, UriKind.Absolute));
+            image.Width = Width/10;  // Set the desired width for the image
+            image.Height = Width/10; // Set the desired height for the image
+
+            // Create an ellipse to act as the border
+            var ellipse = new Ellipse();
+            ellipse.Width = image.Width + 10; // Adding 10 for the border width
+            ellipse.Height = image.Height + 10; // Adding 10 for the border height
+            ellipse.Stroke = Brushes.White; // Set the border color to white
+            ellipse.StrokeThickness = 5; // Set the thickness of the border
+            ellipse.Fill = new ImageBrush(image.Source); // Fill the ellipse with the image
+
+            // Apply a scale transform
+            ScaleTransform scaleTransform = new ScaleTransform();
+            ellipse.RenderTransform = scaleTransform;
+            ellipse.RenderTransformOrigin = new Point(0.5, 0.5); // Center of the ellipse
+
+            // Random positioning on the canvas
+            double left = rand.NextDouble() * (StickerCanvas.ActualWidth - ellipse.Width);
+            double top = rand.NextDouble() * (StickerCanvas.ActualHeight - ellipse.Height);
+            Canvas.SetLeft(ellipse, left);
+            Canvas.SetTop(ellipse, top);
+
+            StickerCanvas.Children.Add(ellipse);
+
+            // Animation setup
+            Storyboard storyboard = new Storyboard();
+            DoubleAnimation scaleInX = new DoubleAnimation(0, 1, TimeSpan.FromSeconds(0.1));
+            DoubleAnimation scaleInY = new DoubleAnimation(0, 1, TimeSpan.FromSeconds(0.1));
+            DoubleAnimation scaleOutX = new DoubleAnimation(1, 0, TimeSpan.FromSeconds(0.1)) { BeginTime = TimeSpan.FromSeconds(4.9) };
+            DoubleAnimation scaleOutY = new DoubleAnimation(1, 0, TimeSpan.FromSeconds(0.1)) { BeginTime = TimeSpan.FromSeconds(4.9) };
+
+            storyboard.Children.Add(scaleInX);
+            storyboard.Children.Add(scaleInY);
+            storyboard.Children.Add(scaleOutX);
+            storyboard.Children.Add(scaleOutY);
+
+            Storyboard.SetTarget(scaleInX, ellipse);
+            Storyboard.SetTarget(scaleInY, ellipse);
+            Storyboard.SetTarget(scaleOutX, ellipse);
+            Storyboard.SetTarget(scaleOutY, ellipse);
+            Storyboard.SetTargetProperty(scaleInX, new PropertyPath("RenderTransform.ScaleX"));
+            Storyboard.SetTargetProperty(scaleInY, new PropertyPath("RenderTransform.ScaleY"));
+            Storyboard.SetTargetProperty(scaleOutX, new PropertyPath("RenderTransform.ScaleX"));
+            Storyboard.SetTargetProperty(scaleOutY, new PropertyPath("RenderTransform.ScaleY"));
+
+            storyboard.Completed += (s, e) => StickerCanvas.Children.Remove(ellipse);
+            storyboard.Begin();
+            if (sticker.MediaPath != null)
+            {
+                mediaPlayer.Play();
+
+                // Optionally, handle media playback events
+                mediaPlayer.MediaEnded += (s, e) =>
+                {
+                    // Actions to perform after the media ends, if necessary
+                    mediaPlayer.Close(); // Good practice to close when done
+                };
+            }
+        }
+
         private void LoadCharAnim(Character character)
         {
             animatedImage.Width = Width*2/5;
@@ -317,6 +393,7 @@ namespace TTRPG_manager
             {
                 _config = ConfigManager.LoadConfig();
                 ApplyConfig();
+                if (_config.Parties.Count == 0) { partyComboBox.ItemsSource = _config.Parties; }
                 PopulateCharacterPanels();
             }
         }
@@ -432,6 +509,8 @@ namespace TTRPG_manager
         }
         private void AddEnemyButton_Click(object sender, RoutedEventArgs e)
         {
+            
+           
             SelectionWindow window = new SelectionWindow(_config.Enemies, Height, Width);
             if (window.ShowDialog() == true)
             {
@@ -439,7 +518,7 @@ namespace TTRPG_manager
                 var panel = new EnemyPanelControl(selectedItem);
                 EnemyPanels.Children.Add(panel);
             }
-
+            
         }
         private void btnNextTurn_Click(object sender, RoutedEventArgs e)
         {

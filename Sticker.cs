@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace TTRPG_manager
 {
-    public class StatusEffect : INameable
+    public class Sticker
     {
         private string _name;
         public string Name
@@ -27,9 +27,9 @@ namespace TTRPG_manager
             // Remove all non-alphanumeric characters
             return System.Text.RegularExpressions.Regex.Replace(name, "[^a-zA-Z0-9]", "");
         }
-        public string Description { get; set; }
-        public bool IsBuff { get; set; }
-        public bool IsDebuff { get; set; }
-        public string Condition { get; set; }
+
+        public string ImagePath { get; set; }
+        public string MediaPath { get; set; }
+
     }
 }

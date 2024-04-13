@@ -88,6 +88,57 @@ namespace TTRPG_manager
                 updated_config.LibraryPaths.Remove(LibraryPathList.SelectedItem as string);
             }
         }
-        
+        private void AddSticker_Click(object sender, RoutedEventArgs e)
+        {
+            // Create a new Sticker object
+            Sticker newSticker = new Sticker();
+
+            // Open file dialog to select an image
+            OpenFileDialog imageFileDialog = new OpenFileDialog
+            {
+                Filter = "Image files (*.jpg;*.jpeg;*.png;*.gif)|*.jpg;*.jpeg;*.png;*.gif",
+                Title = "Select an Image for Sticker"
+            };
+
+            if (imageFileDialog.ShowDialog() == true)
+            {
+                newSticker.ImagePath = imageFileDialog.FileName;
+                newSticker.Name = System.IO.Path.GetFileNameWithoutExtension(imageFileDialog.FileName);
+
+                // Optionally, open file dialog to select an audio file
+                OpenFileDialog audioFileDialog = new OpenFileDialog
+                {
+                    Filter = "Audio files (*.mp3;*.wav)|*.mp3;*.wav",
+                    Title = "Select an Audio File for Sticker (Optional)",
+                    CheckFileExists = false
+                };
+
+                if (audioFileDialog.ShowDialog() == true)
+                {
+                    newSticker.MediaPath = audioFileDialog.FileName;
+                }
+
+                // Add the new sticker to the collection if an image was selected
+                updated_config.Stickers.Add(newSticker);
+            }
+            else
+            {
+                // Inform user that selecting an image is necessary
+                MessageBox.Show("You must select an image to create a sticker.", "Image Required", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
+        }
+        private void DeleteSticker_Click(object sender, RoutedEventArgs e)
+        {
+            // Check if any sticker is selected
+            if (StickerList.SelectedItem != null)
+            {
+                Sticker selectedSticker = StickerList.SelectedItem as Sticker;
+                if (selectedSticker != null)
+                {
+                        updated_config.Stickers.Remove(selectedSticker);
+                }
+            }
+            
+        }
     }
 }

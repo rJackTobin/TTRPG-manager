@@ -30,8 +30,8 @@ namespace TTRPG_manager
             this.Enemy = (Enemy)enemy.Clone();
             this.DataContext = Enemy;
             var parts = _config.Resolution.Split('x');
-            this.Width = (int.Parse(parts[0]))/12;
-            this.Height = (int.Parse(parts[1]))/5;
+            this.Width = (int.Parse(parts[0]))/10;
+            this.Height = (int.Parse(parts[1]))/4.5;
             enemyImage.MaxHeight = this.Height/2;
         }
 

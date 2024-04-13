@@ -10,7 +10,25 @@ namespace TTRPG_manager
     public class Party : INameable
     {
         public ObservableCollection<Character> Members { get; set; }
-        public string Name { get; set; }
+        private string _name;
+        public string Name
+        {
+            get => _name;
+            set
+            {
+                _name = value;
+                safeName = MakeSafeName(_name);
+            }
+        }
+        public string safeName { get; set; }
+        private string MakeSafeName(string name)
+        {
+            if (string.IsNullOrEmpty(name))
+                return string.Empty;
+
+            // Remove all non-alphanumeric characters
+            return System.Text.RegularExpressions.Regex.Replace(name, "[^a-zA-Z0-9]", "");
+        }
         public int PartyLevel { get; set; } // Could be computed based on members' levels, if levels are implemented
         public int Currency { get; set; } // Shared party funds
         public Dictionary<string, int> SharedInventory { get; set; } // Shared items, e.g., potions, keys

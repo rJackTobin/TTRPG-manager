@@ -18,7 +18,7 @@ namespace TTRPG_manager
         public Dictionary<string, object> Settings { get; set; } = new Dictionary<string, object>()
     {
         // Prepopulate the dictionary with default values for Resolution and BackgroundPath.
-        {"Resolution", "1280x720"},
+        {"Resolution", "1920x1080"},
         {"BackgroundPath", ""},
         {"ScreenType", "Windowed" }
 
@@ -28,7 +28,7 @@ namespace TTRPG_manager
         public bool addedFirewallRule { get; set; } = false;
         public string NgrokAuthKey { get; set; } = "";
         public bool usingNgrok { get; set; } = false;
-
+        public bool StickersEnabled { get; set; } = true;
         public ObservableCollection<Party> Parties { get; set; } = new ObservableCollection<Party>();
 
         public ObservableCollection<Item> Items { get; set; } = new ObservableCollection<Item>();
@@ -41,12 +41,14 @@ namespace TTRPG_manager
 
         public ObservableCollection<Enemy> Enemies { get; set; } = new ObservableCollection<Enemy>();
 
+        public ObservableCollection<Sticker> Stickers { get; set; } = new ObservableCollection<Sticker>();
+
         public ObservableCollection<string> LibraryPaths { get; set; } = new ObservableCollection<string>();
         // Convenience methods to access specific settings easily
         [JsonIgnore]
         public string Resolution
         {
-            get => Settings.TryGetValue("Resolution", out var resolution) ? resolution.ToString() : "1280x720";
+            get => Settings.TryGetValue("Resolution", out var resolution) ? resolution.ToString() : "1920x1080";
             set => Settings["Resolution"] = value;
         }
         [JsonIgnore]

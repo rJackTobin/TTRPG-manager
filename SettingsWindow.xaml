@@ -67,23 +67,28 @@
         <TextBlock Text="Image Gallery paths:" Grid.Row="6" Margin="5" VerticalAlignment="Bottom"/>
         <ListBox x:Name="LibraryPathList" ItemsSource="{Binding LibraryPaths}" Grid.Row="7" Margin="5" Grid.RowSpan="2">
         </ListBox>
-        <StackPanel Grid.Row="9" Orientation="Horizontal" HorizontalAlignment="Right">
-            <Button Content="Add" Margin="10" Click="AddPath_Click"/>
-            <Button Content="Delete" Margin="10" Click="DeletePath_Click"/>
+        <StackPanel Grid.Row="9" Orientation="Horizontal" HorizontalAlignment="Right" Margin="5">
+            <Button Content="Add" Margin="5,0,5,0" Click="AddPath_Click"/>
+            <Button Content="Delete" Margin="5,0,5,0" Click="DeletePath_Click"/>
         </StackPanel>
         
         
         <Button Content="OK" Grid.Column="1" Grid.Row ="11" Margin="10,0,10,0" Click="ApplyButton_Click" />
         <Button Content="Cancel" Grid.Column="0" Grid.Row ="11" Margin="10,0,10,0"  Click="ApplyButton_Click" />
 
-        <TextBlock Grid.Row ="1" Grid.Column="1" TextWrapping="Wrap" VerticalAlignment="Bottom" Margin="5">Ngrok is used for online servers. You must make an Ngrok account for this</TextBlock>
+        <TextBlock Grid.Row ="0" Grid.Column="1" TextWrapping="Wrap" VerticalAlignment="Bottom" Margin="5" Grid.RowSpan="2">Ngrok is used for online servers. You must make an Ngrok account for this</TextBlock>
         <Button Grid.Row="2" Grid.Column="1" Margin="150,5,150,5">Make an account here</Button>
         <CheckBox Grid.Row="3" Grid.Column="1" VerticalAlignment="Center" Margin="5" IsChecked="{Binding Path=usingNgrok, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">Use Ngrok port forwarding</CheckBox>
         <TextBox x:Name="NgrokAuthKeyTextBox" Grid.Row="4" Grid.Column="1" Text="{Binding Path=NgrokAuthKey, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
-        <TextBlock Grid.Row="5" Grid.Column="1" Margin="5">Your server link: </TextBlock>
+        <TextBlock Grid.Row="5" Grid.Column="1" Margin="5"></TextBlock>
         <TextBlock Grid.Row="4" Grid.Column="1" Margin="5" MinWidth="50" Text="Enter your authentication key here" 
                    Foreground="Gray" Visibility="{Binding ElementName=NgrokAuthKeyTextBox, Path=Text.IsEmpty, Converter={StaticResource MyBoolToVisibilityConverter}}" IsHitTestVisible="False"/>
         <!-- enter term here -->
-        
+        <CheckBox Grid.Row="6" Grid.Column="1" VerticalAlignment="Center" Margin="5" IsChecked="{Binding StickersEnabled, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">Enable Stickers</CheckBox>
+        <ListBox Grid.Row="7" Grid.Column="1" x:Name="StickerList" ItemsSource="{Binding Stickers}" DisplayMemberPath="Name" Grid.RowSpan="2"></ListBox>
+        <StackPanel Margin="5" Orientation="Horizontal" Grid.Column="1" Grid.Row="9" HorizontalAlignment="Right">
+            <Button Margin="5,0,5,0" Click="AddSticker_Click">Add</Button>
+            <Button Margin="5,0,5,0" Click="DeleteSticker_Click">Delete</Button>
+        </StackPanel>
     </Grid>
 </Window>

@@ -47,8 +47,11 @@ namespace TTRPG_manager
 
         private void SelectButton_Click(object sender, RoutedEventArgs e)
         {
-            this.DialogResult = true;
-            this.Close();
+            if (listBox.SelectedItem != null)
+            {
+                this.DialogResult = true;
+            }
+                this.Close();
         }
     }
 }

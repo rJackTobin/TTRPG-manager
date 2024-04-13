@@ -6,9 +6,29 @@
              xmlns:local="clr-namespace:TTRPG_manager"
              mc:Ignorable="d" 
              d:DesignHeight="200" d:DesignWidth="150">
+    <UserControl.Resources>
+        <local:ScaleConverter x:Key="ScaleConverter"/>
+        <Style TargetType="TextBlock">
+            <Setter Property="FontSize" Value="{Binding Path=Width, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource ScaleConverter}, ConverterParameter=0.008}"/>
+        </Style>
+
+        <Style TargetType="Button">
+            <Setter Property="FontSize" Value="{Binding Path=Width, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource ScaleConverter}, ConverterParameter=0.005}"/>
+        </Style>
+        <Style TargetType="ComboBox">
+            <Setter Property="FontSize" Value="{Binding Path=Width, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource ScaleConverter}, ConverterParameter=0.005}"/>
+        </Style>
+        <Style TargetType="TextBox">
+            <Setter Property="FontSize" Value="{Binding Path=Width, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource ScaleConverter}, ConverterParameter=0.007}"/>
+        </Style>
+        <Style TargetType="Label">
+            <Setter Property="FontSize" Value="{Binding Path=Width, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource ScaleConverter}, ConverterParameter=0.013}"/>
+        </Style>
+
+    </UserControl.Resources>
     <Grid>
         <ScrollViewer VerticalScrollBarVisibility="Hidden">
-        <StackPanel Margin="10" Background="LightGray" Opacity="0.9">
+        <StackPanel Margin="3" Background="LightGray" Opacity="0.9">
             <Button Content="X" HorizontalAlignment="Right" Click="DeleteButton_Click"/>
             <Image x:Name="enemyImage" Source="{Binding ImagePath}" Stretch="UniformToFill"/>
             <TextBlock Text="{Binding Name}" FontWeight="Bold"/>
@@ -16,9 +36,9 @@
                 <TextBox Text="{Binding Description}" TextWrapping="Wrap" Background="Transparent"/>
             </Expander>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                <Button Content="-1" Click="DecreaseHP_Click"/>
-                <TextBox Width="50" Text="{Binding CurrentHP, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="False"/>
-                <Button Content="+1" Click="IncreaseHP_Click"/>
+                <Button Content="&lt;" Click="DecreaseHP_Click"/>
+                <TextBox Width="50" Text="{Binding CurrentHP, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="False" AcceptsReturn="True"/>
+                <Button Content=">" Click="IncreaseHP_Click"/>
             </StackPanel>
         </StackPanel>
         </ScrollViewer>
