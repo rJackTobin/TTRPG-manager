@@ -54,7 +54,7 @@
             <RowDefinition Height="2*"/>
 
         </Grid.RowDefinitions>
-        <TextBlock Grid.Row="0" >Global Party List</TextBlock>
+        <TextBlock Grid.Row="0" FontWeight="Bold">Global Party List</TextBlock>
         <TextBox x:Name="partyNameTextBox" MinWidth="80" Margin="10,10,10,10" Grid.Row="1" Grid.Column="0"/>
         <StackPanel Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Margin="5,0,5,0" VerticalAlignment="Center">
             
@@ -76,7 +76,7 @@
             <Button x:Name="removeMemberButton" Content=" Remove from Party " Click="RemoveMemberButton_Click" Margin="5,0,5,0" />
             <Button x:Name="memberEditButton" Content=" Edit " Click="EditCharacterButton_Click" Margin="5,0,5,0" />
         </StackPanel>
-        <TextBlock Grid.Row="5" Grid.ColumnSpan="3">Global Character List</TextBlock>
+        <TextBlock Grid.Row="5" Grid.ColumnSpan="3" FontWeight="Bold">Global Character List</TextBlock>
         <Button x:Name="CreateCharacterButton" Content="Create New Character" Click="CreateCharacterButton_Click" Grid.Row="6" Margin="10" Grid.ColumnSpan="3"/>
         <ListBox x:Name="CharacterComboBox" ItemsSource="{Binding Characters}" DisplayMemberPath="Name"
                 Margin="10,10,10,10"  
@@ -90,7 +90,7 @@
             <Button x:Name="characterEditButton" Content=" Edit " Click="EditCharacterButton_Click" />
 
         </StackPanel>
-        <TextBlock Grid.Row="0" Grid.Column="3" Grid.ColumnSpan="3">Global Item List</TextBlock>
+        <TextBlock Grid.Row="0" Grid.Column="3" Grid.ColumnSpan="3" FontWeight="Bold">Global Item List</TextBlock>
         <TextBox x:Name="ItemNameBox" MinWidth="70" Grid.Row="1" Grid.Column="3"></TextBox>
         <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="4" HorizontalAlignment="Center" Grid.ColumnSpan="2">
             
@@ -103,7 +103,7 @@
                  SelectionChanged="ItemList_SelectionChanged" Grid.ColumnSpan="3"></ListBox>
 
 
-        <TextBlock Grid.Row="5" Grid.Column="3" Grid.ColumnSpan="3">Global Skill List</TextBlock>
+        <TextBlock Grid.Row="5" Grid.Column="3" Grid.ColumnSpan="3" FontWeight="Bold">Global Skill List</TextBlock>
         <Button  Grid.Row="6" Grid.Column="3" Content=" Add to character " Click="AddSkillButton_Click"></Button>
         <StackPanel Orientation="Horizontal" Grid.Row="6" Grid.Column="4" HorizontalAlignment="Center" Grid.ColumnSpan="2">
             <Button  Content=" Create " Click="CreateSkillButton_Click"></Button>
@@ -113,7 +113,7 @@
         <ListBox x:Name="SkillList" Grid.Row="7" Grid.Column="3" Grid.RowSpan="2" ItemsSource="{Binding Skills}" DisplayMemberPath="Name"
          Grid.ColumnSpan="3"></ListBox>
 
-        <TextBlock Grid.Row="5" Grid.Column="6" Grid.ColumnSpan="3">Global Enemy List</TextBlock>
+        <TextBlock Grid.Row="5" Grid.Column="6" Grid.ColumnSpan="3" FontWeight="Bold">Global Enemy List</TextBlock>
         
         <StackPanel Orientation="Horizontal" Grid.Row="6" Grid.Column="7" HorizontalAlignment="Center" Grid.ColumnSpan="2">
             <Button  Content=" Create " Click="CreateEnemyButton_Click"></Button>

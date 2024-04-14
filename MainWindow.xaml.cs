@@ -387,7 +387,7 @@ namespace TTRPG_manager
         }
         private void ShowEditDialog()
         {
-            EditModeWindow editModeWindow = new EditModeWindow(this.Height, this.Width);
+            EditModeWindow editModeWindow = new EditModeWindow(this.ActualHeight, this.ActualWidth);
             var dialogResult = editModeWindow.ShowDialog();
             if (dialogResult == true)
             {
@@ -569,7 +569,7 @@ namespace TTRPG_manager
                     var panel = new StackPanel
                     {
                         Background = new SolidColorBrush(Colors.LightGray) { Opacity = 0.9 }, // Example styling
-                        Margin = new Thickness(5), // Example styling
+                        Margin = new Thickness(5,5,0,5), // Example styling
                         Width = Width / 7, // Example sizing
                         Height = Height * 29 / 30, // Example sizing
                     };
@@ -807,7 +807,7 @@ namespace TTRPG_manager
                             Margin = new Thickness(0),
                             BorderThickness = new Thickness(0), // Optionally remove border for a cleaner look
                             Background = new SolidColorBrush(Colors.Transparent), // Optional: make the TextBox background transparent
-                            Width = Width / 12 - 10,
+                            Width = Width / 12 - 20,
                         };
                         // Bind the TextChanged event to update the item's name
                         nameTextBox.TextChanged += (sender, e) =>
@@ -958,7 +958,7 @@ namespace TTRPG_manager
                             Margin = new Thickness(0),
                             BorderThickness = new Thickness(0), // Optionally remove border for a cleaner look
                             Background = new SolidColorBrush(Colors.Transparent), // Optional: make the TextBox background transparent
-                            Width = Width / 12 - 10,
+                            Width = Width / 12 - 20,
                         };
                         // Bind the TextChanged event to update the item's name
                         nameTextBox.TextChanged += (sender, e) =>
@@ -1071,7 +1071,7 @@ namespace TTRPG_manager
                             Margin = new Thickness(0),
                             BorderThickness = new Thickness(0), // Optionally remove border for a cleaner look
                             Background = new SolidColorBrush(Colors.Transparent), // Optional: make the TextBox background transparent
-                            Width = Width / 12 - 10,
+                            Width = Width / 12 - 20,
                         };
 
                         // Bind the TextChanged event to update the item's name

@@ -117,6 +117,82 @@ namespace TTRPG_manager
                             }
 
                         }
+                        else if (request.RawUrl.Contains("/equip") && request.HttpMethod == "POST")
+                        {
+                            using (var reader = new StreamReader(request.InputStream, request.ContentEncoding))
+                            {
+                                string postData = await reader.ReadToEndAsync();
+                                var formData = HttpUtility.ParseQueryString(postData);
+
+                                string characterName = formData["CharacterName"];
+                                string itemName = formData["itemName"]; // Consider adding error handling for parsing
+
+                                var character = _config.Parties[_config.selectedPartyIndex].Members.FirstOrDefault(c => c.safeName == characterName);
+                                var item = character.Inventory.FirstOrDefault(c => c.safeName == itemName);
+                                if (character != null && item != null)
+                                {
+                                    character.Equip(item);
+                                    ConfigManager.SaveConfig(_config); // Save changes
+                                    Application.Current.Dispatcher.Invoke(() =>
+                                    {
+                                        var mainWindow = Application.Current.MainWindow as MainWindow;
+                                        mainWindow?.PopulateCharacterPanels();
+
+                                    });
+                                    var responseObj = new
+                                    {
+                                        Success = true,
+                                        Message = "Equipped item successfully"
+                                    };
+
+                                    // Convert the response object to JSON
+                                    responseString = JsonSerializer.Serialize(responseObj);
+                                    response.ContentType = "application/json";
+                                }
+                                else
+                                {
+                                    responseString = "Character not found.";
+                                }
+                            }
+                        }
+                        else if (request.RawUrl.Contains("/unequip") && request.HttpMethod == "POST")
+                        {
+                            using (var reader = new StreamReader(request.InputStream, request.ContentEncoding))
+                            {
+                                string postData = await reader.ReadToEndAsync();
+                                var formData = HttpUtility.ParseQueryString(postData);
+
+                                string characterName = formData["CharacterName"];
+                                string itemName = formData["itemName"]; // Consider adding error handling for parsing
+
+                                var character = _config.Parties[_config.selectedPartyIndex].Members.FirstOrDefault(c => c.safeName == characterName);
+                                var item = character.EquippedItems.FirstOrDefault(c => c.safeName == itemName);
+                                if (character != null && item != null)
+                                {
+                                    character.Unequip(item);
+                                    ConfigManager.SaveConfig(_config); // Save changes
+                                    Application.Current.Dispatcher.Invoke(() =>
+                                    {
+                                        var mainWindow = Application.Current.MainWindow as MainWindow;
+                                        mainWindow?.PopulateCharacterPanels();
+
+                                    });
+                                    var responseObj = new
+                                    {
+                                        Success = true,
+                                        Message = "Unequipped item successfully"
+                                    };
+
+                                    // Convert the response object to JSON
+                                    responseString = JsonSerializer.Serialize(responseObj);
+                                    response.ContentType = "application/json";
+                                }
+                                else
+                                {
+                                    responseString = "Character not found.";
+                                }
+                            }
+                        }
                         else if (request.RawUrl.Contains("/upHP") && request.HttpMethod == "POST")
                         {
                             using (var reader = new StreamReader(request.InputStream, request.ContentEncoding))
@@ -592,12 +668,31 @@ namespace TTRPG_manager
                                 //document.querySelector('input[name=""Gender""]').value = data.Gender;
                                 //document.querySelector('input[name=""Race""]').value = data.Race;
                                 //document.querySelector('input[name=""Title""]').value = data.Title;
+
+                                function captureOpenStates(container) {
+                                    const expanders = container.querySelectorAll('.expander-content');
+                                    return Array.from(expanders).map(expander => ({
+                                        id: expander.id,
+                                        isOpen: expander.style.display === 'block'
+                                    }));
+                                }
+
+                                const skillsContainer = document.getElementById('skills-container');
+                                const equipmentContainer = document.getElementById('equipment-container');
+                                const inventoryContainer = document.getElementById('inventory-container');
+
+                                const skillsOpenStates = captureOpenStates(skillsContainer);
+                                const equipmentOpenStates = captureOpenStates(equipmentContainer);
+                                const inventoryOpenStates = captureOpenStates(inventoryContainer);
+
+                                
                                 // Update Skills
-                                const skillsContainer = document.getElementById('skills-container'); // Make sure you have this ID in your HTML
+                                 
                                 skillsContainer.innerHTML = ''; // Clear existing skills
                                 data.Skills.forEach(skill => {
+                                    const isOpen = skillsOpenStates.find(state => state.id === `expander_${skill.safeName}`)?.isOpen;
                                     const skillDiv = `<div class='expander-label' onclick=""toggleExpander('expander_${skill.safeName}')"">${skill.Name}</div>
-                                                      <div id='expander_${skill.safeName}' class='expander-content'>
+                                                      <div id='expander_${skill.safeName}' class='expander-content' style=""display: ${isOpen ? 'block' : 'none'};"">
                                                           ${skill.Description}
                                                           <br>(Uses: ${skill.RemainingUses}/${skill.MaxUses})
                                                           <br><button type=""button"" onclick=""useSkill('${data.safeName}', '${skill.safeName}')"">Use Skill</button>
@@ -605,22 +700,29 @@ namespace TTRPG_manager
                                     skillsContainer.innerHTML += skillDiv;
                                 });
                                 // Update Equipped Items
-                                const equipmentContainer = document.getElementById('equipment-container'); // Make sure you have this ID in your HTML
+                                
                                 equipmentContainer.innerHTML = ''; // Clear existing items
                                 data.EquippedItems.forEach(item => {
+                                    const isOpen = equipmentOpenStates.find(state => state.id === `expander_${item.safeName}`)?.isOpen;
                                     const itemDiv = `<div class='expander-label' onclick=""toggleExpander('expander_${item.safeName}')"">${item.Name}</div>
-                                                     <div id='expander_${item.safeName}' class='expander-content'>${item.Description}</div>`;
+                                                     <div id='expander_${item.safeName}' class='expander-content' style=""display: ${isOpen ? 'block' : 'none'};"">
+                                                         ${item.Description}
+                                                         <br>(Count: ${item.Count}, Uses: ${item.Uses}/${item.MaxUses})
+                                                        <br><button type=""button"" onclick=""unequip('${data.safeName}', '${item.safeName}')"">Unequip</button>
+                                                     </div>`;
                                     equipmentContainer.innerHTML += itemDiv;
                                 });
 
                                 // Update Inventory
-                                const inventoryContainer = document.getElementById('inventory-container'); // Make sure you have this ID in your HTML
+                                 
                                 inventoryContainer.innerHTML = ''; // Clear existing items
                                 data.Inventory.forEach(item => {
+                                const isOpen = inventoryOpenStates.find(state => state.id === `expander_${item.safeName}`)?.isOpen;
                                     const itemDiv = `<div class='expander-label' onclick=""toggleExpander('expander_${item.safeName}')"">${item.Name}</div>
-                                                     <div id='expander_${item.safeName}' class='expander-content'>
+                                                     <div id='expander_${item.safeName}' class='expander-content' style=""display: ${isOpen ? 'block' : 'none'};"">
                                                          ${item.Description}
                                                          <br>(Count: ${item.Count}, Uses: ${item.Uses}/${item.MaxUses})
+                                                        <br><button type=""button"" onclick=""equip('${data.safeName}', '${item.safeName}')"">Equip</button>
                                                      </div>`;
                                     inventoryContainer.innerHTML += itemDiv;
                                 });
@@ -629,7 +731,7 @@ namespace TTRPG_manager
                     }
 
                     // Set up polling every 5 seconds
-                    setInterval(fetchData, 3000);
+                    setInterval(fetchData, 1000);
                 
                 
                 function useSkill(characterName, skillName) {
@@ -665,7 +767,48 @@ namespace TTRPG_manager
                     }
                 }
             }
-
+            function equip(characterName, itemName) {
+                const data = `CharacterName=${encodeURIComponent(characterName)}&itemName=${encodeURIComponent(itemName)}`;
+                fetch('/equip', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                    body: data
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.Success) {
+                        
+                    } else {
+                        alert('Failed to equip: ' + data.Message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error equipping:', error);
+                    alert('Error equipping: ' + error);
+                });
+            
+            }
+            function unequip(characterName, itemName) {
+                const data = `CharacterName=${encodeURIComponent(characterName)}&itemName=${encodeURIComponent(itemName)}`;
+                fetch('/unequip', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                    body: data
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.Success) {
+                        
+                    } else {
+                        alert('Failed to unequip: ' + data.Message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error unequipping:', error);
+                    alert('Error unequipping: ' + error);
+                });
+            
+            }
             function upHP(characterName, amount) {
                 const data = `CharacterName=${encodeURIComponent(characterName)}&amount=${encodeURIComponent(amount)}`;
                 fetch('/upHP', {
@@ -813,7 +956,8 @@ namespace TTRPG_manager
             foreach (var item in character.EquippedItems)
             {
                 stringBuilder.AppendFormat("<div class='expander-label' onclick=\"toggleExpander('expander_{0}')\">{1}</div>", item.safeName, item.Name);
-                stringBuilder.AppendFormat("<div id='expander_{0}' class='expander-content'>{1}</div>", item.safeName, item.Description);
+                stringBuilder.AppendFormat("<div id='expander_{0}' class='expander-content'>{1}\n(Count: {2}, Uses: {3}/{4})<br><button type=\"button\" onclick=\"unequip('{5}', '{0}')\">Unequip</button></div>",
+                item.safeName, item.Description, item.Count, item.Uses, item.MaxUses, character.safeName);
             }
             stringBuilder.Append("</div>");
             // Inventory section
@@ -822,8 +966,8 @@ namespace TTRPG_manager
             foreach (var item in character.Inventory)
             {
                 stringBuilder.AppendFormat("<div class='expander-label' onclick=\"toggleExpander('expander_{0}')\">{1}</div>", item.safeName, item.Name);
-                stringBuilder.AppendFormat("<div id='expander_{0}' class='expander-content'>{1}\n(Count: {2}, Uses: {3}/{4})</div>",
-                item.safeName, item.Description, item.Count, item.Uses, item.MaxUses);
+                stringBuilder.AppendFormat("<div id='expander_{0}' class='expander-content'>{1}\n(Count: {2}, Uses: {3}/{4})<br><button type=\"button\" onclick=\"equip('{5}', '{0}')\">Equip</button></div>",
+                item.safeName, item.Description, item.Count, item.Uses, item.MaxUses, character.safeName);
             }
             stringBuilder.Append("</div>");
             stringBuilder.Append("</ul>");
