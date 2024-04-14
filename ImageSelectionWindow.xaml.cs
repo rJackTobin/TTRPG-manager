@@ -67,9 +67,14 @@ namespace Genesis
         }
         private void ImageListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            var selectedItem = (ImageItem)ImageListView.SelectedItem;
-            SelectedImagePath = selectedItem.ImagePath;
-            // You may close the window here if you want to auto-select
+            if (ImageListView.SelectedItem is ImageItem selectedItem)
+            {
+                SelectedImagePath = selectedItem.ImagePath;
+            }
+            else
+            {
+                SelectedImagePath = null; // Or set a default/fallback path
+            }
         }
         private void LoadImageButton_Click(object sender, RoutedEventArgs e)
         {

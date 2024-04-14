@@ -11,6 +11,7 @@ using System.IO;
 using System.Web;
 using System.Reflection;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace TTRPG_manager
 {
@@ -269,6 +270,36 @@ namespace TTRPG_manager
                                 else
                                 {
                                     responseString = "Character not found.";
+                                }
+                            }
+                        }
+                        else if (request.RawUrl.Contains("/fetchCharacter") && request.HttpMethod == "POST")
+                        {
+                            using (var reader = new StreamReader(request.InputStream, request.ContentEncoding))
+                            {
+                                string postData = await reader.ReadToEndAsync();
+                                var formData = HttpUtility.ParseQueryString(postData);
+
+                                string characterName = formData["CharacterName"];
+                                _config = ConfigManager.LoadConfig();
+                                var character = _config.Parties[_config.selectedPartyIndex].Members.FirstOrDefault(c => c.safeName == characterName);
+                                if (character != null)
+                                {
+                                    var responseObj = JsonSerializer.Serialize(character, new JsonSerializerOptions
+                                    {
+                                        // You can customize the serialization behavior, for instance by excluding null values
+                                        DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
+                                    });
+
+                                    // Convert the response object to JSON
+                                    response.ContentType = "application/json";
+                                    responseString = responseObj;
+                                }
+                                else
+                                {
+                                    response.ContentType = "application/json";
+                                    responseString = JsonSerializer.Serialize(new { Success = false, Message = "Character not found." });
+
                                 }
                             }
                         }
@@ -541,12 +572,66 @@ namespace TTRPG_manager
             // Include the JavaScript function for AJAX calls
             stringBuilder.Append("<script>");
             stringBuilder.Append(@"
-                function updateUI() {
-                    const characterName = document.getElementById('character-name');  // Encode the character name to ensure it's safe for URL usage
-                        upHP(characterName, 0);
-                        upMP(characterName, 0);
-                }
-                setInterval(updateUI, 5000);
+                
+                    function fetchData() {
+                        const element = document.getElementById('character-name');
+                        const characterName = element.value;  // Make sure this element exists and is retrieving the correct data
+                        const data = `CharacterName=${encodeURIComponent(characterName)}`;
+                                fetch('/fetchCharacter', {
+                                    method: 'POST',
+                                    headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                                    body: data
+                                })
+                                .then(response => response.json())
+                                .then(data => {
+                                document.getElementById('hp-bar').style.width = `calc(100% * ${data.CurrentHP} / ${data.MaxHP})`;
+                                document.getElementById('mp-bar').style.width = `calc(100% * ${data.CurrentMP} / ${data.MaxMP})`;
+                                document.querySelector('h2').textContent = data.Name;
+                                //document.querySelector('textarea[name=""Description""]').textContent = data.Description;
+                                //document.querySelector('input[name=""Age""]').value = data.Age;
+                                //document.querySelector('input[name=""Gender""]').value = data.Gender;
+                                //document.querySelector('input[name=""Race""]').value = data.Race;
+                                //document.querySelector('input[name=""Title""]').value = data.Title;
+                                // Update Skills
+                                const skillsContainer = document.getElementById('skills-container'); // Make sure you have this ID in your HTML
+                                skillsContainer.innerHTML = ''; // Clear existing skills
+                                data.Skills.forEach(skill => {
+                                    const skillDiv = `<div class='expander-label' onclick=""toggleExpander('expander_${skill.safeName}')"">${skill.Name}</div>
+                                                      <div id='expander_${skill.safeName}' class='expander-content'>
+                                                          ${skill.Description}
+                                                          <br>(Uses: ${skill.RemainingUses}/${skill.MaxUses})
+                                                          <br><button type=""button"" onclick=""useSkill('${data.safeName}', '${skill.safeName}')"">Use Skill</button>
+                                                      </div>`;
+                                    skillsContainer.innerHTML += skillDiv;
+                                });
+                                // Update Equipped Items
+                                const equipmentContainer = document.getElementById('equipment-container'); // Make sure you have this ID in your HTML
+                                equipmentContainer.innerHTML = ''; // Clear existing items
+                                data.EquippedItems.forEach(item => {
+                                    const itemDiv = `<div class='expander-label' onclick=""toggleExpander('expander_${item.safeName}')"">${item.Name}</div>
+                                                     <div id='expander_${item.safeName}' class='expander-content'>${item.Description}</div>`;
+                                    equipmentContainer.innerHTML += itemDiv;
+                                });
+
+                                // Update Inventory
+                                const inventoryContainer = document.getElementById('inventory-container'); // Make sure you have this ID in your HTML
+                                inventoryContainer.innerHTML = ''; // Clear existing items
+                                data.Inventory.forEach(item => {
+                                    const itemDiv = `<div class='expander-label' onclick=""toggleExpander('expander_${item.safeName}')"">${item.Name}</div>
+                                                     <div id='expander_${item.safeName}' class='expander-content'>
+                                                         ${item.Description}
+                                                         <br>(Count: ${item.Count}, Uses: ${item.Uses}/${item.MaxUses})
+                                                     </div>`;
+                                    inventoryContainer.innerHTML += itemDiv;
+                                });
+                            })
+                            .catch(error => console.error('Error fetching data:', error));
+                    }
+
+                    // Set up polling every 5 seconds
+                    setInterval(fetchData, 3000);
+                
+                
                 function useSkill(characterName, skillName) {
                 const data = `CharacterName=${encodeURIComponent(characterName)}&SkillName=${encodeURIComponent(skillName)}`;
                 fetch('/useSkill', {
@@ -714,29 +799,33 @@ namespace TTRPG_manager
 
             // Skills section
             stringBuilder.Append("<h3>Skills</h3>");
+            stringBuilder.Append("<div id='skills-container'>");
             foreach (var skill in character.Skills)
             {
                 stringBuilder.AppendFormat("<div class='expander-label' onclick=\"toggleExpander('expander_{0}')\">{1}</div>", skill.safeName, skill.Name);
                 stringBuilder.AppendFormat("<div id='expander_{0}' class='expander-content'>{1}\n(Uses: {4}/{5})<br><button type=\"button\" onclick=\"useSkill('{2}', '{3}')\">Use Skill</button></div>",
                 skill.safeName, skill.Description, character.safeName, skill.safeName, skill.RemainingUses, skill.MaxUses);
             }
-
+            stringBuilder.Append("</div>");
             // Equipped Items Section
             stringBuilder.Append("<h3>Equipment</h3>");
+            stringBuilder.Append("<div id='equipment-container'>");
             foreach (var item in character.EquippedItems)
             {
                 stringBuilder.AppendFormat("<div class='expander-label' onclick=\"toggleExpander('expander_{0}')\">{1}</div>", item.safeName, item.Name);
                 stringBuilder.AppendFormat("<div id='expander_{0}' class='expander-content'>{1}</div>", item.safeName, item.Description);
             }
-
+            stringBuilder.Append("</div>");
             // Inventory section
             stringBuilder.Append("<h3>Inventory</h3>");
+            stringBuilder.Append("<div id='inventory-container'>");
             foreach (var item in character.Inventory)
             {
                 stringBuilder.AppendFormat("<div class='expander-label' onclick=\"toggleExpander('expander_{0}')\">{1}</div>", item.safeName, item.Name);
                 stringBuilder.AppendFormat("<div id='expander_{0}' class='expander-content'>{1}\n(Count: {2}, Uses: {3}/{4})</div>",
                 item.safeName, item.Description, item.Count, item.Uses, item.MaxUses);
             }
+            stringBuilder.Append("</div>");
             stringBuilder.Append("</ul>");
             stringBuilder.Append("</ div >");
 
