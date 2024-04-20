@@ -40,9 +40,9 @@ namespace TTRPG_manager
 
             this.DataContext = updated_config; // Set DataContext for data binding
 
-            var parts = updated_config.Resolution.Split('x');
-            this.Width = SystemParameters.PrimaryScreenWidth * 0.8;
-            this.Height = SystemParameters.PrimaryScreenHeight * 0.8;
+
+            this.Width = width*0.8;
+            this.Height = height*0.8;
             this.Closing += Window_Closing;
         }
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
