@@ -48,7 +48,7 @@ namespace TTRPG_manager
         public string ImagePath { get; set; }
         public int ActionsPerTurn { get; set; }
         public double eyeLevel { get; set; }
-
+        public bool actionTaken { get; set; }
         public object Clone()
         {
             return this.MemberwiseClone();
@@ -117,6 +117,7 @@ namespace TTRPG_manager
                 }
             }
         }
+        
     }
 
 }

@@ -16,9 +16,11 @@ public static class CombatManager
         // Reduce skill cooldowns for the active party
         foreach (Character character in config.Parties[config.selectedPartyIndex].Members)
         {
+            character.actionTaken = false;
             foreach (Skill skill in character.Skills)
             {
                 skill.Cooldown = Math.Min(skill.BaseCooldown, skill.Cooldown+1);
+                
             }
         }
 

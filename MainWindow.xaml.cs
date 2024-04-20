@@ -538,7 +538,7 @@ namespace TTRPG_manager
         {
             // Update the label to reflect the current turn
             lblTurnStatus.Content = $"Turn: {CombatManager.turn}";
-
+            lblTurnStatus.Background = new SolidColorBrush(Colors.White);
             // Change label color based on who's turn it is
             if (CombatManager.isPlayersTurn)
             {
@@ -573,9 +573,15 @@ namespace TTRPG_manager
                         Width = Width / 7, // Example sizing
                         Height = Height * 29 / 30, // Example sizing
                     };
-
-                    // Example content: Add a TextBlock for the character's name
-                    var characterNameText = new TextBlock
+                        var actionTaken = new CheckBox
+                        {
+                            Content = "Turn Over",
+                            IsChecked = character.actionTaken,
+                        };
+                        actionTaken.Checked += (sender, e) => { character.actionTaken = true;  ConfigManager.SaveConfig(_config); };
+                        actionTaken.Unchecked += (sender, e) => { character.actionTaken = false;  ConfigManager.SaveConfig(_config); };
+                        // Example content: Add a TextBlock for the character's name
+                        var characterNameText = new TextBlock
                     {
                         Text = character.Name,
                         FontSize = Width / 100,
@@ -781,7 +787,7 @@ namespace TTRPG_manager
                     inventoryPanel.Children.Add(inventoryText);
                     inventoryPanel.Children.Add(chooseItemButton);
                     inventoryPanel.Children.Add(addItemButton);
-
+                    panel.Children.Add(actionTaken);
                     // Adding elements to the main panel
                     panel.Children.Add(characterNameText);
                     if (characterImage != null) panel.Children.Add(characterImage);
@@ -792,23 +798,24 @@ namespace TTRPG_manager
                     
                     foreach (var skill in character.Skills)
                     {
-                        
-                        // Create the Expander
-                        var expander = new Expander
-                        {
-                            Margin = new Thickness(5, 2, 5, 2),
-                            Tag = skill // Store the item object in the Tag for easy access
-                        };
 
-                        // Create a TextBox for the item name in the Expander's Header
-                        var nameTextBox = new TextBox
+                            // Create the Expander
+                            var expander = new Expander
+                            {
+                                Margin = new Thickness(5, -5, 5, -5),
+                                Tag = skill, // Store the item object in the Tag for easy access
+                                
+                        };
+                           
+                            // Create a TextBox for the item name in the Expander's Header
+                            var nameTextBox = new TextBox
                         {
                             Text = skill.Name,
                             Margin = new Thickness(0),
                             BorderThickness = new Thickness(0), // Optionally remove border for a cleaner look
                             Background = new SolidColorBrush(Colors.Transparent), // Optional: make the TextBox background transparent
-                            Width = Width / 12 - 10,
-                        };
+                            Width = Width / 12 - 20,
+                            };
                         // Bind the TextChanged event to update the item's name
                         nameTextBox.TextChanged += (sender, e) =>
                         {
@@ -878,7 +885,8 @@ namespace TTRPG_manager
                             Margin = new Thickness(5),
                             AcceptsReturn = true,
                             Background = new SolidColorBrush(Colors.LightGray), // Optional
-                            BorderThickness = new Thickness(0) // Optionally remove border
+                            BorderThickness = new Thickness(0),
+                            FontSize = 10// Optionally remove border
                         };
                         descriptionTextBox.TextChanged += (sender, e) =>
                         {
@@ -946,7 +954,7 @@ namespace TTRPG_manager
                         // Create the Expander
                         var expander = new Expander
                         {
-                            Margin = new Thickness(5, 2, 5, 2),
+                            Margin = new Thickness(5, -5, 5, -5),
                             Tag = item, // Store the item object in the Tag for easy access
 
                         };
@@ -958,7 +966,7 @@ namespace TTRPG_manager
                             Margin = new Thickness(0),
                             BorderThickness = new Thickness(0), // Optionally remove border for a cleaner look
                             Background = new SolidColorBrush(Colors.Transparent), // Optional: make the TextBox background transparent
-                            Width = Width / 12 - 10,
+                            Width = Width / 12 - 20,
                         };
                         // Bind the TextChanged event to update the item's name
                         nameTextBox.TextChanged += (sender, e) =>
@@ -1024,18 +1032,19 @@ namespace TTRPG_manager
                         headerPanel.Children.Add(nameTextBox);
                         headerPanel.Children.Add(usesTextBox);
                         expander.Header = headerPanel;
-                        // Set the Expander's header to the TextBox
-                        
-                        // Create a TextBox for the item's description inside the Expander's content
-                        var descriptionTextBox = new TextBox
-                        {
-                            Text = item.Description,
-                            IsReadOnly = false, // Or false if you want it to be editable
-                            TextWrapping = TextWrapping.Wrap,
-                            Margin = new Thickness(5),
-                            AcceptsReturn = true,
-                            Background = new SolidColorBrush(Colors.LightGray), // Optional
-                            BorderThickness = new Thickness(0) // Optionally remove border
+                            // Set the Expander's header to the TextBox
+
+                            // Create a TextBox for the item's description inside the Expander's content
+                            var descriptionTextBox = new TextBox
+                            {
+                                Text = item.Description,
+                                IsReadOnly = false, // Or false if you want it to be editable
+                                TextWrapping = TextWrapping.Wrap,
+                                Margin = new Thickness(5),
+                                AcceptsReturn = true,
+                                Background = new SolidColorBrush(Colors.LightGray), // Optional
+                                BorderThickness = new Thickness(0),
+                                FontSize = 16// Optionally remove border
                         };
                         descriptionTextBox.TextChanged += (sender, e) =>
                         {
@@ -1060,7 +1069,7 @@ namespace TTRPG_manager
                         // Create the Expander
                         var expander = new Expander
                         {
-                            Margin = new Thickness(5, 2, 5, 2),
+                            Margin = new Thickness(5, -5, 5, -5),
                             Tag = item, // Store the item object in the Tag for easy access
 
                         };
@@ -1071,7 +1080,7 @@ namespace TTRPG_manager
                             Margin = new Thickness(0),
                             BorderThickness = new Thickness(0), // Optionally remove border for a cleaner look
                             Background = new SolidColorBrush(Colors.Transparent), // Optional: make the TextBox background transparent
-                            Width = Width / 12 - 10,
+                            Width = Width / 12 - 20,
                         };
 
                         // Bind the TextChanged event to update the item's name

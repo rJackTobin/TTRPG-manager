@@ -16,7 +16,7 @@
         <Style TargetType="TextBlock">
             <Setter Property="FontSize" Value="{Binding Path=Width, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource ScaleConverter}, ConverterParameter=0.005}"/>
         </Style>
-        
+
         <Style TargetType="Button">
             <Setter Property="FontSize" Value="{Binding Path=Width, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource ScaleConverter}, ConverterParameter=0.006}"/>
         </Style>
@@ -29,7 +29,6 @@
         <Style TargetType="Label">
             <Setter Property="FontSize" Value="{Binding Path=Width, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource ScaleConverter}, ConverterParameter=0.013}"/>
         </Style>
-
     </Window.Resources>
     <Grid>
         <Grid.Background>
@@ -67,18 +66,19 @@
             <Button  Click="EditMode_Click" FontSize="{Binding Path=Width, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource ScaleConverter}, ConverterParameter=0.01}">Edit Mode</Button>
             <Button   Click="StartServer_Click" FontSize="{Binding Path=Width, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource ScaleConverter}, ConverterParameter=0.01}">Start Server</Button>
             <Button   Click="ChangeImageButton_Click" FontSize="{Binding Path=Width, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource ScaleConverter}, ConverterParameter=0.01}">Change Image</Button>
-                    <ComboBox  x:Name="partyComboBox" Width="{Binding buttonWidth}" ItemsSource="{Binding Parties}" DisplayMemberPath="Name" 
+            <ComboBox  x:Name="partyComboBox" Width="{Binding buttonWidth}" ItemsSource="{Binding Parties}" DisplayMemberPath="Name" 
                               SelectedIndex="{Binding selectedPartyIndex, Mode=TwoWay}"
                               SelectionChanged="PartyComboBox_SelectionChanged"
                                FontSize="{Binding Path=Width, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource ScaleConverter}, ConverterParameter=0.01}"></ComboBox>
 
             <TextBox Background="Transparent" x:Name="txtIpAddress" BorderThickness="0" IsReadOnly="True" HorizontalAlignment="Right" Margin="10,0,0,0"  TextWrapping="Wrap" VerticalAlignment="Center" FontSize="{Binding Path=Width, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource ScaleConverter}, ConverterParameter=0.01}"/>
-                </StackPanel>
+        </StackPanel>
 
 
         <StackPanel Grid.Row="1" x:Name="CharacterPanels" Orientation="Horizontal" HorizontalAlignment="Left">
 
         </StackPanel>
+
         <Image x:Name="MainImage" Grid.Row="1" HorizontalAlignment="Right" SizeChanged="MainImage_SizeChanged"></Image>
         <StackPanel Grid.Row="1" x:Name="EnemyPanels" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Bottom">
 
@@ -93,9 +93,9 @@
                 <Polygon x:Name="rightCover"></Polygon>
             </Canvas>
         </Canvas>
-        <Canvas Grid.Row="1" Name="StickerCanvas" Width="{Binding Width}" Height="{Binding Height}">
+        <Canvas Grid.Row="1" x:Name="StickerCanvas" Width="{Binding Width}" Height="{Binding Height}">
             <!-- Other UI elements can go here -->
         </Canvas>
     </Grid>
-   
+
 </Window>

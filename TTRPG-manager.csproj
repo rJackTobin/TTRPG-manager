@@ -20,7 +20,17 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="closed.png" />
+    <None Remove="open.png" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Ookii.Dialogs.Wpf" Version="5.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="closed.png" />
+    <Resource Include="open.png" />
   </ItemGroup>
 
 </Project>

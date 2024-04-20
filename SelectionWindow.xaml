@@ -7,10 +7,14 @@
         mc:Ignorable="d"
         Title="SelectionWindow" Height="450" Width="800">
     <Grid>
+        
         <StackPanel>
             <TextBox x:Name="searchBox" TextChanged="SearchBox_TextChanged"/>
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
             <ListBox x:Name="listBox" DisplayMemberPath="Name" SelectionChanged="ListBox_SelectionChanged"/>
+            </ScrollViewer>
             <Button Content="Select" Click="SelectButton_Click"/>
         </StackPanel>
+        
     </Grid>
 </Window>

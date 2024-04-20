@@ -29,8 +29,10 @@ namespace TTRPG_manager
             InitializeComponent();
             this.items = items;
             listBox.ItemsSource = items;
+            
             this.Height = height / 3;
             this.Width = width / 5;
+            listBox.Height = this.Height*3/4;
         }
 
         private void SearchBox_TextChanged(object sender, TextChangedEventArgs e)

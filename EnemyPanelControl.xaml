@@ -40,6 +40,7 @@
                 <TextBox Width="50" Text="{Binding CurrentHP, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="False" AcceptsReturn="True"/>
                 <Button Content=">" Click="IncreaseHP_Click"/>
             </StackPanel>
+                <TextBox Margin="5,5,5,0" MinHeight="50" AcceptsReturn="True"></TextBox>
         </StackPanel>
         </ScrollViewer>
     </Grid>
