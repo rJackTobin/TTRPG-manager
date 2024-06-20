@@ -1,3 +1,5 @@
-Hello!
+TTRPG MANAGER (NAME PENDING)
 
-Readme test
+TTRPG Manager is a lightweight app designed as a suplementary tool for tabletop roleplaying games (TTRPG's).
+
+Running the app:
