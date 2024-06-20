@@ -4,5 +4,7 @@ TTRPG Manager is a lightweight app designed as a suplementary tool for tabletop 
 
 ## Running the app:
 > Download app
+
 > ???
+
 > Profit
